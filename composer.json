@@ -1,0 +1,7 @@
+{
+    "require": {
+    },
+    "require-dev": {
+        "symfony/dotenv": "^4.2"
+    }
+}
