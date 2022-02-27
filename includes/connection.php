@@ -1,9 +1,12 @@
 <?php
 
-$host = getenv('MYSQL_HOST');
-$db = getenv('MYSQL_DB');
-$username = getenv('MYSQL_USER');
-$pass = getenv('MYSQL_PASS');
+$dotenv = \Dotenv\Dotenv::createImmutable('../');
+$dotenv->load();
+
+$host = $_ENV('MYSQL_HOST');
+$db = $_ENV('MYSQL_DB');
+$username = $_ENV('MYSQL_USER');
+$pass = $_ENV('MYSQL_PASS');
 
 $dsn = "mysql:host=$host;dbname=$db";
 $opt = [
