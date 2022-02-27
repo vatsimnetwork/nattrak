@@ -4,10 +4,10 @@ require_once '../vendor/autoload.php';
 $dotenv = \Dotenv\Dotenv::createImmutable('../');
 $dotenv->load();
 
-$host = $_ENV('MYSQL_HOST');
-$db = $_ENV('MYSQL_DB');
-$username = $_ENV('MYSQL_USER');
-$pass = $_ENV('MYSQL_PASS');
+$host = $_ENV['MYSQL_HOST'];
+$db = $_ENV['MYSQL_DB'];
+$username = $_ENV['MYSQL_USER'];
+$pass = $_ENV['MYSQL_PASS'];
 
 $dsn = "mysql:host=$host;dbname=$db";
 $opt = [
