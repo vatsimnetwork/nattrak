@@ -1,8 +1,0 @@
-{
-    "require": {
-        "vlucas/phpdotenv": "^5.4"
-    },
-    "require-dev": {
-        "symfony/dotenv": "^4.2"
-    }
-}
