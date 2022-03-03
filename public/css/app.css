@@ -1,0 +1,62 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    background-color: #2B3990;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #fff;
+}
+
+.clouds {
+    position: relative;
+    z-index: -1;
+    background-image: url(/images/cloudsbg.png?88cc596d00c7588b83a743550f90c732);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 370px;
+}
+
+.gradient {
+    position: relative;
+    z-index: -2;
+    background-image: url(/images/gradient.png?458e6103e506cf219efb9d220d92be1f);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 370px;
+}
+
+.logo {
+    padding-left: 100px;
+    padding-top: 100px;
+}
+
+.menu {
+    color: #06163a;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.inline {
+    display: inline;
+}
+
+.feather {
+    width: 17px;
+    height: 17px;
+    padding-bottom: 3px;
+}
+
+.inside {
+    color: #000;
+}
+
+.header {
+    font-size: 30px;
+    font-weight: 300;
+}
+
