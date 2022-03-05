@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\AccessLevelEnum;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * App\Models\VatsimAccount
@@ -29,11 +31,26 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class VatsimAccount extends Authenticatable
 {
+    use LogsActivity;
+
+    /**
+     * @var string[]
+     */
     protected $fillable = ['id', 'given_name', 'surname', 'rating_int', 'access_level'];
 
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'access_level' => AccessLevelEnum::class
     ];
 
-
+    /**
+     * Activity log options.
+     * @return LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logOnly(['access_level']);
+    }
 }

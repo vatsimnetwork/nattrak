@@ -2,6 +2,9 @@
 
 namespace App\Enums;
 
+/**
+ * Access level for VATSIM accounts on natTrak.
+ */
 enum AccessLevelEnum: int
 {
     case Pilot = 0;
