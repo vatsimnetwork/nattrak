@@ -22,6 +22,7 @@
 
     <!-- natTRAK CSS -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @toastr_css
 
     <!-- jQuery and Bootstrap JS  -->
 
@@ -57,40 +58,34 @@
                             </button>
 
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                {{--<ul class="navbar-nav mr-auto">
+                                <ul class="navbar-nav mr-auto">
                                     <li class="nav-item active">
-                                        <a class="nav-link" href="index.php">Home</a>
+                                        <a class="nav-link" href="{{ route('welcome') }}">Home</a>
                                     </li>
 
-                                    <? if ($sid != "") { ?>
-
-                                    <? if (isControllerOceanic($cid) == true || hasPerm($cid) >= "3") { ?>
+                                    @can('activeController')
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Controllers
                                         </a>
                                         <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                            <!--                      <a class="dropdown-item" href="reports.php">Position Reports</a>-->
-                                            <!--                      <a class="dropdown-item" href="manual_report.php">Manual Report</a>-->
                                             <a class="dropdown-item" href="delivery.php">Clearance Delivery</a>
-                                            <!-- <div class="dropdown-divider"></div> -->
                                         </div>
                                     </li>
-                                    <? } ?>
+                                    @endcan
 
-                                    <? if (isPilotConnectedToVATSIM($cid) == true || hasPerm($cid) >= "3") { ?>
+                                    @can('activePilot')
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Pilots
                                         </a>
                                         <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
                                             <a class="dropdown-item" href="oceanic_clearance.php">Oceanic Clearance</a>
-                                            <!--                      <a class="dropdown-item" href="pilot_report.php">Position Report</a>-->
                                         </div>
                                     </li>
-                                    <? } ?>
+                                    @endcan
 
-                                    <? if (hasPerm($cid) >= "3") { ?>
+                                    @can('administrate')
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Administration
@@ -100,34 +95,29 @@
                                             <? if (hasPerm($cid) > "3") { ?><a class="dropdown-item" href="news.php">Manage News</a><? } ?>
                                         </div>
                                     </li>
-                                <? } ?>
+                                    @endcan
 
-                                <? } ?>--}}
 
-                                <!-- <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                  </li> -->
+                                    @auth
+                                        <ul class="navbar-nav ml-auto">
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->given_name ?? Auth::id() }}
+                                                </a>
+                                                <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
+                                                    <a class="dropdown-item" href="logout.php">Logout <i data-feather="log-in"></i></a>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    @else
+                                        <ul class="navbar-nav ml-auto">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('auth.redirect') }}">Login <i data-feather="log-in"></i></a>
+                                            </li>
+                                        </ul>
+                                    @endauth
                                 </ul>
-
-                                @auth
-                                    <ul class="navbar-nav ml-auto">
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="far fa-user-circle"></i> Name
-                                            </a>
-                                            <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" href="logout.php">Logout <i data-feather="log-in"></i></a>
-                                            </div>
-                                        </li>
-
-                                    </ul>
-                                @else
-                                    <ul class="navbar-nav ml-auto">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="sso/index.php">Login <i data-feather="log-in"></i></a>
-                                        </li>
-                                    </ul>
-                                @endauth
                             </div>
                         </nav>
                         <br />
@@ -139,6 +129,20 @@
 
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small" style="margin-top: 3em;">
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3 text-light">
+            Developed by Alex Long, refurbished by Liesel Downes
+        </div>
+        <!-- Copyright -->
+
+    </footer>
+    <!-- Footer -->
 </div>
+@toastr_js
+@toastr_render
 </body>
 </html>
