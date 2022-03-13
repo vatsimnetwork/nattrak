@@ -14,6 +14,14 @@ use Illuminate\Support\Str;
 
 class VatsimAuthController extends Controller
 {
+    public function deauthenticate()
+    {
+        Auth::logout();
+        Session::flush();
+        toastr()->info('Logged out');
+        return redirect()->route('welcome');
+    }
+
     public function redirect()
     {
         //Prepare the session

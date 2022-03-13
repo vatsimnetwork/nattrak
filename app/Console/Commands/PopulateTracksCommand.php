@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Track;
+use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class PopulateTracksCommand extends Command
+{
+    protected $signature = 'tracks:populate';
+
+    protected $description = 'Populate active NAT tracks';
+
+    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+
+    public function handle()
+    {
+        $this->info('Downloading tracks from API (' . self::TRACK_API_ENDPOINT . ')');
+        $trackData = Http::get(self::TRACK_API_ENDPOINT, [
+            'headers' => [
+                'Accept' => 'application/json'
+            ]
+        ]);
+
+        if ($trackData) {
+            $tracks = json_decode(($trackData));
+            $this->line('Tracks decoded.');
+        } else {
+            $this->error('Could not decode tracks');
+            return;
+        }
+
+        foreach (Track::whereActive(true)->get() as $track)
+        {
+            $track->deactivate();
+        }
+
+        foreach ($tracks as $track) {
+            $this->line("Processing track identifier {$track->id} ...");
+            $routeingString = '';
+            foreach ($track->route as $fix) {
+                $routeingString .= "$fix->name ";
+            }
+            Track::updateOrCreate(['identifier' => $track->id], [
+                'last_routeing' => trim($routeingString),
+                'valid_from' => Carbon::createFromTimestamp($track->validFrom),
+                'valid_to' => Carbon::createFromTimestamp($track->validTo),
+                'active' => true,
+                'last_active' => now()
+            ]);
+        }
+
+        activity()->log('Updated track data');
+        $this->info('Completed!');
+    }
+}

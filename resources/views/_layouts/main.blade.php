@@ -73,7 +73,7 @@
                                                     <i class="far fa-user-circle"></i> {{ Auth::user()->given_name ?? Auth::id() }}
                                                 </a>
                                                 <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-                                                    <a class="dropdown-item" href="logout.php">Logout <i data-feather="log-in"></i></a>
+                                                    <a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Logout <i data-feather="log-in"></i></a>
                                                 </div>
                                             </li>
                                         </ul>

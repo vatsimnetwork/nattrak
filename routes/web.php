@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');
     Route::get('/authenticate', [VatsimAuthController::class, 'authenticate'])->name('.authenticate');
+    Route::get('/deauthenticate', [VatsimAuthController::class, 'deauthenticate'])->name('.deauthenticate');
 });;
 
 

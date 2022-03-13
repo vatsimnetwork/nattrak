@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Enums\AccessLevelEnum;
+use App\Models\ClxMessage;
+use App\Models\RclMessage;
 use App\Models\VatsimAccount;
+use App\Policies\ClxMessagePolicy;
+use App\Policies\RclMessagePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -16,6 +20,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        RclMessage::class => RclMessagePolicy::class,
+        ClxMessage::class => ClxMessagePolicy::class,
     ];
 
     /**

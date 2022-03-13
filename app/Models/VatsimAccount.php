@@ -28,6 +28,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereSurname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
+ * @property-read int|null $activities_count
  */
 class VatsimAccount extends Authenticatable
 {
