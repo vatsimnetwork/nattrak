@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\VatsimAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,4 +32,14 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
     Route::get('/accounts', [AdministrationController::class, 'accounts'])->name('.accounts');
     Route::post('/accounts/add-access', [AdministrationController::class, 'addAccess'])->name('.accounts.add-access');
     Route::post('/accounts/remove-access', [AdministrationController::class, 'removeAccess'])->name('.accounts.remove-access');
+});
+
+Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
+   Route::prefix('rcl')->name('.rcl')->controller(RclMessagesController::class)->group(function () {
+       Route::get('/', 'index')->name('.index');
+       Route::get('/create', 'create')->name('.create');
+       Route::post('/create', 'store')->name('.store');
+   });
+
+   Route::view('message-history', 'pilots.message-history')->name('.message-history');
 });

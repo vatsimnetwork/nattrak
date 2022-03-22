@@ -56,7 +56,7 @@ class RclMessage extends Model
     }
 
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text'
     ];
 
     public function vatsimAccount()

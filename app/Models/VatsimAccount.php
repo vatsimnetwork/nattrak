@@ -55,4 +55,9 @@ class VatsimAccount extends Authenticatable
     {
         return LogOptions::defaults()->logOnly(['access_level']);
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->given_name . ' ' . $this->surname;
+    }
 }

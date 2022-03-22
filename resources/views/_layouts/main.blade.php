@@ -32,7 +32,7 @@
                             </button>
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul class="navbar-nav mr-auto">
-                                    <li class="nav-item active">
+                                    <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('welcome') }}">Home</a>
                                     </li>
                                     @can('activeController')
@@ -47,11 +47,12 @@
                                     @endcan
                                     @can('activePilot')
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a class="nav-link {{ Request::is('pilots/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Pilots
                                         </a>
                                         <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="oceanic_clearance.php">Oceanic Clearance</a>
+                                            <a class="dropdown-item" href="{{ route('pilots.rcl.index') }}">Request Oceanic Clearance</a>
+                                            <a href="" class="dropdown-item">Message History</a>
                                         </div>
                                     </li>
                                     @endcan
@@ -70,7 +71,7 @@
                                         <ul class="navbar-nav ml-auto">
                                             <li class="nav-item dropdown">
                                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->given_name ?? Auth::id() }}
+                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->full_name ?? Auth::id() }}
                                                 </a>
                                                 <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
                                                     <a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Logout <i data-feather="log-in"></i></a>

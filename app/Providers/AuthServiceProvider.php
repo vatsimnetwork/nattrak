@@ -33,18 +33,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::before(function (VatsimAccount $account) {
+           return $account->access_level == AccessLevelEnum::Root ? true : null;
+        });
+
         Gate::define('administrate', function (VatsimAccount $account) {
-            return $account->access_level == AccessLevelEnum::Administrator || AccessLevelEnum::Root;
+            return $account->access_level == (AccessLevelEnum::Administrator || AccessLevelEnum::Root);
         });
 
         Gate::define('activePilot', function (VatsimAccount $account) {
-            if ($account->access_level == AccessLevelEnum::Administrator || AccessLevelEnum::Root) return true;
-            return false;
+            return $account->access_level == AccessLevelEnum::Pilot;
         });
 
         Gate::define('activeController', function (VatsimAccount $account) {
-            if ($account->access_level == AccessLevelEnum::Administrator || AccessLevelEnum::Root) return true;
-            return false;
+            return $account->access_level == AccessLevelEnum::Controller;
         });
     }
 }
