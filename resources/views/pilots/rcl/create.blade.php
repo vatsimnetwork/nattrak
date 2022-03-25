@@ -46,14 +46,14 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="max_flight_level">Maximum flight level</label>
-                        <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 410" maxlength="3" value="400">
+                        <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 410" maxlength="3">
                         <small class="form-text text-muted">This is the highest flight level you can accept.</small>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="mach">Requested mach number</label>
-                        <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 830" maxlength="3" value="830">
+                        <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 080" maxlength="3">
                         <small class="form-text text-muted">Your requested mach number (don't include the dot at the start)</small>
                     </div>
                 </div>
@@ -74,19 +74,19 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="entry_fix">Entry fix</label>
-                        <input required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" value="MALOT">
+                        <input required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7">
                         <small class="form-text text-muted">The first fix in oceanic airspace.</small>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="entry_time">Estimate time at entry fix</label>
-                        <input required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350" value="1350">
+                        <input required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350">
                         <small class="form-text text-muted">You can find this in your FMC, providing your simulator is set to real time.</small>
                     </div>
                 </div>
                 <hr>
                 <div class="form-group">
                     <label for="tmi">Current TMI</label>
-                    <input required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 135" maxlength="4" value="143">
+                    <input required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 135" maxlength="4">
                 </div>
                 <div class="form-group">
                     <label for="free_text">Free text (optional)</label>

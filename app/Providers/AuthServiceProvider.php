@@ -8,7 +8,9 @@ use App\Models\RclMessage;
 use App\Models\VatsimAccount;
 use App\Policies\ClxMessagePolicy;
 use App\Policies\RclMessagePolicy;
+use App\Services\VatsimDataService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -33,6 +35,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        $dataService = new VatsimDataService();
+
         Gate::before(function (VatsimAccount $account) {
            return $account->access_level == AccessLevelEnum::Root ? true : null;
         });
@@ -41,12 +45,12 @@ class AuthServiceProvider extends ServiceProvider
             return $account->access_level == (AccessLevelEnum::Administrator || AccessLevelEnum::Root);
         });
 
-        Gate::define('activePilot', function (VatsimAccount $account) {
-            return $account->access_level == AccessLevelEnum::Pilot;
+        Gate::define('activePilot', function (VatsimAccount $account) use ($dataService) {
+            return $account->access_level == AccessLevelEnum::Pilot && $dataService->isActivePilot($account);
         });
 
         Gate::define('activeController', function (VatsimAccount $account) {
-            return $account->access_level == AccessLevelEnum::Controller;
+            return $account->access_level == AccessLevelEnum::Controller /* or is actively online */;
         });
     }
 }

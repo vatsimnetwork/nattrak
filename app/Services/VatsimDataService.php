@@ -32,9 +32,19 @@ class VatsimDataService
         return json_decode($networkResponse);
     }
 
+    public function isActivePilot(VatsimAccount $vatsimAccount): bool
+    {
+        $networkData = $this->getNetworkData();
+        return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
+    }
+
+    public function isActiveController()
+    {
+
+    }
+
     public function getActivePilotData(VatsimAccount $vatsimAccount)
     {
-        $vatsimAccount->id = 1300503;
         $networkData = $this->getNetworkData();
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));

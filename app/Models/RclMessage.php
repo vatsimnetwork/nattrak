@@ -45,6 +45,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereVatsimAccountId($value)
  * @mixin \Eloquent
+ * @property string|null $max_flight_level
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
+ * @property-read int|null $activities_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClxMessage[] $clxMessages
+ * @property-read int|null $clx_messages_count
+ * @property-read \App\Models\Track|null $track
+ * @property-read \App\Models\VatsimAccount $vatsimAccount
+ * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereMaxFlightLevel($value)
+ * @property-read mixed $data_link_message
+ * @method static \Illuminate\Database\Eloquent\Builder|RclMessage cleared()
+ * @method static \Illuminate\Database\Eloquent\Builder|RclMessage pending()
  */
 class RclMessage extends Model
 {
@@ -59,18 +70,41 @@ class RclMessage extends Model
         'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text'
     ];
 
+    protected $dates = [
+        'request_time'
+    ];
+
+    public function scopePending($query)
+    {
+        return $query->where('clx_message_id', null);
+    }
+
+    public function scopeCleared($query)
+    {
+        return $query->where('clx_message_id', '!=', null);
+    }
+
     public function vatsimAccount()
     {
         return $this->belongsTo(VatsimAccount::class);
     }
 
-    public function clxMessage()
+    public function clxMessages()
     {
-        return $this->hasOne(ClxMessage::class);
+        return $this->hasMany(ClxMessage::class);
     }
 
     public function track()
     {
         return $this->belongsTo(Track::class);
+    }
+
+    public function getDataLinkMessageAttribute()
+    {
+        if ($this->track) {
+            return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+        } else {
+            return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+        }
     }
 }

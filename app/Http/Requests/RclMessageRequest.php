@@ -13,12 +13,12 @@ class RclMessageRequest extends FormRequest
         return [
             'callsign' => 'required',
             'destination' => 'required|string|max:4',
-            'flight_level' => 'required|int|digits:3',
-            'max_flight_level' => 'nullable|int|digits:3',
-            'mach' => 'required|int|digits:3',
+            'flight_level' => 'required|numeric|digits:3',
+            'max_flight_level' => 'nullable|numeric|digits:3',
+            'mach' => 'required|numeric|digits:3',
             'entry_fix' => 'required',
             'entry_time' => 'required|digits:4',
-            'tmi' => 'required|int',
+            'tmi' => 'required|numeric',
         ];
     }
 

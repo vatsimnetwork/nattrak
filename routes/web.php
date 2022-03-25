@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\ClxMessagesController;
 use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\VatsimAuthController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,12 @@ Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');
     Route::get('/authenticate', [VatsimAuthController::class, 'authenticate'])->name('.authenticate');
     Route::get('/deauthenticate', [VatsimAuthController::class, 'deauthenticate'])->name('.deauthenticate');
+    if (config('app.env') == 'local') {
+        Route::get('/{cid}', function ($cid) {
+           \Illuminate\Support\Facades\Auth::loginUsingId($cid);
+           return redirect()->route('welcome');
+        });
+    }
 });;
 
 
@@ -42,4 +49,12 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
    });
 
    Route::view('message-history', 'pilots.message-history')->name('.message-history');
+});
+
+Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
+    Route::prefix('clx')->name('.clx')->controller(ClxMessagesController::class)->group(function () {
+        Route::get('/pending', 'getPending')->name('.pending');
+        Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
+        Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
+    });
 });

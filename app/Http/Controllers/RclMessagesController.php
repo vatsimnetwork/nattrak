@@ -27,9 +27,9 @@ class RclMessagesController extends Controller
     {
         $data = $this->dataService->getActivePilotData(Auth::user());
         return view('pilots.rcl.create', [
-            'callsign' => $data->callsign,
-            'flight_level' => substr($data->flight_plan->altitude, 0, 3),
-            'arrival_icao' => $data->flight_plan->arrival,
+            'callsign' => $data->callsign ?? null,
+            'flight_level' => substr($data->flight_plan?->altitude, 0, 3) ?? null,
+            'arrival_icao' => $data->flight_plan?->arrival ?? null,
             'tracks' => Track::whereActive(true)->get()
         ]);
     }
