@@ -1,5 +1,5 @@
 <div>
-    <div wire:poll.keep-alive="pollForClx">
+    <div wire:poll.8s.keep-alive="pollForClx">
         @foreach($clxMessages as $message)
             <div class="p-3 border d-flex flex-row ">
                 <div class="mr-2">
