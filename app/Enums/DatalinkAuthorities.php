@@ -10,4 +10,5 @@ enum DatalinkAuthorities: string
     case KZNY = "NY";
     case LPPO = "LPPO";
     case NAT = "NAT";
+    case TTZO = "TTZO";
 }
