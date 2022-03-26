@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidTo($value)
  * @mixin \Eloquent
+ * @method static Builder|Track active()
  */
 class Track extends Model
 {
@@ -43,6 +45,15 @@ class Track extends Model
     protected $casts = [
         'active' => 'bool'
     ];
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
+    }
 
     public function deactivate()
     {

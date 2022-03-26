@@ -15,7 +15,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        /**
+         * Update NAT track data from API if enabled
+         */
+        if (config('services.tracks.auto_update')) {
+            $schedule->command('tracks:populate')->at('2230');
+            $schedule->command('tracks:populate')->at('1430');
+        }
     }
 
     /**

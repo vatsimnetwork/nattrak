@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -43,7 +44,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read \App\Models\RclMessage $rclMessage
  * @property-read \App\Models\Track|null $track
  * @property-read mixed $simple_message
- * @property string $datalink_authority
+ * @property-read \App\Models\VatsimAccount $vatsimAccount
+ * @property DatalinkAuthorities $datalink_authority
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereDatalinkAuthority($value)
  */
 class ClxMessage extends Model
@@ -55,6 +57,10 @@ class ClxMessage extends Model
         return LogOptions::defaults()->useLogName('clx');
     }
 
+    protected $casts = [
+        'datalink_authority' => DatalinkAuthorities::class
+    ];
+
     public function rclMessage()
     {
         return $this->belongsTo(RclMessage::class);
@@ -65,11 +71,16 @@ class ClxMessage extends Model
         return $this->belongsTo(Track::class);
     }
 
+    public function vatsimAccount()
+    {
+        return $this->belongsTo(VatsimAccount::class);
+    }
+
     public function getDataLinkMessageAttribute()
     {
         $rcl = $this->rclMessage;
         $array = [
-            'CLX ' . now()->format('Hi dmy') . ' CZQX CLRNCE ' . $this->id,
+            'CLX ' . now()->format('Hi dmy') . ' ' . $this->datalink_authority->name . ' CLRNCE ' . $this->id,
             $rcl->callsign . ' CLRD TO ' . $rcl->destination . ' VIA ' . $this->entry_fix,
             $this->track ? 'NAT ' . $this->track->identifier : 'RANDOM ROUTE',
             $this->track ? $this->track->last_routeing : $this->random_routeing,
@@ -96,9 +107,9 @@ class ClxMessage extends Model
         $rcl = $this->rclMessage;
         $msg = "";
         if ($this->track) {
-            $msg = "Cleared to {$rcl->destination} via {$this->entry_fix}, track {$this->track->identifier}. From {$this->entry_fix} maintain Flight Level {$this->flight_level}, Mach {$this->mach}.";
+            $msg = "{$this->datalink_authority->name} clears {$rcl->callsign} to {$rcl->destination} via {$this->entry_fix}, track {$this->track->identifier}. From {$this->entry_fix} maintain Flight Level {$this->flight_level}, Mach {$this->mach}.";
         } else {
-            $msg = "Cleared to {$rcl->destination} via {$this->entry_fix}, random routeing {$this->random_routeing}. From {$this->entry_fix} maintain Flight Level {$this->flight_level}, Mach {$this->mach}.";
+            $msg = "{$this->datalink_authority->name} clears {$rcl->callsign} to {$rcl->destination} via {$this->entry_fix}, random routeing {$this->random_routeing}. From {$this->entry_fix} maintain Flight Level {$this->flight_level}, Mach {$this->mach}.";
         }
         if ($this->entry_time_restriction) {
             $msg .= " Cross {$this->entry_fix} " . strtolower($this->entry_time_restriction) . ".";

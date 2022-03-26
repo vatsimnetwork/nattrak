@@ -6,6 +6,23 @@
             <a href="{{ route('controllers.clx.pending') }}"><i class="fas fa-angle-left"></i> Back</a>
             <p class="header">{{ $message->callsign }} RCL Message</p>
             <hr>
+            @if ($message->clxMessages->count() > 0)
+                <div>
+                    <p>
+                        CLX Messages in reply to this RCL
+                    </p>
+                    @foreach($message->clxMessages as $clx)
+                        <div class="p-3 border">
+                            <p>{{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }}</p>
+                            <p>
+                                @foreach($clx->dataLinkMessage as $line)
+                                    {{ $line }}<br>
+                                @endforeach
+                            </p>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
             <div>
                 <p>Request Data</p>
                 <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
@@ -44,7 +61,7 @@
                         <label for="">Datalink authority</label>
                         <select name="datalink_authority" id="" class="custom-select custom-select-sm ml-2">
                             @foreach($dlAuthorities as $authority)
-                                <option value="{{ $authority->value }}">{{ $authority->name }}</option>
+                                <option value="{{ $authority->value }}" @if($authority->value == $activeDlAuthority->value) selected="selected" @endif>{{ $authority->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -76,7 +93,7 @@
             </div>
             <p class="my-2 small">Pilot details: {{ $message->vatsimAccount->id }}</p>
             <div class="form-inline">
-                <button class="btn btn-primary mt-3" type="submit">Transmit Clearance</button>
+                <button class="btn btn-primary mt-3" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
                 <button class="btn btn-sm mt-3 ml-2" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')" type="submit">Delete</button>
             </div>
         </form>

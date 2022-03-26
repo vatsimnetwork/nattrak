@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -56,50 +61,99 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read mixed $data_link_message
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage cleared()
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage pending()
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|RclMessage onlyTrashed()
+ * @method static Builder|RclMessage whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|RclMessage withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|RclMessage withoutTrashed()
+ * @method static \Database\Factories\RclMessageFactory factory(...$parameters)
  */
 class RclMessage extends Model
 {
-    use LogsActivity;
+    use LogsActivity, SoftDeletes, HasFactory;
 
+    /**
+     * Activity log options
+     *
+     * @return LogOptions
+     */
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->useLogName('rcl');
     }
 
+    /**
+     * Mass assignable attributes.
+     *
+     * @var string[]
+     */
     protected $fillable = [
         'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text'
     ];
 
+    /**
+     * Attributes casted as date/times
+     *
+     * @var string[]
+     */
     protected $dates = [
         'request_time'
     ];
 
-    public function scopePending($query)
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePending(Builder $query): Builder
     {
         return $query->where('clx_message_id', null);
     }
 
-    public function scopeCleared($query)
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCleared(Builder $query): Builder
     {
         return $query->where('clx_message_id', '!=', null);
     }
 
-    public function vatsimAccount()
+    /**
+     * Returns the VATSIM account this RCL message was transmitted by
+     *
+     * @return BelongsTo
+     */
+    public function vatsimAccount(): BelongsTo
     {
         return $this->belongsTo(VatsimAccount::class);
     }
 
-    public function clxMessages()
+    /**
+     * Returns the CLX messages in reply to this message.
+     *
+     * @return HasMany
+     */
+    public function clxMessages(): HasMany
     {
         return $this->hasMany(ClxMessage::class);
     }
 
+    /**
+     * Returns the track this was a request for.
+     *
+     * @return BelongsTo
+     */
     public function track()
     {
         return $this->belongsTo(Track::class);
     }
 
-    public function getDataLinkMessageAttribute()
+    /**
+     * Returns the formatted datalink message string.
+     *
+     * @return string
+     */
+    public function getDataLinkMessageAttribute(): string
     {
         if ($this->track) {
             return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";

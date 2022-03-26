@@ -21,7 +21,7 @@ class MessageHistory extends Component
         $this->clxMessages = collect();
         foreach ($this->rclMessages as $rclMessage)
         {
-            foreach ($rclMessage->clxMessages as $clxMessage) {
+            foreach ($rclMessage->clxMessages->sortByDesc('created_at') as $clxMessage) {
                 $this->clxMessages->add($clxMessage);
             }
         }
@@ -41,9 +41,10 @@ class MessageHistory extends Component
 
         foreach ($this->rclMessages as $rclMessage) {
             if ($rclMessage->clxMessages->count() > 0) {
-                foreach ($rclMessage->clxMessages as $clxMessage) {
+                foreach ($rclMessage->clxMessages->sortByDesc('created_at') as $clxMessage) {
                     if (! $this->clxMessages->contains('id', $clxMessage->id)) {
                         $this->clxMessages->add($clxMessage);
+                        $this->clxMessages->sortByDesc('created_at');
                         $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: ' . $clxMessage->dataLinkMessage[0]]);
                     } else {
                         Log::info('exists');

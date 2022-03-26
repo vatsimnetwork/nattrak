@@ -37,5 +37,16 @@ return [
             'secret' => env('VATSIM_SECRET'),
             'endpoint' => env('VATSIM_ENDPOINT')
         ]
+    ],
+
+    'tracks' => [
+        'auto_update' => env('update_tracks', true)
+    ],
+
+    'clx-filtering' => [
+        'update' => [
+            'poll_for_updates' => env('POLL_CLX_TABLE', true),
+            'auto_populate_table' => env('AUTO_POPULATE_CLX_TABLE', true)
+        ]
     ]
 ];

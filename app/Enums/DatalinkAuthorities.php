@@ -9,5 +9,5 @@ enum DatalinkAuthorities: string
     case BIRD = "BIRD";
     case KZNY = "KZNY";
     case LPPO = "LPPO";
-    case NAT = "NATX";
+    case NAT = "NAT";
 }

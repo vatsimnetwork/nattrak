@@ -7,11 +7,19 @@ use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
 use App\Models\RclMessage;
 use App\Models\Track;
+use App\Services\VatsimDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ClxMessagesController extends Controller
 {
+    public VatsimDataService $dataService;
+
+    public function __construct(VatsimDataService $dataService)
+    {
+        $this->dataService = $dataService;
+    }
+
     public function getPending(Request $request)
     {
         $track = null;
@@ -19,12 +27,7 @@ class ClxMessagesController extends Controller
             $track = Track::where('active', true)->where('identifier', $request->get('sortByTrack'))->firstOrFail();
         }
 
-        $pendingRclMsgs = RclMessage::pending()->when($request->has('sortByTrack') && !in_array($request->get('sortByTrack'), ['all', 'rr']), function ($query) use ($track) {
-           $query->whereTrackId($track->id);
-        })->get();
-
         return view('controllers.clx.pending', [
-            'pendingRclMsgs' => $pendingRclMsgs,
             'displayedTrack' => $track,
             'tracks' => Track::where('active', true)->get()
         ]);
@@ -32,14 +35,17 @@ class ClxMessagesController extends Controller
 
     public function showRclMessage(RclMessage $rclMessage)
     {
+        //dd($this->dataService->getActiveControllerAuthority(Auth::user()));
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
-            'dlAuthorities' => DatalinkAuthorities::cases()
+            'dlAuthorities' => DatalinkAuthorities::cases(),
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT
         ]);
     }
 
     public function transmit(RclMessage $rclMessage, ClxMessageRequest $request)
     {
+        $reclearance = $rclMessage->clxMessages->count() > 0;
         $clxMessage = new ClxMessage();
         $clxMessage->vatsim_account_id = Auth::id();
         $clxMessage->rcl_message_id = $rclMessage->id;
@@ -49,7 +55,7 @@ class ClxMessagesController extends Controller
         $clxMessage->track_id = $rclMessage->track ? $rclMessage->track_id : null;
         $clxMessage->random_routeing = $rclMessage->random_routeing ? $rclMessage->random_routeing : null;
         $clxMessage->entry_time_restriction = $request->get('entry_time_requirement');
-        $clxMessage->free_text = $request->get('free_text');
+        $clxMessage->free_text = $reclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' : '' . $request->get('free_text');
         $clxMessage->datalink_authority = $request->get('datalink_authority');
         $clxMessage->save();
         $rclMessage->clx_message_id = $clxMessage->id;
