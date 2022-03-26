@@ -31,6 +31,7 @@ class VatsimDataService
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
+        return true;
         $networkData = $this->getNetworkData();
         return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
     }
@@ -50,7 +51,6 @@ class VatsimDataService
     public function isActiveOceanicController(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
-        $vatsimAccount->id = 1299471;
         $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
 
         if ($online) {
@@ -60,7 +60,6 @@ class VatsimDataService
             }
 
             $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
-            $callsign = "NAT_FSS";
             if (in_array(strtok($callsign, '_'), $authorities)) {
                 return true;
             } else {
@@ -76,7 +75,6 @@ class VatsimDataService
         if (! $this->isActiveOceanicController($vatsimAccount)) return null;
 
         $callsignPrefix = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
-        $callsignPrefix = 'NAT';
 
         foreach (DatalinkAuthorities::cases() as $authority) {
             if ($callsignPrefix == $authority->value) return $authority;

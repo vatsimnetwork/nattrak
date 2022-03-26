@@ -30,7 +30,8 @@ class RclMessagesController extends Controller
             'callsign' => $data?->callsign ?? null,
             'flight_level' => substr($data?->flight_plan?->altitude, 0, 3) ?? null,
             'arrival_icao' => $data?->flight_plan?->arrival ?? null,
-            'tracks' => Track::whereActive(true)->get()
+            'tracks' => Track::whereActive(true)->get(),
+            '_pageTitle' => 'Request Oceanic Clearance'
         ]);
     }
 

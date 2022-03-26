@@ -48,7 +48,11 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
        Route::post('/create', 'store')->name('.store');
    });
 
-   Route::view('message-history', 'pilots.message-history')->name('.message-history');
+   Route::get('message-history', function () {
+       return view('pilots.message-history', [
+           '_pageTitle' => 'Message History'
+       ]);
+   })->name('.message-history');
 });
 
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {

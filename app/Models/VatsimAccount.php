@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\AccessLevelEnum;
+use App\Enums\DatalinkAuthorities;
+use App\Services\VatsimDataService;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -31,6 +33,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read mixed $full_name
+ * @property-read \App\Enums\DatalinkAuthorities|null $active_datalink_authority
  */
 class VatsimAccount extends Authenticatable
 {
@@ -60,5 +63,15 @@ class VatsimAccount extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->given_name . ' ' . $this->surname;
+    }
+
+    public function getActiveDatalinkAuthorityAttribute(): ?DatalinkAuthorities
+    {
+        $dataService = new VatsimDataService();
+        if ($this->can('activeController') && $dataService->isActiveOceanicController($this)) {
+            return $dataService->getActiveControllerAuthority($this);
+        } else {
+            return null;
+        }
     }
 }

@@ -59,7 +59,7 @@
                 <div class="border p-3">
                     <div class="form-inline">
                         <label for="">Datalink authority</label>
-                        <select name="datalink_authority" id="" class="custom-select custom-select-sm ml-2">
+                        <select name="datalink_authority" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
                             @foreach($dlAuthorities as $authority)
                                 <option value="{{ $authority->value }}" @if($authority->value == $activeDlAuthority->value) selected="selected" @endif>{{ $authority->name }}</option>
                             @endforeach

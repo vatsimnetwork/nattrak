@@ -15,7 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <title>natTRAK :: VATSIM</title>
+    <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
 <body>
     <div class="gradient">
@@ -73,7 +73,7 @@
                                         <ul class="navbar-nav ml-auto">
                                             <li class="nav-item dropdown">
                                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->full_name ?? Auth::id() }}
+                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->full_name ?? Auth::id() }} @if(Auth::user()->active_datalink_authority) ({{ Auth::user()->active_datalink_authority->name }}) @endif
                                                 </a>
                                                 <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
                                                     <a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Logout <i data-feather="log-in"></i></a>

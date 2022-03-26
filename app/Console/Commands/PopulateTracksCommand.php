@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class PopulateTracksCommand extends Command
 {
-    protected $signature = 'tracks:populate';
+    protected $signature = 'tracks:populate {--url= : Specify a custom API endpoint to pull from}';
 
     protected $description = 'Populate active NAT tracks';
 
@@ -18,8 +18,13 @@ class PopulateTracksCommand extends Command
 
     public function handle()
     {
-        $this->info('Downloading tracks from API (' . self::TRACK_API_ENDPOINT . ')');
-        $trackData = Http::get(self::TRACK_API_ENDPOINT, [
+        $endpoint = self::TRACK_API_ENDPOINT;
+        if ($this->option('url')) {
+            $endpoint = $this->option('url');
+        }
+
+        $this->info('Downloading tracks from API (' . $endpoint . ')');
+        $trackData = Http::get($endpoint, [
             'headers' => [
                 'Accept' => 'application/json'
             ]

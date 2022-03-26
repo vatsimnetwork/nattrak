@@ -29,7 +29,8 @@ class ClxMessagesController extends Controller
 
         return view('controllers.clx.pending', [
             'displayedTrack' => $track,
-            'tracks' => Track::where('active', true)->get()
+            'tracks' => Track::where('active', true)->get(),
+            '_pageTitle' => $track ? "Track {$track->identifier}" : "All tracks"
         ]);
     }
 
@@ -39,7 +40,8 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
             'dlAuthorities' => DatalinkAuthorities::cases(),
-            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
+            '_pageTitle' => $rclMessage->callsign
         ]);
     }
 
