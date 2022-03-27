@@ -38,11 +38,11 @@ class AuthServiceProvider extends ServiceProvider
         $dataService = new VatsimDataService();
 
         Gate::before(function (VatsimAccount $account) {
-           return $account->access_level == (AccessLevelEnum::Administrator || AccessLevelEnum::Root) ? true : null;
+           return ($account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root) ? true : null;
         });
 
         Gate::define('administrate', function (VatsimAccount $account) {
-            return $account->access_level == (AccessLevelEnum::Administrator || AccessLevelEnum::Root);
+            return ($account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root);
         });
 
         Gate::define('activePilot', function (VatsimAccount $account) use ($dataService) {
@@ -50,7 +50,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('activeController', function (VatsimAccount $account) use ($dataService) {
-            return /*$account->access_level == AccessLevelEnum::Controller ||*/ $dataService->isActiveOceanicController($account);
+            return $account->access_level == AccessLevelEnum::Controller || $dataService->isActiveOceanicController($account);
         });
     }
 }
