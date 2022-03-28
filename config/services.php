@@ -40,7 +40,8 @@ return [
     ],
 
     'tracks' => [
-        'auto_update' => env('update_tracks', true)
+        'auto_update' => env('UPDATE_TRACKS', true),
+        'override_tmi' => env('OVERRIDE_TMI', null)
     ],
 
     'clx-filtering' => [

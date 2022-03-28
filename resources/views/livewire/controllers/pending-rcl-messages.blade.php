@@ -42,7 +42,7 @@
                     </td>
                     <td>
                         <form action="">
-                            <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
+                            <button class="btn btn-sm" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">DEL</button>
                         </form>
                     </td>
                 </tr>

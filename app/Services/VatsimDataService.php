@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class VatsimDataService
 {
     const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
+    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
 
     private function getNetworkData()
     {
@@ -29,16 +30,43 @@ class VatsimDataService
         return $networkResponse;
     }
 
+    public function getTmi(): ?string
+    {
+        if (config('services.tracks.override_tmi')) {
+            return (string)config('services.tracks.override_tmi');
+        }
+
+        return Cache::remember('tmi', now()->addHours(1), function () {
+            $trackData = Http::get(self::TRACK_API_ENDPOINT, [
+                'headers' => [
+                    'Accept' => 'application/json'
+                ]
+            ]);
+
+            if ($trackData) {
+                $tracks = json_decode(($trackData));
+            } else {
+                return null;
+            }
+
+            if (! $tracks[0]) return null;
+
+            return $tracks[0]->tmi;
+        });
+    }
+
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
         return true;
         $networkData = $this->getNetworkData();
+        if (! $networkData) return false;
         return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
     }
 
     public function getActiveControllerData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
+        if (! $networkData) return null;
         if (in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->controllers, 'cid')));
             $data = $networkData->controllers[$key];
@@ -51,6 +79,7 @@ class VatsimDataService
     public function isActiveOceanicController(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
+        if (! $networkData) return false;
         $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
 
         if ($online) {
@@ -86,6 +115,7 @@ class VatsimDataService
     public function getActivePilotData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
+        if (! $networkData) return null;
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
             $data = $networkData->pilots[$key];

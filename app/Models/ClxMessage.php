@@ -6,6 +6,7 @@ use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ClxMessage
@@ -52,31 +53,70 @@ class ClxMessage extends Model
 {
     use LogsActivity;
 
+    /**
+     * The mass assignable attributes.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority'
+    ];
+
+    /**
+     * Activity log options
+     *
+     * @return LogOptions
+     */
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->useLogName('clx');
     }
 
+    /**
+     * Attributes casted as date/times
+     *
+     * @var string[]
+     */
     protected $casts = [
         'datalink_authority' => DatalinkAuthorities::class
     ];
 
-    public function rclMessage()
+    /**
+     * Returns the RCL Message this was in reply to.
+     *
+     * @return BelongsTo
+     */
+    public function rclMessage(): BelongsTo
     {
         return $this->belongsTo(RclMessage::class);
     }
 
-    public function track()
+    /**
+     * Returns the track the CLX was for.
+     *
+     * @return BelongsTo
+     */
+    public function track(): BelongsTo
     {
         return $this->belongsTo(Track::class);
     }
 
-    public function vatsimAccount()
+     /**
+     * Returns the track the CLX was for.
+     *
+     * @return BelongsTo
+     */
+    public function vatsimAccount(): BelongsTo
     {
         return $this->belongsTo(VatsimAccount::class);
     }
 
-    public function getDataLinkMessageAttribute()
+    /**
+     * Returns the datalink format for the CLX message.
+     *
+     * @return array
+     */
+    public function getDataLinkMessageAttribute(): array
     {
         $rcl = $this->rclMessage;
         $array = [
@@ -102,7 +142,12 @@ class ClxMessage extends Model
         return $array;
     }
 
-    public function getSimpleMessageAttribute()
+    /**
+     * Returns the simple (voice) format for the CLX.
+     *
+     * @return string
+     */
+    public function getSimpleMessageAttribute(): string
     {
         $rcl = $this->rclMessage;
         $msg = "";

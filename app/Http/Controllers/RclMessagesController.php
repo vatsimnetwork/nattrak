@@ -25,6 +25,11 @@ class RclMessagesController extends Controller
 
     public function create()
     {
+        if (RclMessage::whereVatsimAccountId(Auth::id())->whereClxMessageId(null)->exists()) {
+            toastr()->error('You already have a pending oceanic clearance request. If it has been waiting for more than 10 minutes, let the controller know.');
+            return redirect()->route('pilots.rcl.index');
+        }
+
         $data = $this->dataService->getActivePilotData(Auth::user());
         return view('pilots.rcl.create', [
             'callsign' => $data?->callsign ?? null,

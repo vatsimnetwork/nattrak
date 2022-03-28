@@ -4,6 +4,8 @@ use App\Http\Controllers\AdministrationController;
 use App\Http\Controllers\ClxMessagesController;
 use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\VatsimAuthController;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $notams = Cache::remember('notams', now()->addMinutes(10), function () {
+        return json_decode(Http::timeout(5)->get('https://ganderoceanicoca.ams3.digitaloceanspaces.com/resources/data/nattrak/notams.json'));
+    });
+    return view('welcome', compact('notams'));
 })->name('welcome');
 
 Route::prefix('auth')->name('auth')->group(function () {

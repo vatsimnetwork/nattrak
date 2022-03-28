@@ -18,89 +18,105 @@
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
 <body>
-    <div class="gradient">
-        <img src="{{ asset('images/natTrak_Logo_White_2000px.png') }}" class="logo img-fluid" style="height: 10rem" />
-    </div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <div class="container-fluid">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-lg-10">
-                        <nav class="shadow navbar navbar-expand-lg navbar-light bg-light menu rounded mx-n3">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav mr-auto">
-                                    <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ route('welcome') }}">Home</a>
-                                    </li>
+            <img src="{{ asset('images/natTrak_Logo_White_2000px.png') }}" class="" style="height: 50px; margin-top: 50px; margin-bottom: 50px; margin-left" />
+
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-10">
+                    <nav class="shadow navbar navbar-expand-lg navbar-light bg-light menu rounded mx-n3">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('welcome') }}">Home</a>
+                            </li>
+                            @can('activeController')
+                            <li class="nav-item dropdown">
+                                <a class="nav-link {{ Request::is('controllers/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Controllers
+                                </a>
+                                <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('controllers.clx.pending') }}">Pending RCL Messages</a>
+                                    <a class="dropdown-item">Processed RCL Messages</a>
+                                </div>
+                            </li>
+                            @endcan
+                            @can('activePilot')
+                            <li class="nav-item dropdown">
+                                <a class="nav-link {{ Request::is('pilots/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Pilots
+                                </a>
+                                <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('pilots.rcl.index') }}">Request Oceanic Clearance</a>
+                                    <a href="{{ route('pilots.message-history') }}" class="dropdown-item">Message History</a>
+                                </div>
+                            </li>
+                            @endcan
+                            @can('administrate')
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Administration
+                                </a>
+                                <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
+                                    @if (Auth::user()->access_level == 3)
+                                        <a class="dropdown-item" href="{{ route('administration.accounts') }}">Admin Users</a>
+                                    @endif
+                                    <a href="" class="dropdown-item">Permissions</a>
+                                    <a class="dropdown-item" href="">Activity Log</a>
+                                </div>
+                            </li>
+                            @endcan
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                                    How To Use
+                                </a>
+                                <div class="dropdown-menu menu shadow">
+                                    <div class="dropdown-item small text-muted" style="cursor: default">Pilots</div>
+                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/requesting-oceanic-clearance" class="dropdown-item">Requesting Oceanic Clearance</a>
+                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/receiving-clearance" class="dropdown-item">Receiving Clearance</a>
                                     @can('activeController')
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link {{ Request::is('controllers/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Controllers
-                                        </a>
-                                        <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="{{ route('controllers.clx.pending') }}">Pending RCL Messages</a>
-                                            <a class="dropdown-item">Processed RCL Messages</a>
-                                        </div>
-                                    </li>
+                                        <hr>
+                                        <div class="dropdown-item small text-muted" style="cursor: default">Controllers</div>
+                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/pending-rcl-messages" class="dropdown-item">RCL Messages List</a>
+                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/issuing-clx" class="dropdown-item">Issuing Clearance</a>
                                     @endcan
-                                    @can('activePilot')
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link {{ Request::is('pilots/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Pilots
-                                        </a>
-                                        <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="{{ route('pilots.rcl.index') }}">Request Oceanic Clearance</a>
-                                            <a href="{{ route('pilots.message-history') }}" class="dropdown-item">Message History</a>
-                                        </div>
-                                    </li>
-                                    @endcan
-                                    @can('administrate')
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            @auth
+                                <ul class="navbar-nav ml-auto">
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Administration
+                                            <i class="far fa-user-circle"></i> {{ Auth::user()->full_name ?? Auth::id() }} @if(Auth::user()->active_datalink_authority) ({{ Auth::user()->active_datalink_authority->name }}) @endif
                                         </a>
-                                        <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="{{ route('administration.accounts') }}">Manage Users</a>
-                                            <? if (hasPerm($cid) > "3") { ?><a class="dropdown-item" href="news.php">Manage News</a><? } ?>
+                                        <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
+                                            <a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Logout <i data-feather="log-in"></i></a>
                                         </div>
                                     </li>
-                                    @endcan
-                                    @auth
-                                        <ul class="navbar-nav ml-auto">
-                                            <li class="nav-item dropdown">
-                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="far fa-user-circle"></i> {{ Auth::user()->full_name ?? Auth::id() }} @if(Auth::user()->active_datalink_authority) ({{ Auth::user()->active_datalink_authority->name }}) @endif
-                                                </a>
-                                                <div class="dropdown-menu menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-                                                    <a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Logout <i data-feather="log-in"></i></a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    @else
-                                        <ul class="navbar-nav ml-auto">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('auth.redirect') }}">Login <i data-feather="log-in"></i></a>
-                                            </li>
-                                        </ul>
-                                    @endauth
                                 </ul>
-                            </div>
-                        </nav>
-                        <br />
-                        <br />
-                        @yield('page')
-                    </div>
+                            @else
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('auth.redirect') }}">Login <i data-feather="log-in"></i></a>
+                                    </li>
+                                </ul>
+                            @endauth
+                            <li class="nav-item">
+                                <div class="nav-link"><i class="far fa-calendar"></i> TMI {{ current_tmi() }}</div>
+                            </li>
+                        </ul>
+                    </nav>
+                    <br />
+                    <br />
+                    @yield('page')
                 </div>
             </div>
         </div>
     </div>
     <footer class="page-footer font-small" style="margin-top: 3em; font-size: 0.7em;">
         <div class="footer-copyright text-center py-3 text-light">
-            Developed by Alex Long, refurbished by Liesel Downes
+            Developed by Liesel D, 1364284
         </div>
     </footer>
 </div>

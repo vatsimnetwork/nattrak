@@ -67,6 +67,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Query\Builder|RclMessage withTrashed()
  * @method static \Illuminate\Database\Query\Builder|RclMessage withoutTrashed()
  * @method static \Database\Factories\RclMessageFactory factory(...$parameters)
+ * @method static Builder|RclMessage requestedRandomRouteing()
+ * @method static Builder|RclMessage requestedTrack(\App\Models\Track $track)
  */
 class RclMessage extends Model
 {
@@ -116,6 +118,28 @@ class RclMessage extends Model
     public function scopeCleared(Builder $query): Builder
     {
         return $query->where('clx_message_id', '!=', null);
+    }
+
+    /**
+     * Scope to messages for a specific track.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRequestedTrack(Builder $query, Track $track): Builder
+    {
+        return $query->where('track_id', $track->id)->where('random_routeing', null);
+    }
+
+    /**
+     * Scope to messages for a random routeing.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRequestedRandomRouteing(Builder $query): Builder
+    {
+        return $query->where('random_routeing', '!=', null)->where('track_id', null);
     }
 
     /**

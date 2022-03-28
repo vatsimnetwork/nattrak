@@ -27,12 +27,7 @@ body {
     background-image: url('../img/gradient.png');
     background-repeat: no-repeat;
     background-size: cover;
-    height: 370px;
-}
-
-.logo {
-    padding-left: 100px;
-    padding-top: 100px;
+    height: 150px;
 }
 
 .menu {

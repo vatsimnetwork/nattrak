@@ -11,7 +11,7 @@
                     <p>
                         CLX Messages in reply to this RCL
                     </p>
-                    @foreach($message->clxMessages as $clx)
+                    @foreach($message->clxMessages->sortbyDesc('created_at') as $clx)
                         <div class="p-3 border">
                             <p>{{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }}</p>
                             <p>
