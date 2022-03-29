@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// For legacy plugins
+Route::get('/pluginapi.php', [PluginDataController::class, 'clxMessages']);
+
 Route::get('/', function () {
     $notams = Cache::remember('notams', now()->addMinutes(10), function () {
         return json_decode(Http::timeout(5)->get('https://ganderoceanicoca.ams3.digitaloceanspaces.com/resources/data/nattrak/notams.json'));
