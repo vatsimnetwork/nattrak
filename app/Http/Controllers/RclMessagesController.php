@@ -50,6 +50,7 @@ class RclMessagesController extends Controller
         $rclMessage = new RclMessage($request->all());
         $rclMessage->vatsim_account_id = $request->user()->id;
         $rclMessage->request_time = now();
+        $rclMessage->atc_rejected = false;
         $rclMessage->save();
 
         toastr()->info('Your messaged has been received. Accept notifications from this site and we can let you know when it\'s been replied to!');
