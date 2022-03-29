@@ -19,4 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/plugins', [PluginDataController::class, 'clxMessages']);
+Route::get('/plugins', [PluginDataController::class, 'allRclMessages']);
+
+Route::get('/clx-messages', [PluginDataController::class, 'detailedClxMessages']);
+
+Route::get('/tracks', [PluginDataController::class, 'getTracks']);
