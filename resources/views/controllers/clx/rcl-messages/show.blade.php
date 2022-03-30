@@ -125,8 +125,11 @@
             <p class="my-2 small">Pilot details: {{ $message->vatsimAccount->id }}</p>
             <div class="form-inline">
                 <button class="btn btn-primary mt-3" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
-                <button class="btn btn-sm mt-3 ml-2" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')" type="submit">Delete</button>
             </div>
+        </form>
+        <form action="{{ route('controllers.clx.delete-rcl-message', $message) }}" method="post">
+            @csrf
+            <button class="btn btn-sm mt-3 ml-2 text-white" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">Delete Request</button>
         </form>
     </div>
 @endsection

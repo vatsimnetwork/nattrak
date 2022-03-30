@@ -38,6 +38,25 @@ class ClxMessagesController extends Controller
         ]);
     }
 
+    public function getProcessed(Request $request)
+    {
+        $track = null;
+        if ($request->has('sortByTrack') && !in_array($request->get('sortByTrack'), ['all', 'rr'])) {
+            $track = Track::active()->whereIdentifier($request->get('sortByTrack'))->firstOrFail();
+        }
+
+        $processedRclMsgs = RclMessage::cleared()->when($track, function ($query) use ($track) {
+            $query->whereTrackId($track->id);
+        })->orderBy('request_time')->get();
+
+        return view('controllers.clx.processed', [
+            'displayedTrack' => $track,
+            'tracks' => Track::active()->get(),
+            'processedRclMsgs' => $processedRclMsgs,
+            '_pageTitle' => $track ? "Track {$track->identifier}" : "All tracks"
+        ]);
+    }
+
     /**
      * Shows a pilot RCL message
      * GET /controllers/clx/rcl-msg/{rclMessage:id}
@@ -134,5 +153,17 @@ class ClxMessagesController extends Controller
 
         toastr()->success('Clearance transmitted.');
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
+    }
+
+    public function deleteRclMessage(Request $request, RclMessage $rclMessage)
+    {
+        $redirectToProcessed = $rclMessage->clxMessages->count() > 0;
+        $rclMessage->delete();
+        toastr()->info('RCL deleted.');
+        if ($redirectToProcessed) {
+            return redirect()->route('controllers.clx.processed');
+        } else {
+            return redirect()->route('controllers.clx.pending');
+        }
     }
 }

@@ -37,7 +37,7 @@
                                 </a>
                                 <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('controllers.clx.pending') }}">Pending RCL Messages</a>
-                                    <a class="dropdown-item">Processed RCL Messages</a>
+                                    <a class="dropdown-item" href="{{ route('controllers.clx.processed') }}">Processed RCL Messages</a>
                                 </div>
                             </li>
                             @endcan
@@ -54,14 +54,14 @@
                             @endcan
                             @can('administrate')
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link {{ Request::is('administration/*') ? 'active' : '' }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Administration
                                 </a>
                                 <div class="dropdown-menu menu shadow" aria-labelledby="navbarDropdown">
-                                    @if (Auth::user()->access_level == 3)
+                                    @if (Auth::user()->access_level >= \App\Enums\AccessLevelEnum::Root)
                                         <a class="dropdown-item" href="{{ route('administration.accounts') }}">Admin Users</a>
                                     @endif
-                                    <a href="" class="dropdown-item">Permissions</a>
+                                    <a href="{{ route('administration.controllers') }}" class="dropdown-item">Controller Permissions</a>
                                     <a class="dropdown-item" href="">Activity Log</a>
                                 </div>
                             </li>

@@ -5,13 +5,13 @@
     <div class="row inside shadow pb-5">
         <div class="col-lg-12 bg-light rounded pt-3 pb-3">
             <p class="header">
-                Pending RCL Messages
+                Processed RCL Messages
             </p>
-            <p class="lead">{{ $displayedTrack ? 'Displaying track '. $displayedTrack->identifier : 'All tracks + random routeing requests' }}</p>
-            <form method="GET" action="{{ route('controllers.clx.pending') }}" class="form-inline">
+            <p class="lead">{{ $displayedTrack ? 'Displaying track '. $displayedTrack->identifier : 'All tracks + random routeing clearances' }}</p>
+            <form method="GET" action="{{ route('controllers.clx.processed') }}" class="form-inline">
                 <label for="">Change track</label>
                 <select name="sortByTrack" id="" class="custom-select custom-select-sm mx-3">
-                    <option value="all">All tracks + random routeing requests</option>
+                    <option value="all">All tracks + random routeing clearances</option>
 {{--                    <option value="rr">Random routeings</option>--}}
                     @foreach ($tracks as $track)
                         <option value="{{ $track->identifier }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
@@ -20,8 +20,8 @@
                 <button class="btn btn-sm btn-primary" type="submit">Sort</button>
             </form>
             <hr>
-            @if ($pendingRclMsgs->count() == 0)
-                No pending RCL messages.
+            @if ($processedRclMsgs->count() == 0)
+                No processed RCL messages.
             @endif
             <div>
                 <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
@@ -41,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($pendingRclMsgs as $msg)
+                        @foreach($processedRclMsgs as $msg)
                             <tr>
                                 <th>{{ $msg->callsign }}</th>
                                 <td>{{ $msg->destination }}
@@ -53,10 +53,11 @@
                                 <td>{{ $msg->mach }}</td>
                                 <td>{{ $msg->request_time->format('Hi') }}</td>
                                 <td>
-                                    <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
+                                    <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>View</b></a>
                                 </td>
                                 <td>
-                                    <form action="">
+                                    <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
+                                        @csrf
                                         <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
                                     </form>
                                 </td>

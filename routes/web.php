@@ -44,6 +44,12 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
     Route::get('/accounts', [AdministrationController::class, 'accounts'])->name('.accounts');
     Route::post('/accounts/add-access', [AdministrationController::class, 'addAccess'])->name('.accounts.add-access');
     Route::post('/accounts/remove-access', [AdministrationController::class, 'removeAccess'])->name('.accounts.remove-access');
+
+    Route::get('/controllers', [AdministrationController::class, 'controllers'])->name('.controllers');
+    Route::post('/controllers/add-access', [AdministrationController::class, 'addControllerAccess'])->name('.controllers.add-access');
+    Route::post('/controllers/remove-access', [AdministrationController::class, 'removeControllerAccess'])->name('.controllers.remove-access');
+
+    Route::get('/activity-log', [AdministrationController::class, 'activityLog'])->name('.activity-log');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
@@ -63,7 +69,9 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
     Route::prefix('clx')->name('.clx')->controller(ClxMessagesController::class)->group(function () {
         Route::get('/pending', 'getPending')->name('.pending');
+        Route::get('/processed', 'getProcessed')->name('.processed');
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
+        Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
     });
 });

@@ -56,24 +56,4 @@ class RclMessagesController extends Controller
         toastr()->info('Your messaged has been received. Accept notifications from this site and we can let you know when it\'s been replied to!');
         return redirect()->route('pilots.message-history');
     }
-
-    public function show(RclMessage $rclMessage)
-    {
-        //
-    }
-
-    public function edit(RclMessage $rclMessage)
-    {
-        //
-    }
-
-    public function update(Request $request, RclMessage $rclMessage)
-    {
-        //
-    }
-
-    public function destroy(RclMessage $rclMessage)
-    {
-        //
-    }
 }
