@@ -38,7 +38,7 @@
                     <td>{{ $msg->mach }}</td>
                     <td>{{ $msg->request_time->format('Hi') }}</td>
                     <td>
-                        <a target="_blank" href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
+                        <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
                     </td>
                     <td>
                         <form action="">
