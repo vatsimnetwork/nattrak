@@ -7,7 +7,7 @@
                 Request Oceanic Clearance
             </p>
             <hr />
-            <p>Need help? Check out [this tutorial]</p>
+            <p>Need help? Check out the <i>How To Use</i> menu above.</p>
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
                     <b>Some input was incorrect.</b>
@@ -23,14 +23,14 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="callsign">Callsign</label>
-                        <input required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign }}">
+                        <input required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign }}" onblur="this.value = this.value.toUpperCase()">
                         @if ($callsign)
                             <small class="form-text text-muted">Your callsign was automatically collected. You may change the callsign if it is incorrect.</small>
                         @endif
                     </div>
                     <div class="form-group col-md-6">
                         <label for="destination">Destination ICAO</label>
-                        <input required type="text" class="form-control" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao }}">
+                        <input required type="text" class="form-control" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao }}" onblur="this.value = this.value.toUpperCase()">
                         @if ($arrival_icao)
                             <small class="form-text text-muted">Your destination was automatically collected. You may change the destination if it is incorrect.</small>
                         @endif
@@ -68,13 +68,13 @@
                     </select>
                     <label><i>or</i></label><br>
                     <label for="random_routeing">Requested random routeing</label>
-                    <input type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO">
+                    <input type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
                 </div>
                 <hr>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="entry_fix">Entry fix</label>
-                        <input required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7">
+                        <input required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
                         <small class="form-text text-muted">The first fix in oceanic airspace.</small>
                     </div>
                     <div class="form-group col-md-6">

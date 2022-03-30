@@ -13,12 +13,21 @@ class RclMessageRequest extends FormRequest
         return [
             'callsign' => 'required',
             'destination' => 'required|string|max:4',
-            'flight_level' => 'required|numeric|digits:3',
-            'max_flight_level' => 'nullable|numeric|digits:3',
-            'mach' => 'required|numeric|digits:3',
+            'flight_level' => 'required|numeric|digits:3|max:410',
+            'max_flight_level' => 'nullable|numeric|digits:3|max:410',
+            'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9]{2}\b/',
             'entry_fix' => 'required',
             'entry_time' => 'required|digits:4',
             'tmi' => 'required|numeric',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
+            'flight_level.max' => 'You must file an RVSM flight level.',
+            'max_flight_level.max' => 'You must file an RVSM flight level for your maximum flight level.'
         ];
     }
 
