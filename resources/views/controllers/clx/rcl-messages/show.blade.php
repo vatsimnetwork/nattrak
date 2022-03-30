@@ -56,6 +56,16 @@
             </div>
             <div>
                 <p>ATC Requirements (only change what you need!)</p>
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        <b>Some input was incorrect.</b>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <div class="border p-3">
                     <div class="form-inline">
                         <label for="">Datalink authority</label>
@@ -67,24 +77,45 @@
                     </div>
                     <div class="form-inline mt-2">
                         <label for="">Change flight level to</label>
-                        <select name="atc_fl" id="" class="custom-select custom-select-sm ml-2">
+                        <select name="atc_fl" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
                             <option value="" selected>Don't change</option>
                             @for ($i = 200; $i < 460; $i += 10)
                                 <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
                             @endfor
                         </select>
                         <label for="" class="ml-3">Change mach to</label>
-                        <select name="atc_mach" id="" class="custom-select custom-select-sm ml-2">
+                        <select name="atc_mach" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
                             <option value="" selected>Don't change</option>
                             @for ($i = 70; $i < 99; $i++)
                                 <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
                             @endfor
                         </select>
                     </div>
+                    <hr>
                     <div class="form-inline mt-2">
                         <label for="">Entry time requirement for {{ $message->entry_fix }}</label>
-                        <input type="text" name="entry_time_requirement" class="form-control form-control-sm ml-2" placeholder="NOT BEFORE 1015">
+                        <select class="custom-select custom-select-sm ml-2" autocomplete="off" name="entry_time_type">
+                            <option value="" selected>None</option>
+                            <option value="<">Before</option>
+                            <option value="=">At</option>
+                            <option value=">">After</option>
+                        </select>
+                        <input type="number" name="entry_time_requirement" class="form-control form-control-sm ml-2" placeholder="NOT BEFORE 1015">
                     </div>
+                    <hr>
+                    <div class="form-inline mt-2">
+                        <label for="">Change route to another NAT</label>
+                        <select class="custom-select custom-select-sm ml-2" autocomplete="off" name="new_track_id">
+                            <option value="" selected>None</option>
+                            @foreach($tracks as $track)
+                                <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
+                            @endforeach
+                        </select>
+                    </div><div class="form-inline mt-2">
+                        <label for="">Change route to another RR</label>
+                        <input type="text" name="new_random_routeing" class="form-control form-control-sm ml-2" autocomplete="off" placeholder="">
+                    </div>
+                    <hr>
                     <div class="form-inline mt-2">
                         <label for="">Free text</label>
                         <input type="text" name="free_text" class="form-control form-control-sm ml-2">

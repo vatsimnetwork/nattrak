@@ -111,6 +111,17 @@ class ClxMessage extends Model
         return $this->belongsTo(VatsimAccount::class);
     }
 
+    private function formatEntryTimeRestriction(): ?string
+    {
+        if (! $this->entry_time_restriction) return null;
+
+        return match (substr($this->entry_time_restriction, 0, 1)) {
+            '<' => 'BEFORE ' . substr($this->entry_time_restriction, 1, 4),
+            '=' => 'AT ' . substr($this->entry_time_restriction, 1, 4),
+            '>' => 'AFTER ' . substr($this->entry_time_restriction, 1, 4),
+        };
+    }
+
     /**
      * Returns the datalink format for the CLX message.
      *
@@ -127,7 +138,7 @@ class ClxMessage extends Model
             'FM ' . $this->entry_fix . '/' . $rcl->entry_time . ' MNTN F' . $this->flight_level . ' M' . $this->mach,
         ];
         if ($this->entry_time_restriction) {
-            $array[] = "/ATC CROSS {$this->entry_fix} {$this->entry_time_restriction}";
+            $array[] = "/ATC CROSS {$this->entry_fix} {$this->formatEntryTimeRestriction()}";
         }
         if ($this->mach != $rcl->mach) {
             $array[] = "/ATC MACH CHANGED";
@@ -157,7 +168,7 @@ class ClxMessage extends Model
             $msg = "{$this->datalink_authority->name} clears {$rcl->callsign} to {$rcl->destination} via {$this->entry_fix}, random routeing {$this->random_routeing}. From {$this->entry_fix} maintain Flight Level {$this->flight_level}, Mach {$this->mach}.";
         }
         if ($this->entry_time_restriction) {
-            $msg .= " Cross {$this->entry_fix} " . strtolower($this->entry_time_restriction) . ".";
+            $msg .= " Cross {$this->entry_fix} " . strtolower($this->formatEntryTimeRestriction()) . ".";
         }
         if ($this->mach != $rcl->mach) {
             $msg .= " Mach number changed.";

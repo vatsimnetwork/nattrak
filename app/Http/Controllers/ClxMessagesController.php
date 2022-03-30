@@ -47,6 +47,7 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
             'dlAuthorities' => DatalinkAuthorities::cases(),
+            'tracks' => Track::active()->get(),
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
             '_pageTitle' => $rclMessage->callsign
         ]);
@@ -64,6 +65,31 @@ class ClxMessagesController extends Controller
         $isReclearance = $rclMessage->clxMessages->isNotEmpty();
 
         /**
+         * If new track or RR requested..
+         */
+        $newTrack = null;
+        $newEntryFix = null;
+        if ($request->filled('new_track_id')) {
+            $newTrack = Track::active()->where('id', $request->get('new_track_id'))->first();
+            if (! $newTrack) {
+                toastr()->error('Track not found');
+                return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
+            }
+            $newEntryFix = strtok($newTrack->last_routeing, " ");
+        }
+        elseif ($request->filled('new_random_routeing')) {
+            $newEntryFix = strtok($request->get('new_random_routeing'), " ");
+        }
+
+        /**
+         * Formulate entry time requirement if needed..
+         */
+        $entryRequirement = null;
+        if ($request->filled('entry_time_type') && $request->filled('entry_time_requirement')) {
+            $entryRequirement = "{$request->get('entry_time_type')}{$request->get('entry_time_requirement')}";
+        }
+
+        /**
          * Create the message
          */
         $clxMessage = new ClxMessage([
@@ -71,13 +97,27 @@ class ClxMessagesController extends Controller
             'rcl_message_id' => $rclMessage->id,
             'flight_level' => $request->filled('atc_fl') ? $request->get('atc_fl') : $rclMessage->flight_level,
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
-            'entry_fix' => $rclMessage->entry_fix,
-            'track_id' => $rclMessage->track ? $rclMessage->track->id : null,
-            'random_routeing' => $rclMessage->random_routeing ?? null,
-            'entry_time_restriction' => $request->get('entry_time_requirement'),
+            'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
+            'entry_time_restriction' => $entryRequirement ?? null,
             'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' : '' . $request->get('free_text'),
             'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority'))
         ]);
+
+        /**
+         * Assign track or RR
+         */
+        if ($rclMessage->track || $newTrack) {
+            $clxMessage->track_id = $newTrack ? $newTrack->id : $rclMessage->track->id;
+            $clxMessage->random_routeing = null;
+        }
+        elseif ($rclMessage->random_routeing || $request->filled('new_random_routeing')) {
+            $clxMessage->random_routeing = $request->filled('new_random_routeing') ? $request->get('new_random_routeing') : $rclMessage->random_routeing;
+            $clxMessage->track_id = null;
+        }
+
+        /**
+         * Save
+         */
         $clxMessage->save();
 
         /**
