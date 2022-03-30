@@ -62,7 +62,7 @@
                                         <a class="dropdown-item" href="{{ route('administration.accounts') }}">Admin Users</a>
                                     @endif
                                     <a href="{{ route('administration.controllers') }}" class="dropdown-item">Controller Permissions</a>
-                                    <a class="dropdown-item" href="">Activity Log</a>
+                                    <a class="dropdown-item" href="{{ route('administration.activity-log') }}">Activity Log</a>
                                 </div>
                             </li>
                             @endcan
