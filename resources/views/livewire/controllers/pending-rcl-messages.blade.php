@@ -41,8 +41,9 @@
                         <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
                     </td>
                     <td>
-                        <form action="">
-                            <button class="btn btn-sm" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">DEL</button>
+                        <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
+                            @csrf
+                            <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
                         </form>
                     </td>
                 </tr>

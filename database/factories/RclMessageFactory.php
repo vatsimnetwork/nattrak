@@ -29,7 +29,8 @@ class RclMessageFactory extends Factory
             'free_text' => $this->faker->text(),
             'created_at' => Carbon::now(),
             'max_flight_level' => '410',
-            'vatsim_account_id' => VatsimAccount::first()->id
+            'vatsim_account_id' => VatsimAccount::first()->id,
+            'atc_rejected' => false
         ];
     }
 
