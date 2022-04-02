@@ -23,14 +23,14 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="callsign">Callsign</label>
-                        <input required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign }}" onblur="this.value = this.value.toUpperCase()">
+                        <input required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign ?? old('callsign') }}" onblur="this.value = this.value.toUpperCase()">
                         @if ($callsign)
                             <small class="form-text text-muted">Your callsign was automatically collected. You may change the callsign if it is incorrect.</small>
                         @endif
                     </div>
                     <div class="form-group col-md-6">
                         <label for="destination">Destination ICAO</label>
-                        <input required type="text" class="form-control" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao }}" onblur="this.value = this.value.toUpperCase()">
+                        <input required type="text" class="form-control" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao ?? old('destination') }}" onblur="this.value = this.value.toUpperCase()">
                         @if ($arrival_icao)
                             <small class="form-text text-muted">Your destination was automatically collected. You may change the destination if it is incorrect.</small>
                         @endif
@@ -39,21 +39,23 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="flight_level">Requested flight level</label>
-                        <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 410" maxlength="3" value="{{ $flight_level }}">
+                        <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
+                        <small class="form-text text-muted"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></small>
                         @if ($flight_level)
-                            <small class="form-text text-muted">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect. <b>Ensure you request the flight level allocated to you in your booking details!</b></small>
+                            <small class="form-text text-muted">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</small>
                         @endif
                     </div>
                     <div class="form-group col-md-6">
                         <label for="max_flight_level">Maximum flight level</label>
-                        <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 410" maxlength="3">
+                        <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
+                        <small class="form-text text-muted"><b>Ensure you enter your max flight level as per your booking!</b></small>
                         <small class="form-text text-muted">This is the highest flight level you can accept.</small>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="mach">Requested mach number</label>
-                        <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 080" maxlength="3">
+                        <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 080" maxlength="3" value="{{ old('mach') }}">
                         <small class="form-text text-muted">Your requested mach number (don't include the dot at the start)</small>
                     </div>
                 </div>
@@ -68,29 +70,29 @@
                     </select>
                     <label><i>or</i></label><br>
                     <label for="random_routeing">Requested random routeing</label>
-                    <input type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
+                    <input value="{{ old('random_routeing') }}" type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
                 </div>
                 <hr>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="entry_fix">Entry fix</label>
-                        <input required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
+                        <input value="{{ old('entry_fix') }}" required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
                         <small class="form-text text-muted">The first fix in oceanic airspace.</small>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="entry_time">Estimate time at entry fix</label>
-                        <input required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350">
+                        <input value="{{ old('entry_time') }}" required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350">
                         <small class="form-text text-muted">You can find this in your FMC, providing your simulator is set to real time.</small>
                     </div>
                 </div>
                 <hr>
                 <div class="form-group">
                     <label for="tmi">Current TMI</label>
-                    <input required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 135" maxlength="4">
+                    <input value="{{ old('tmi') }}" required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
                 </div>
                 <div class="form-group">
                     <label for="free_text">Free text (optional)</label>
-                    <input type="text" class="form-control" name="free_text" id="free_text">
+                    <input value="{{ old('free_text') }}" type="text" class="form-control" name="free_text" id="free_text">
                 </div>
                 <hr>
                 <button type="submit" class="btn btn-primary">Submit Oceanic Clearance Request</button>
