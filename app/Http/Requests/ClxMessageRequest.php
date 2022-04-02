@@ -15,7 +15,7 @@ class ClxMessageRequest extends FormRequest
             'atc_mach' => 'nullable|numeric|digits:3',
             'free_text' => 'nullable',
             'entry_time_type' => 'nullable|required_with:entry_time_requirement', Rule::in(['<', '=', '>']),
-            'entry_time_requirement' => 'nullable|required_with:entry_time_type|digits:4',
+            'entry_time_requirement' => 'nullable|required_with:entry_time_type|digits:4|numeric',
             'datalink_authority' => 'required'
         ];
     }

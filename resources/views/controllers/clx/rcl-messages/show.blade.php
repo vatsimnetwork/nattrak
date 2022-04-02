@@ -95,13 +95,22 @@
                     <hr>
                     <div class="form-inline mt-2">
                         <label for="">Entry time requirement for {{ $message->entry_fix }}</label>
-                        <select class="custom-select custom-select-sm ml-2" autocomplete="off" name="entry_time_type">
+                        <select class="custom-select custom-select-sm ml-2" autocomplete="off" name="entry_time_type" id="entry_time_type">
                             <option value="" selected>None</option>
                             <option value="<">Before</option>
                             <option value="=">At</option>
                             <option value=">">After</option>
                         </select>
-                        <input type="number" name="entry_time_requirement" class="form-control form-control-sm ml-2" placeholder="NOT BEFORE 1015">
+                        <input style="display:none" type="number" name="entry_time_requirement" id="entry_time_requirement" class="form-control form-control-sm ml-2" placeholder="1015" maxlength="4">
+                        <script>
+                            $('#entry_time_type').on('change', function () {
+                               if (this.value == '') {
+                                   $('#entry_time_requirement').hide();
+                               } else {
+                                   $('#entry_time_requirement').show();
+                               }
+                            });
+                        </script>
                     </div>
                     <hr>
                     <div class="form-inline mt-2">
