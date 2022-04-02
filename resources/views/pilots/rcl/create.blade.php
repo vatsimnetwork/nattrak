@@ -23,7 +23,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="callsign">Callsign</label>
-                        <input required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign ?? old('callsign') }}" onblur="this.value = this.value.toUpperCase()">
+                        <input maxlength="7" required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign ?? old('callsign') }}" onblur="this.value = this.value.toUpperCase()">
                         @if ($callsign)
                             <small class="form-text text-muted">Your callsign was automatically collected. You may change the callsign if it is incorrect.</small>
                         @endif

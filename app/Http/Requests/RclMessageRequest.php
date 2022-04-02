@@ -12,8 +12,8 @@ class RclMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'callsign' => 'required',
-            'destination' => 'required|string|max:4',
+            'callsign' => 'required|string|max:7|alpha_num',
+            'destination' => 'required|string|min:4|max:4|alpha',
             'flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
             'max_flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
             'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9][0-9]\b/',
@@ -29,6 +29,7 @@ class RclMessageRequest extends FormRequest
             'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
             'flight_level.max' => 'You must file a valid flight level.',
             'max_flight_level.max' => 'You must file a valid maximum flight level.',
+            'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134'
         ];
     }
 
