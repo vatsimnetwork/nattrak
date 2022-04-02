@@ -11,7 +11,7 @@ class AddLockToRclMessages extends Migration
         Schema::table('rcl_messages', function (Blueprint $table) {
             $table->boolean('edit_lock')->default(false);
             $table->dateTime('edit_lock_time')->nullable();
-            $table->foreignId('edit_lock_vatsim_account_id')->constrained('vatsim_accounts')->cascadeOnDelete();
+            $table->foreignId('edit_lock_vatsim_account_id')->nullable()->constrained('vatsim_accounts')->cascadeOnDelete();
         });
     }
 
