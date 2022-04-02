@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\DatalinkAuthorities;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
+use App\Models\CpdlcMessage;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\VatsimDataService;
@@ -165,5 +166,18 @@ class ClxMessagesController extends Controller
         } else {
             return redirect()->route('controllers.clx.pending');
         }
+    }
+
+    public function revertToVoice(Request $request, RclMessage $rclMessage)
+    {
+        CpdlcMessage::create([
+            'pilot_id' => $rclMessage->vatsim_account_id,
+            'pilot_callsign' => $rclMessage->callsign,
+            'datalink_authority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
+            'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.'
+        ]);
+
+        toastr()->success('Revert to voice message sent. You can now delete the request.');
+        return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 }

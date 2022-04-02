@@ -137,6 +137,10 @@
                 <button class="btn btn-primary mt-3" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
             </div>
         </form>
+        <form action="{{ route('controllers.clx.revert-to-voice', $message) }}" method="post">
+            @csrf
+            <button class="btn btn-sm mt-3 ml-2 text-white">Revert To Voice</button>
+        </form>
         <form action="{{ route('controllers.clx.delete-rcl-message', $message) }}" method="post">
             @csrf
             <button class="btn btn-sm mt-3 ml-2 text-white" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">Delete Request</button>

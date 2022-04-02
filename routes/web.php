@@ -73,5 +73,6 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
+        Route::post('/rcl-msg/{rclMessage:id}/revert-to-voice', 'revertToVoice')->name('.revert-to-voice');
     });
 });

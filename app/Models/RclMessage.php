@@ -69,6 +69,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Database\Factories\RclMessageFactory factory(...$parameters)
  * @method static Builder|RclMessage requestedRandomRouteing()
  * @method static Builder|RclMessage requestedTrack(\App\Models\Track $track)
+ * @property int $atc_rejected
+ * @method static Builder|RclMessage whereAtcRejected($value)
  */
 class RclMessage extends Model
 {
