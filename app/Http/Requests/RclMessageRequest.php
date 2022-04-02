@@ -15,7 +15,7 @@ class RclMessageRequest extends FormRequest
             'destination' => 'required|string|max:4',
             'flight_level' => 'required|numeric|digits:3|max:410',
             'max_flight_level' => 'nullable|numeric|digits:3|max:410',
-            'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9]{2}\b/',
+            'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9][0-9]\b/',
             'entry_fix' => 'required',
             'entry_time' => 'required|digits:4',
             'tmi' => 'required|numeric',
