@@ -15,6 +15,7 @@
                 <th>CS</th>
                 <th>DEST</th>
                 <th>ROUTE</th>
+                <th>TRACK</th>
                 <th>ENTRY</th>
                 <th>ETA</th>
                 <th>FL</th>
@@ -30,7 +31,8 @@
                 <tr>
                     <th>{{ $msg->callsign }}</th>
                     <td>{{ $msg->destination }}
-                    <td>{{ $msg->track ? 'NAT '. $msg->track->identifier : 'RR' }}</td>
+                    <td>{{ $msg->track ? 'NAT' : 'RR' }}</td>
+                    <td>{{ $msg->track?->identifier }}</td>
                     <td>{{ $msg->entry_fix }}</td>
                     <td>{{ $msg->entry_time }}</td>
                     <td>{{ $msg->flight_level }}</td>
@@ -39,11 +41,17 @@
                     <td>{{ $msg->request_time->format('Hi') }}</td>
                     <td>
                         <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
+                        @if ($msg->isEditLocked())
+                            <span class="text-danger"><i class="fas fa-lock"></i></span>
+                        @endif
                     </td>
                     <td>
                         <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
                             @csrf
                             <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
+                            @if ($msg->isEditLocked())
+                                <span class="text-danger"><i class="fas fa-lock"></i></span>
+                            @endif
                         </form>
                     </td>
                 </tr>

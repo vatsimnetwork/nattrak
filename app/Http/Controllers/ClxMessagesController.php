@@ -64,6 +64,13 @@ class ClxMessagesController extends Controller
      */
     public function showRclMessage(RclMessage $rclMessage)
     {
+        if (! $rclMessage->isEditLocked()) {
+            $rclMessage->edit_lock = true;
+            $rclMessage->edit_lock_time = now();
+            $rclMessage->edit_lock_vatsim_account_id = Auth::id();
+            $rclMessage->save();
+        }
+
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
             'dlAuthorities' => DatalinkAuthorities::cases(),

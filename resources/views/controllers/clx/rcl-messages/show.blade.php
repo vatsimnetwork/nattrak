@@ -5,6 +5,11 @@
             @csrf
             <a href="{{ route('controllers.clx.pending') }}"><i class="fas fa-angle-left"></i> Back</a>
             <p class="header">{{ $message->callsign }} RCL Message</p>
+            @if ($message->isEditLocked() && $message->editLockVatsimAccount != Auth::user())
+                <div class="alert alert-danger">
+                    <b>{{ $message->editLockVatsimAccount->full_name }} {{ $message->editLockVatsimAccount->id }} is editing this as of {{ $message->edit_lock_time->diffForHumans() }}.</b>
+                </div>
+            @endif
             <hr>
             @if ($message->clxMessages->count() > 0)
                 <div>

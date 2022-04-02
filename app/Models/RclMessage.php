@@ -71,6 +71,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage requestedTrack(\App\Models\Track $track)
  * @property int $atc_rejected
  * @method static Builder|RclMessage whereAtcRejected($value)
+ * @property int $edit_lock
+ * @property \Illuminate\Support\Carbon|null $edit_lock_time
+ * @property int|null $edit_lock_vatsim_account_id
+ * @property-read \App\Models\VatsimAccount|null $editLockVatsimAccount
+ * @method static Builder|RclMessage whereEditLock($value)
+ * @method static Builder|RclMessage whereEditLockTime($value)
+ * @method static Builder|RclMessage whereEditLockVatsimAccountId($value)
  */
 class RclMessage extends Model
 {
@@ -101,7 +108,8 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $dates = [
-        'request_time'
+        'request_time',
+        'edit_lock_time'
     ];
 
     /**
@@ -186,5 +194,15 @@ class RclMessage extends Model
         } else {
             return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
         }
+    }
+
+    public function isEditLocked(): bool
+    {
+        return $this->edit_lock && $this->edit_lock_time->diffInMinutes(now()) < 5;
+    }
+
+    public function editLockVatsimAccount()
+    {
+        return $this->belongsTo(VatsimAccount::class, 'edit_lock_vatsim_account_id');
     }
 }
