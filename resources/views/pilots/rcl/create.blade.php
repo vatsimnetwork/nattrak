@@ -62,7 +62,7 @@
                 <hr>
                 <div class="form-group">
                     <label for="track_id">Requested NAT Track</label>
-                    <select class="form-control" name="track_id">
+                    <select class="form-control" id="track_id" name="track_id">
                         <option value="" selected>None</option>
                         @foreach($tracks as $track)
                             <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>

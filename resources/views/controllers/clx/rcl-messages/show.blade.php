@@ -79,14 +79,15 @@
                         <label for="">Change flight level to</label>
                         <select name="atc_fl" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
                             <option value="" selected>Don't change</option>
-                            @for ($i = 200; $i < 460; $i += 10)
+                            @for ($i = 200; $i <= 450; $i += 10)
+                                @if (in_array($i, [420, 440])) @continue @endif
                                 <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
                             @endfor
                         </select>
                         <label for="" class="ml-3">Change mach to</label>
                         <select name="atc_mach" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
                             <option value="" selected>Don't change</option>
-                            @for ($i = 70; $i < 99; $i++)
+                            @for ($i = 55; $i < 99; $i++)
                                 <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
                             @endfor
                         </select>
