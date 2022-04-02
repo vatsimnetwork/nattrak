@@ -126,7 +126,7 @@ class ClxMessagesController extends Controller
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
-            'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' : '' . $request->get('free_text'),
+            'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' . $request->get('free_text') : $request->get('free_text'),
             'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority'))
         ]);
 
