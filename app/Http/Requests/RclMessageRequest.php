@@ -17,9 +17,10 @@ class RclMessageRequest extends FormRequest
             'flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
             'max_flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
             'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9][0-9]\b/',
-            'entry_fix' => 'required',
-            'entry_time' => 'required|digits:4',
+            'entry_fix' => 'required|max:5',
+            'entry_time' => 'required|numeric|digits:4',
             'tmi' => 'required|numeric|min:001|max:366',
+            'random_routeing' => 'nullable|regex:/^[A-Z\/0-9 _]*[A-Z\/0-9][A-Z\/0-9 _]*$/'
         ];
     }
 
