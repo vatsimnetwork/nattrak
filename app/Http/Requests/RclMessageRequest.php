@@ -19,7 +19,7 @@ class RclMessageRequest extends FormRequest
             'mach' => 'required|numeric|digits:3|regex:/\b[0][1-9][0-9]\b/',
             'entry_fix' => 'required',
             'entry_time' => 'required|digits:4',
-            'tmi' => 'required|numeric',
+            'tmi' => 'required|numeric|min:001|max:366',
         ];
     }
 
