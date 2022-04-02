@@ -12,7 +12,7 @@ class RclMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'callsign' => 'required|string|max:7|alpha_num|unique:rcl_messages,callsign',
+            'callsign' => 'required|string|max:7|alpha_num', Rule::unique('rcl_messages', 'callsign')->withoutTrashed(),
             'destination' => 'required|string|min:4|max:4|alpha',
             'flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
             'max_flight_level' => 'nullable|numeric|digits:3|min:055|max:450',
