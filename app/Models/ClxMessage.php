@@ -131,7 +131,7 @@ class ClxMessage extends Model
     {
         $rcl = $this->rclMessage;
         $array = [
-            'CLX ' . now()->format('Hi dmy') . ' ' . $this->datalink_authority->name . ' CLRNCE ' . $this->id,
+            'CLX ' . $this->created_at->format('Hi dmy') . ' ' . $this->datalink_authority->name . ' CLRNCE ' . $this->id,
             $rcl->callsign . ' CLRD TO ' . $rcl->destination . ' VIA ' . $this->entry_fix,
             $this->track ? 'NAT ' . $this->track->identifier : 'RANDOM ROUTE',
             $this->track ? $this->track->last_routeing : $this->random_routeing,
