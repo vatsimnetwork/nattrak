@@ -44,6 +44,10 @@ return [
         'override_tmi' => env('OVERRIDE_TMI', null)
     ],
 
+    'pruning' => [
+        'prune_msgs' => env('PRUNE_MSGS', true)
+    ],
+
     'clx-filtering' => [
         'update' => [
             'poll_for_updates' => env('POLL_CLX_TABLE', true),

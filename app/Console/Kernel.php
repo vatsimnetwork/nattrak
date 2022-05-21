@@ -22,6 +22,13 @@ class Kernel extends ConsoleKernel
             $schedule->command('tracks:populate')->at('2230');
             $schedule->command('tracks:populate')->at('1430');
         }
+
+        /**
+         * Prune CLX and RLX messages after 24 hours
+         */
+        if (config('services.pruning.prune_msgs')) {
+            $schedule->command('model:prune')->hourly();
+        }
     }
 
     /**

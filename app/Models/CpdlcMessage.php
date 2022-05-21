@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\DatalinkAuthorities;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 
 /**
  * App\Models\CpdlcMessage
@@ -33,6 +35,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CpdlcMessage extends Model
 {
+    use Prunable;
+
+    /**
+     * Set the pruning options.
+     *
+     * @return Builder
+     */
+    public function prunable(): Builder
+    {
+        return static::where('created_at', '<=', now()->subHours(24));
+    }
+
     protected $fillable = [
         'pilot_id', 'pilot_callsign', 'datalink_authority', 'free_text'
     ];

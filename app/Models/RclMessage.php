@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -81,7 +82,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class RclMessage extends Model
 {
-    use LogsActivity, SoftDeletes, HasFactory;
+    use LogsActivity, SoftDeletes, HasFactory, Prunable;
 
     /**
      * Activity log options
@@ -91,6 +92,16 @@ class RclMessage extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->useLogName('rcl');
+    }
+
+    /**
+     * Set the pruning options.
+     *
+     * @return Builder
+     */
+    public function prunable(): Builder
+    {
+        return static::where('created_at', '<=', now()->subHours(24));
     }
 
     /**

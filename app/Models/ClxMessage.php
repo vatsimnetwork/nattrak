@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\DatalinkAuthorities;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,7 +53,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ClxMessage extends Model
 {
-    use LogsActivity;
+    use LogsActivity, Prunable;
+
+    /**
+     * Set the pruning options.
+     *
+     * @return Builder
+     */
+    public function prunable(): Builder
+    {
+        return static::where('created_at', '<=', now()->subHours(24));
+    }
 
     /**
      * The mass assignable attributes.
