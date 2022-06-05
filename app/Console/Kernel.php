@@ -19,8 +19,8 @@ class Kernel extends ConsoleKernel
          * Update NAT track data from API if enabled
          */
         if (config('services.tracks.auto_update')) {
-            $schedule->command('tracks:populate')->at('2230');
-            $schedule->command('tracks:populate')->at('1430');
+            $schedule->command('tracks:populate')->at('22:30');
+            $schedule->command('tracks:populate')->at('14:30');
         }
 
         /**
