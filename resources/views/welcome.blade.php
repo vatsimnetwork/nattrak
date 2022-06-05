@@ -4,6 +4,10 @@
         <div class="alert alert-danger">
             <b>You must be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
         </div>
+    @elseif (!auth()->check())
+        <div class="alert alert-danger">
+            <b>You must be logged in (via the nav bar) and be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
+        </div>
     @endif
     <img src="images/newsandnotams.png" class="img-fluid py-3" style="height: 100px;" />
     <div class="row mt-4">
