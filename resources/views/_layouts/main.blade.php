@@ -68,17 +68,17 @@
                             @endcan
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
-                                    How To Use
+                                    Tutorials
                                 </a>
                                 <div class="dropdown-menu menu shadow">
                                     <div class="dropdown-item small text-muted" style="cursor: default">Pilots</div>
-                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/requesting-oceanic-clearance" class="dropdown-item">Requesting Oceanic Clearance</a>
-                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/receiving-clearance" class="dropdown-item">Receiving Clearance</a>
+                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/" class="dropdown-item">Requesting Oceanic Clearance</a>
+                                    <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/receiving-your-clearance/" class="dropdown-item">Receiving Clearance</a>
                                     @can('activeController')
                                         <hr>
                                         <div class="dropdown-item small text-muted" style="cursor: default">Controllers</div>
-                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/pending-rcl-messages" class="dropdown-item">RCL Messages List</a>
-                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/en/nattrak/issuing-clx" class="dropdown-item">Issuing Clearance</a>
+                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/pending-rcl-messages" class="dropdown-item">RCL Messages List</a>
+                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca//nattrak/issuing-clx" class="dropdown-item">Issuing Clearance</a>
                                     @endcan
                                 </div>
                             </li>
