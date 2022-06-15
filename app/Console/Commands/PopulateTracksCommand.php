@@ -14,11 +14,11 @@ class PopulateTracksCommand extends Command
 
     protected $description = 'Populate active NAT tracks';
 
-    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+
 
     public function handle()
     {
-        $endpoint = self::TRACK_API_ENDPOINT;
+        $endpoint = config('services.tracks.endpoint');
         if ($this->option('url')) {
             $endpoint = $this->option('url');
         }
