@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+    'ctp_info_enabled' => env('CTP_INFO', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

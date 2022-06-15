@@ -7,7 +7,7 @@
                 Request Oceanic Clearance
             </p>
             <hr />
-            <p>Need help? Check out the <i>How To Use</i> menu above.</p>
+            <p>Need help? Check out the <i>Tutorials</i> menu above.</p>
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
                     <b>Some input was incorrect.</b>
@@ -40,7 +40,9 @@
                     <div class="form-group col-md-6">
                         <label for="flight_level">Requested flight level</label>
                         <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
-                        <small class="form-text text-muted"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></small>
+                        @if (config('app.ctp_info_enabled'))
+                            <small class="form-text text-muted"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></small>
+                        @endif
                         @if ($flight_level)
                             <small class="form-text text-muted">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</small>
                         @endif
@@ -48,7 +50,9 @@
                     <div class="form-group col-md-6">
                         <label for="max_flight_level">Maximum flight level</label>
                         <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
-                        <small class="form-text text-muted"><b>Ensure you enter your max flight level as per your booking!</b></small>
+                        @if (config('app.ctp_info_enabled'))
+                            <small class="form-text text-muted"><b>Ensure you enter your max flight level as per your booking!</b></small>
+                        @endif
                         <small class="form-text text-muted">This is the highest flight level you can accept.</small>
                     </div>
                 </div>
@@ -87,7 +91,7 @@
                 </div>
                 <hr>
                 <div class="form-group">
-                    <label for="tmi">Current TMI</label>
+                    <label for="tmi">Current TMI (available in navigation bar)</label>
                     <input value="{{ old('tmi') }}" required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
                 </div>
                 <div class="form-group">
