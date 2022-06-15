@@ -44,15 +44,15 @@ class PopulateTracksCommand extends Command
         }
 
         foreach ($tracks as $track) {
-            $this->line("Processing track identifier {$track->id} ...");
+            $this->line("Processing track identifier {$track->ID} ...");
             $routeingString = '';
-            foreach ($track->route as $fix) {
-                $routeingString .= "$fix->name ";
+            foreach ($track->Route as $fix) {
+                $routeingString .= "$fix->Name ";
             }
-            Track::updateOrCreate(['identifier' => $track->id], [
+            Track::updateOrCreate(['identifier' => $track->ID], [
                 'last_routeing' => trim($routeingString),
-                'valid_from' => Carbon::createFromTimestamp($track->validFrom),
-                'valid_to' => Carbon::createFromTimestamp($track->validTo),
+                'valid_from' => Carbon::createFromTimestamp($track->ValidFrom),
+                'valid_to' => Carbon::createFromTimestamp($track->ValidTo),
                 'active' => true,
                 'last_active' => now()
             ]);
