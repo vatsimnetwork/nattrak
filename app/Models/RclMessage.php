@@ -79,6 +79,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereEditLock($value)
  * @method static Builder|RclMessage whereEditLockTime($value)
  * @method static Builder|RclMessage whereEditLockVatsimAccountId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClxMessage[] $latestClxMessage
+ * @property-read int|null $latest_clx_message_count
  */
 class RclMessage extends Model
 {
@@ -138,7 +140,7 @@ class RclMessage extends Model
      */
     public function scopeCleared(Builder $query): Builder
     {
-        return $query->where('clx_message_id', '!=', null);
+        return $query->whereNotNull('clx_message_id');
     }
 
     /**
@@ -181,6 +183,11 @@ class RclMessage extends Model
     public function clxMessages(): HasMany
     {
         return $this->hasMany(ClxMessage::class);
+    }
+
+    public function latestClxMessage(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ClxMessage::class)->latest();
     }
 
     /**

@@ -139,7 +139,7 @@
             </div>
             <p class="my-2 small">Pilot details: {{ $message->vatsimAccount->id }}</p>
             <div class="form-inline">
-                <button class="btn btn-primary mt-3" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
+                <button class="btn btn-primary mt-3" onclick="" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
             </div>
         </form>
         <form action="{{ route('controllers.clx.revert-to-voice', $message) }}" method="post">
