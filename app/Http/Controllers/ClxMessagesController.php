@@ -46,7 +46,7 @@ class ClxMessagesController extends Controller
             $track = Track::active()->whereIdentifier($request->get('sortByTrack'))->firstOrFail();
         }
 
-        $processedRclMsgs = RclMessage::cleared()->when($track, function ($query) use ($track) {
+        $processedRclMsgs = RclMessage::cleared()->with('latestClxMessage')->when($track, function ($query) use ($track) {
             $query->whereTrackId($track->id);
         })->orderBy('request_time')->get();
 
@@ -141,6 +141,50 @@ class ClxMessagesController extends Controller
             $clxMessage->random_routeing = $request->filled('new_random_routeing') ? $request->get('new_random_routeing') : $rclMessage->random_routeing;
             $clxMessage->track_id = null;
         }
+
+        /**
+         * Create datalink messages
+         */
+        $array = [
+            'CLX ' . now()->format('Hi dmy') . ' ' . $clxMessage->datalink_authority->name . ' CLRNCE ' . $clxMessage->id,
+            $rclMessage->callsign . ' CLRD TO ' . $rclMessage->destination . ' VIA ' . $clxMessage->entry_fix,
+            $clxMessage->track ? 'NAT ' . $clxMessage->track->identifier : 'RANDOM ROUTE',
+            $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
+            'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach,
+        ];
+        if ($clxMessage->entry_time_restriction) {
+            $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
+        }
+        if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
+            $array[] = "/ATC MACH CHANGED";
+        }
+        if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
+            $array[] = "/ATC FLIGHT LEVEL CHANGED";
+        }
+        if ($clxMessage->free_text) {
+            $array[] = "/ATC " . strtoupper($clxMessage->free_text);
+        }
+        $array[] = "END OF MESSAGE";
+        $clxMessage->datalink_message = $array;
+        $msg = "";
+        if ($clxMessage->track) {
+            $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+        } else {
+            $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+        }
+        if ($clxMessage->entry_time_restriction) {
+            $msg .= " Cross {$clxMessage->entry_fix} " . strtolower($clxMessage->formatEntryTimeRestriction()) . ".";
+        }
+        if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
+            $msg .= " Mach number changed.";
+        }
+        if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
+            $msg .= " Flight level changed.";
+        }
+        if ($clxMessage->free_text) {
+            $msg .= " {$clxMessage->free_text}";
+        }
+        $clxMessage->simple_datalink_message = $msg;
 
         /**
          * Save
