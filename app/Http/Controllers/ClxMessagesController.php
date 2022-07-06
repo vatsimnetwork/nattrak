@@ -156,7 +156,7 @@ class ClxMessagesController extends Controller
             $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
-            $array[] = "/ATC MACH CHANGED";
+            $array[] = "/ATC SPEED CHANGED";
         }
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
             $array[] = "/ATC FLIGHT LEVEL CHANGED";
@@ -176,7 +176,7 @@ class ClxMessagesController extends Controller
             $msg .= " Cross {$clxMessage->entry_fix} " . strtolower($clxMessage->formatEntryTimeRestriction()) . ".";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
-            $msg .= " Mach number changed.";
+            $msg .= " Speed changed.";
         }
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
             $msg .= " Flight level changed.";
