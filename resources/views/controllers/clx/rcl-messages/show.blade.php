@@ -38,8 +38,13 @@
                         <th>ROUTE</th>
                         <th>ENTRY</th>
                         <th>ETA</th>
-                        <th>FL</th>
-                        <th>MFL</th>
+                        @if ($message->is_concorde)
+                            <th>BLOCK LOWER</th>
+                            <th>BLOCK UPPER</th>
+                        @else
+                            <th>FL</th>
+                            <th>MFL</th>
+                        @endif
                         <th>MACH</th>
                         <th>REQ TIME</th>
                     </tr>
@@ -52,7 +57,11 @@
                         <td>{{ $message->entry_fix }}</td>
                         <td>{{ $message->entry_time }}</td>
                         <td>{{ $message->flight_level }}</td>
-                        <td>{{ $message->max_flight_level }}</td>
+                        @if ($message->is_concorde)
+                            <td>{{ $message->upper_flight_level }}</td>
+                        @else
+                            <td>{{ $message->max_flight_level ?? 'N/A' }}</td>
+                        @endif
                         <td>{{ $message->mach }}</td>
                         <td>{{ $message->request_time->format('Hi') }}</td>
                     </tr>
@@ -80,23 +89,25 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-inline mt-2">
-                        <label for="">Change flight level to</label>
-                        <select name="atc_fl" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
-                            <option value="" selected>Don't change</option>
-                            @for ($i = 200; $i <= 450; $i += 10)
-                                @if (in_array($i, [420, 440])) @continue @endif
-                                <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
-                            @endfor
-                        </select>
-                        <label for="" class="ml-3">Change mach to</label>
-                        <select name="atc_mach" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
-                            <option value="" selected>Don't change</option>
-                            @for ($i = 55; $i < 99; $i++)
-                                <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
-                            @endfor
-                        </select>
-                    </div>
+                    @if (!$message->is_concorde)
+                        <div class="form-inline mt-2">
+                            <label for="">Change flight level to</label>
+                            <select name="atc_fl" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
+                                <option value="" selected>Don't change</option>
+                                @for ($i = 200; $i <= 450; $i += 10)
+                                    @if (in_array($i, [420, 440])) @continue @endif
+                                    <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
+                                @endfor
+                            </select>
+                            <label for="" class="ml-3">Change mach to</label>
+                            <select name="atc_mach" id="" autocomplete="off" class="custom-select custom-select-sm ml-2">
+                                <option value="" selected>Don't change</option>
+                                @for ($i = 55; $i < 99; $i++)
+                                    <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
+                                @endfor
+                            </select>
+                        </div>
+                    @endif
                     <hr>
                     <div class="form-inline mt-2">
                         <label for="">Entry time requirement for {{ $message->entry_fix }}</label>

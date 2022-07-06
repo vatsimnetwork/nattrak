@@ -44,7 +44,7 @@
                     <tbody>
                     @foreach($processedRclMsgs as $msg)
                         <tr>
-                            <th>{{ $msg->callsign }}</th>
+                            <th>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</th>
                             <td>{{ $msg->destination }}
                             <td>{{ $msg->latestClxMessage?->track ? 'NAT '. $msg->latestClxMessage?->track->identifier : 'RR' }} {{ $msg->latestClxMessage?->routeing_changed ? '*' : ''}}</td>
                             <td>{{ $msg->latestClxMessage?->entry_fix }}</td>

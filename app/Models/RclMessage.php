@@ -79,8 +79,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereEditLock($value)
  * @method static Builder|RclMessage whereEditLockTime($value)
  * @method static Builder|RclMessage whereEditLockVatsimAccountId($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClxMessage[] $latestClxMessage
- * @property-read int|null $latest_clx_message_count
+ * @property string|null $upper_flight_level
+ * @property int $is_concorde
+ * @method static Builder|RclMessage whereIsConcorde($value)
+ * @method static Builder|RclMessage whereUpperFlightLevel($value)
+ * @property-read \App\Models\ClxMessage|null $latestClxMessage
  */
 class RclMessage extends Model
 {
@@ -112,7 +115,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde'
     ];
 
     /**
@@ -207,10 +210,18 @@ class RclMessage extends Model
      */
     public function getDataLinkMessageAttribute(): string
     {
-        if ($this->track) {
-            return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+        if ($this->is_concorde) {
+            if ($this->track) {
+                return "{$this->callsign} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} CONC TRACK {$this->track->identifier} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+            } else {
+                return "{$this->callsign} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+            }
         } else {
-            return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+            if ($this->track) {
+                return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+            } else {
+                return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+            }
         }
     }
 

@@ -18,6 +18,11 @@
                     </ul>
                 </div>
             @endif
+            @if ($isConcorde)
+                <div class="alert alert-info" role="alert">
+                    <b>Concorde detected.</b>
+                </div>
+            @endif
             <form action="{{ route('pilots.rcl.store') }}" method="post">
                 @csrf
                 <div class="form-row">
@@ -38,7 +43,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="flight_level">Requested flight level</label>
+                        <label for="flight_level">Requested {{ $isConcorde ? 'lower block' : '' }} flight level</label>
                         <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
                         @if (config('app.ctp_info_enabled'))
                             <small class="form-text text-muted"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></small>
@@ -47,14 +52,21 @@
                             <small class="form-text text-muted">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</small>
                         @endif
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="max_flight_level">Maximum flight level</label>
-                        <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
-                        @if (config('app.ctp_info_enabled'))
-                            <small class="form-text text-muted"><b>Ensure you enter your max flight level as per your booking!</b></small>
-                        @endif
-                        <small class="form-text text-muted">This is the highest flight level you can accept.</small>
-                    </div>
+                    @if ($isConcorde)
+                        <div class="form-group col-md-6">
+                            <label for="flight_level">Requested upper block flight level</label>
+                            <input required type="text" class="form-control" name="upper_flight_level" id="upper_flight_level" placeholder="e.g. 310" maxlength="3" value="{{ old('upper_flight_level') }}">
+                        </div>
+                    @else
+                        <div class="form-group col-md-6">
+                            <label for="max_flight_level">Maximum flight level</label>
+                            <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
+                            @if (config('app.ctp_info_enabled'))
+                                <small class="form-text text-muted"><b>Ensure you enter your max flight level as per your booking!</b></small>
+                            @endif
+                            <small class="form-text text-muted">This is the highest flight level you can accept.</small>
+                        </div>
+                    @endif
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -99,6 +111,7 @@
                     <input value="{{ old('free_text') }}" type="text" class="form-control" name="free_text" id="free_text">
                 </div>
                 <hr>
+                <input type="hidden" name="is_concorde" value="{{ (bool)$isConcorde }}">
                 <button type="submit" class="btn btn-primary">Submit Oceanic Clearance Request</button>
             </form>
         </div>

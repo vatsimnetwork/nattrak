@@ -31,11 +31,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidTo($value)
  * @mixin \Eloquent
  * @method static Builder|Track active()
+ * @property int $concorde
+ * @method static Builder|Track concorde()
+ * @method static Builder|Track whereConcorde($value)
  */
 class Track extends Model
 {
     protected $fillable = [
-        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active'
+        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde'
     ];
 
     protected $dates = [
@@ -53,6 +56,15 @@ class Track extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeConcorde(Builder $query): Builder
+    {
+        return $query->where('concorde', true);
     }
 
     public function deactivate()
