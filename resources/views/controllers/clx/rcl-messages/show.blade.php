@@ -20,7 +20,7 @@
                         <div class="p-3 border">
                             <p>{{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }}</p>
                             <p>
-                                @foreach($clx->dataLinkMessage as $line)
+                                @foreach($clx->datalink_message as $line)
                                     {{ $line }}<br>
                                 @endforeach
                             </p>

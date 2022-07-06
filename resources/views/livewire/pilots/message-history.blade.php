@@ -23,12 +23,12 @@
                 <div>
                     <p class="lead">Oceanic Clearance Message - {{\Carbon\Carbon::parse($message['created_at'])}}</p>
                     <p>
-                        @foreach(\App\Models\ClxMessage::whereId($message['id'])->first()->dataLinkMessage as $line)
+                        @foreach(\App\Models\ClxMessage::whereId($message['id'])->first()->datalink_message as $line)
                             {{ $line }}<br>
                         @endforeach
                     </p>
                     <p>
-                       <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simpleMessage }}</b>
+                       <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simple_datalink_message }}</b>
                     </p>
                 </div>
             </div>
