@@ -29,14 +29,14 @@
             <tbody>
             @foreach($pendingRclMsgs as $msg)
                 <tr>
-                    <th>{{ $msg->callsign }}</th>
+                    <th>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</th>
                     <td>{{ $msg->destination }}
                     <td>{{ $msg->track ? 'NAT' : 'RR' }}</td>
                     <td>{{ $msg->track?->identifier }}</td>
                     <td>{{ $msg->entry_fix }}</td>
                     <td>{{ $msg->entry_time }}</td>
                     <td>{{ $msg->flight_level }}</td>
-                    <td>{{ $msg->max_flight_level }}</td>
+                    <td>{{ $msg->max_flight_level ?? 'N/A' }}</td>
                     <td>{{ $msg->mach }}</td>
                     <td>{{ $msg->request_time->format('Hi') }}</td>
                     <td>

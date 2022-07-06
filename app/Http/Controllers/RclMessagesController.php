@@ -31,11 +31,13 @@ class RclMessagesController extends Controller
         }
 
         $data = $this->dataService->getActivePilotData(Auth::user());
+        $isConcorde = true; //$data?->flight_plan?->aircraft_short == 'A320';
         return view('pilots.rcl.create', [
             'callsign' => $data?->callsign ?? null,
             'flight_level' => substr($data?->flight_plan?->altitude, 0, 3) ?? null,
             'arrival_icao' => $data?->flight_plan?->arrival ?? null,
-            'tracks' => Track::whereActive(true)->get(),
+            'tracks' => Track::whereActive(true)->when($isConcorde, fn($query) => $query->orWhere('concorde', true)) ->get(),
+            'isConcorde' => $isConcorde,
             '_pageTitle' => 'Request Oceanic Clearance'
         ]);
     }

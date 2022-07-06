@@ -123,6 +123,7 @@ class ClxMessagesController extends Controller
             'vatsim_account_id' => $request->user()->id,
             'rcl_message_id' => $rclMessage->id,
             'flight_level' => $request->filled('atc_fl') ? $request->get('atc_fl') : $rclMessage->flight_level,
+            'upper_flight_level' => $rclMessage->upper_flight_level ?? null,
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
@@ -150,8 +151,13 @@ class ClxMessagesController extends Controller
             $rclMessage->callsign . ' CLRD TO ' . $rclMessage->destination . ' VIA ' . $clxMessage->entry_fix,
             $clxMessage->track ? 'NAT ' . $clxMessage->track->identifier : 'RANDOM ROUTE',
             $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
-            'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach,
         ];
+        if ($rclMessage->is_concorde) {
+            $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN BLOCK LOWER F' . $clxMessage->flight_level . ' UPPER F' . $clxMessage->upper_flight_level . ' M' . $clxMessage->mach;
+        }
+        else {
+            $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach;
+        }
         if ($clxMessage->entry_time_restriction) {
             $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
         }

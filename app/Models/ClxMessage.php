@@ -50,11 +50,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\VatsimAccount $vatsimAccount
  * @property DatalinkAuthorities $datalink_authority
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereDatalinkAuthority($value)
- * @property-read bool $routeing_changed
  * @property string $simple_datalink_message
  * @property mixed $datalink_message
  * @method static Builder|ClxMessage whereDatalinkMessage($value)
  * @method static Builder|ClxMessage whereSimpleDatalinkMessage($value)
+ * @property string|null $upper_flight_level
+ * @method static Builder|ClxMessage whereUpperFlightLevel($value)
+ * @property-read bool $routeing_changed
  */
 class ClxMessage extends Model
 {
@@ -76,7 +78,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message'
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level'
     ];
 
     /**
