@@ -111,7 +111,11 @@
                     <input value="{{ old('free_text') }}" type="text" class="form-control" name="free_text" id="free_text">
                 </div>
                 <hr>
-                <input type="hidden" name="is_concorde" value="{{ (bool)$isConcorde }}">
+                @if ($isConcorde)
+                    <input type="hidden" name="is_concorde" value="1">
+                @else
+                    <input type="hidden" name="is_concorde" value="0">
+                @endif
                 <button type="submit" class="btn btn-primary">Submit Oceanic Clearance Request</button>
             </form>
         </div>
