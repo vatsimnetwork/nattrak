@@ -65,7 +65,7 @@ class MessageHistory extends Component
                         if (!$this->clxMessages->contains('id', $clxMessage->id)) {
                             $this->clxMessages->add($clxMessage);
                             $this->clxMessages->sortByDesc('created_at');
-                            $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: ' . $clxMessage->dataLinkMessage[0]]);
+                            $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: ' . $clxMessage->datalink_message[0]]);
                         }
                     }
                 }
