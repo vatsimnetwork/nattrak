@@ -17,7 +17,13 @@ class VatsimDataService
     private function getNetworkData()
     {
         return Cache::remember('vatsim-data', 30, function () {
-            $request = Http::timeout(10)->get(self::NETWORK_DATA_URL);
+            try {
+                $request = Http::timeout(10)->get(self::NETWORK_DATA_URL);
+            }
+            catch (\Exception $e) {
+                Log::warning('Failed to download network data, response was ' . $e->getMessage());
+                return null;
+            }
             if (! $request->successful()) {
                 Log::warning('Failed to download network data, response was ' . $request->status());
                 return null;
@@ -33,11 +39,18 @@ class VatsimDataService
         }
 
         return Cache::remember('tmi', now()->addHours(1), function () {
-            $tmiData = Http::acceptJson()->get(self::TRACK_API_ENDPOINT);
-            if (! $tmiData) {
+            try {
+                $request = Http::timeout(10)->acceptJson()->get(self::TRACK_API_ENDPOINT);
+            }
+            catch (\Exception $e) {
+                Log::warning('Failed to download TMI data, response was ' . $e->getMessage());
                 return null;
             }
-            return str_replace('"', '', $tmiData->body());
+            if (!$request->successful()) {
+                Log::warning('Failed to download TMI data, response was ' . $request->status());
+                return null;
+            }
+            return json_decode($request);
         });
     }
 
