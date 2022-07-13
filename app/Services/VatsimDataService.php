@@ -5,20 +5,18 @@ namespace App\Services;
 use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
 use App\Models\VatsimAccount;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class VatsimDataService
 {
-    const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
-    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+    public const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
+    public const TRACK_API_ENDPOINT = "https://tracksv2.ganderoceanic.ca/current/tmi";
 
     private function getNetworkData()
     {
-        $networkResponse = Cache::remember('vatsim-data', 30, function () {
+        return Cache::remember('vatsim-data', 30, function () {
             $request = Http::timeout(10)->get(self::NETWORK_DATA_URL);
             if (! $request->successful()) {
                 Log::warning('Failed to download network data, response was ' . $request->status());
@@ -26,8 +24,6 @@ class VatsimDataService
             }
             return json_decode($request);
         });
-
-        return $networkResponse;
     }
 
     public function getTmi(): ?string
@@ -37,35 +33,29 @@ class VatsimDataService
         }
 
         return Cache::remember('tmi', now()->addHours(1), function () {
-            $trackData = Http::get(self::TRACK_API_ENDPOINT, [
-                'headers' => [
-                    'Accept' => 'application/json'
-                ]
-            ]);
-
-            if ($trackData) {
-                $tracks = json_decode(($trackData));
-            } else {
+            $tmiData = Http::acceptJson()->get(self::TRACK_API_ENDPOINT);
+            if (! $tmiData) {
                 return null;
             }
-
-            if (! $tracks[0]) return null;
-
-            return $tracks[0]->tmi;
+            return str_replace('"', '', $tmiData->body());
         });
     }
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return false;
+        if (! $networkData) {
+            return false;
+        }
         return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
     }
 
     public function getActiveControllerData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return null;
+        if (! $networkData) {
+            return null;
+        }
         if (in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->controllers, 'cid')));
             $data = $networkData->controllers[$key];
@@ -75,10 +65,12 @@ class VatsimDataService
         }
     }
 
-    public function isActiveOceanicController(VatsimAccount $vatsimAccount)
+    public function isActiveOceanicController(VatsimAccount $vatsimAccount): bool
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return false;
+        if (! $networkData) {
+            return false;
+        }
         $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
 
         if ($online) {
@@ -98,14 +90,18 @@ class VatsimDataService
         return false;
     }
 
-    public function getActiveControllerAuthority(VatsimAccount $vatsimAccount)
+    public function getActiveControllerAuthority(VatsimAccount $vatsimAccount): ?DatalinkAuthorities
     {
-        if (! $this->isActiveOceanicController($vatsimAccount)) return null;
+        if (! $this->isActiveOceanicController($vatsimAccount)) {
+            return null;
+        }
 
         $callsignPrefix = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
 
         foreach (DatalinkAuthorities::cases() as $authority) {
-            if ($callsignPrefix == $authority->value) return $authority;
+            if ($callsignPrefix == $authority->value) {
+                return $authority;
+            }
         }
 
         return null;
@@ -114,11 +110,12 @@ class VatsimDataService
     public function getActivePilotData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return null;
+        if (! $networkData) {
+            return null;
+        }
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
-            $data = $networkData->pilots[$key];
-            return $data;
+            return $networkData->pilots[$key];
         } else {
             return null;
         }
