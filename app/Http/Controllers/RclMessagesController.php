@@ -6,7 +6,6 @@ use App\Http\Requests\RclMessageRequest;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\VatsimDataService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RclMessagesController extends Controller
@@ -36,7 +35,7 @@ class RclMessagesController extends Controller
             'callsign' => $data?->callsign ?? null,
             'flight_level' => substr($data?->flight_plan?->altitude, 0, 3) ?? null,
             'arrival_icao' => $data?->flight_plan?->arrival ?? null,
-            'tracks' => Track::whereActive(true)->when($isConcorde, fn($query) => $query->orWhere('concorde', true)) ->get(),
+            'tracks' => Track::whereActive(true)->when($isConcorde, fn ($query) => $query->orWhere('concorde', true)) ->get(),
             'isConcorde' => $isConcorde,
             '_pageTitle' => 'Request Oceanic Clearance'
         ]);

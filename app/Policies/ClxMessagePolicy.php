@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\ClxMessage;
-use App\Models\User;
 use App\Models\VatsimAccount;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

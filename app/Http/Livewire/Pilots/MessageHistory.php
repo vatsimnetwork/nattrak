@@ -2,13 +2,10 @@
 
 namespace App\Http\Livewire\Pilots;
 
-use App\Models\ClxMessage;
 use App\Models\CpdlcMessage;
 use App\Models\RclMessage;
-use Illuminate\Database\Eloquent\Collection as ECollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class MessageHistory extends Component
@@ -43,8 +40,7 @@ class MessageHistory extends Component
          * Populate previous CLX messages (collection)
          */
         $this->clxMessages = collect();
-        foreach ($this->rclMessages as $rclMessage)
-        {
+        foreach ($this->rclMessages as $rclMessage) {
             foreach ($rclMessage->clxMessages->sortByDesc('created_at') as $clxMessage) {
                 $this->clxMessages->add($clxMessage);
             }

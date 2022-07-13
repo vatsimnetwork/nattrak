@@ -57,6 +57,6 @@ class CpdlcMessage extends Model
 
     public function pilot()
     {
-        return $this->hasOne(VatsimAccount::class,'pilot_id');
+        return $this->hasOne(VatsimAccount::class, 'pilot_id');
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\VatsimAccount;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -102,5 +101,5 @@ class VatsimAuthController extends Controller
         } else {
             return redirect()->route('welcome');
         }
-}
+    }
 }

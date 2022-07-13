@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\RclMessage;
-use App\Models\User;
 use App\Models\VatsimAccount;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -44,7 +43,6 @@ class RclMessagePolicy
     public function restore(VatsimAccount $user, RclMessage $rclMessage): bool
     {
         $user->can('administrate');
-
     }
 
     public function forceDelete(VatsimAccount $user, RclMessage $rclMessage): bool

@@ -60,7 +60,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ClxMessage extends Model
 {
-    use LogsActivity, Prunable;
+    use LogsActivity;
+    use Prunable;
 
     /**
      * Set the pruning options.
@@ -121,11 +122,11 @@ class ClxMessage extends Model
         return $this->belongsTo(Track::class);
     }
 
-     /**
-     * Returns the track the CLX was for.
-     *
-     * @return BelongsTo
-     */
+    /**
+    * Returns the track the CLX was for.
+    *
+    * @return BelongsTo
+    */
     public function vatsimAccount(): BelongsTo
     {
         return $this->belongsTo(VatsimAccount::class);
@@ -136,7 +137,9 @@ class ClxMessage extends Model
      */
     public function formatEntryTimeRestriction(): ?string
     {
-        if (! $this->entry_time_restriction) return null;
+        if (! $this->entry_time_restriction) {
+            return null;
+        }
 
         return match (substr($this->entry_time_restriction, 0, 1)) {
             '<' => 'BEFORE ' . substr($this->entry_time_restriction, 1, 4),

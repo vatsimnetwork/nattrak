@@ -38,8 +38,7 @@ class PopulateTracksCommand extends Command
             return;
         }
 
-        foreach (Track::whereActive(true)->get() as $track)
-        {
+        foreach (Track::whereActive(true)->get() as $track) {
             $track->deactivate();
         }
 

@@ -10,7 +10,6 @@ use App\Policies\ClxMessagePolicy;
 use App\Policies\RclMessagePolicy;
 use App\Services\VatsimDataService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -38,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         $dataService = new VatsimDataService();
 
         Gate::before(function (VatsimAccount $account) {
-           return ($account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root) ? true : null;
+            return ($account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root) ? true : null;
         });
 
         Gate::define('administrate', function (VatsimAccount $account) {

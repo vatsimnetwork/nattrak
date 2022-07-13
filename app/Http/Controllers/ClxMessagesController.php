@@ -103,8 +103,7 @@ class ClxMessagesController extends Controller
                 return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
             }
             $newEntryFix = strtok($newTrack->last_routeing, " ");
-        }
-        elseif ($request->filled('new_random_routeing')) {
+        } elseif ($request->filled('new_random_routeing')) {
             $newEntryFix = strtok($request->get('new_random_routeing'), " ");
         }
 
@@ -137,8 +136,7 @@ class ClxMessagesController extends Controller
         if ($rclMessage->track || $newTrack) {
             $clxMessage->track_id = $newTrack ? $newTrack->id : $rclMessage->track->id;
             $clxMessage->random_routeing = null;
-        }
-        elseif ($rclMessage->random_routeing || $request->filled('new_random_routeing')) {
+        } elseif ($rclMessage->random_routeing || $request->filled('new_random_routeing')) {
             $clxMessage->random_routeing = $request->filled('new_random_routeing') ? $request->get('new_random_routeing') : $rclMessage->random_routeing;
             $clxMessage->track_id = null;
         }
@@ -154,8 +152,7 @@ class ClxMessagesController extends Controller
         ];
         if ($rclMessage->is_concorde) {
             $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN BLOCK LOWER F' . $clxMessage->flight_level . ' UPPER F' . $clxMessage->upper_flight_level . ' M' . $clxMessage->mach;
-        }
-        else {
+        } else {
             $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach;
         }
         if ($clxMessage->entry_time_restriction) {

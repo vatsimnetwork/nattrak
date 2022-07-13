@@ -50,7 +50,7 @@ class AdministrationController extends Controller
         if (!$vatsimAccount) {
             toastr()->error('Account not found. They may need to login to natTrak first.');
             return redirect()->route('administration.controllers');
-        } else if ($vatsimAccount->can('administrate')) {
+        } elseif ($vatsimAccount->can('administrate')) {
             toastr()->error('Account already an administrator.');
             return redirect()->route('administration.controllers');
         }

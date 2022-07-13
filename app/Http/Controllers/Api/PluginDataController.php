@@ -87,7 +87,7 @@ class PluginDataController extends Controller
         })->orderByDesc('created_at')->get();
 
         $mapped = $clxMessages->map(function (ClxMessage $msg) {
-           return [
+            return [
                'id' => $msg->id,
                'time' => $msg->created_at,
                'controller' => [

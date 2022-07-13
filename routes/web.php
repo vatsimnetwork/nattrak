@@ -32,8 +32,8 @@ Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/deauthenticate', [VatsimAuthController::class, 'deauthenticate'])->name('.deauthenticate');
     if (config('app.env') == 'local') {
         Route::get('/{cid}', function ($cid) {
-           \Illuminate\Support\Facades\Auth::loginUsingId($cid);
-           return redirect()->route('welcome');
+            \Illuminate\Support\Facades\Auth::loginUsingId($cid);
+            return redirect()->route('welcome');
         });
     }
 });;
@@ -53,17 +53,17 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
-   Route::prefix('rcl')->name('.rcl')->controller(RclMessagesController::class)->group(function () {
-       Route::get('/', 'index')->name('.index');
-       Route::get('/create', 'create')->name('.create');
-       Route::post('/create', 'store')->name('.store');
-   });
+    Route::prefix('rcl')->name('.rcl')->controller(RclMessagesController::class)->group(function () {
+        Route::get('/', 'index')->name('.index');
+        Route::get('/create', 'create')->name('.create');
+        Route::post('/create', 'store')->name('.store');
+    });
 
-   Route::get('message-history', function () {
-       return view('pilots.message-history', [
+    Route::get('message-history', function () {
+        return view('pilots.message-history', [
            '_pageTitle' => 'Message History'
        ]);
-   })->name('.message-history');
+    })->name('.message-history');
 });
 
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
