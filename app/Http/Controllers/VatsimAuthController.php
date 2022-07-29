@@ -85,8 +85,8 @@ class VatsimAuthController extends Controller
         $user = VatsimAccount::updateOrCreate(
             ['id' => $userData->data->cid],
             [
-                'given_name' => isset($userData->data->personal->name_first) ? utf8_decode($userData->data->personal->name_first) : $userData->data->cid,
-                'surname' => isset($userData->data->personal->name_last) ? utf8_decode($userData->data->personal->name_last) : $userData->data->cid,
+                'given_name' => $userData->data->personal->name_first ?? $userData->data->cid,
+                'surname' => $userData->data->personal->name_last ?? $userData->data->cid,
                 'rating_int' => $userData->data->vatsim->rating->id
             ]
         );
