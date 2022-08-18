@@ -58,7 +58,6 @@ class PopulateTracksCommand extends Command
         }
 
         activity()->log('Updated track data');
-        Log::info('tracks:populate command completed at time ' . now()->toDayDateTimeString());
         $this->info('Completed!');
     }
 }
