@@ -3,6 +3,7 @@ FROM composer:2.4.2 as vendor
 WORKDIR /app
 
 COPY database/ database/
+COPY app/ app/
 COPY composer.json composer.lock ./
 
 RUN composer install \
