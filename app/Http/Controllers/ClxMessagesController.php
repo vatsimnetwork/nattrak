@@ -27,15 +27,10 @@ class ClxMessagesController extends Controller
 
     public function getPending(Request $request)
     {
-        $track = null;
-        if ($request->has('sortByTrack') && !in_array($request->get('sortByTrack'), ['all', 'rr'])) {
-            $track = Track::active()->whereIdentifier($request->get('sortByTrack'))->firstOrFail();
-        }
-
         return view('controllers.clx.pending', [
-            'displayedTrack' => $track,
+            'displayed' => $request->get('display'),
             'tracks' => Track::active()->get(),
-            '_pageTitle' => $track ? "Track {$track->identifier}" : "All tracks"
+            '_pageTitle' => $request->get('display') ? "Tracks " . implode(", ", $request->get('display')) : 'None selected'
         ]);
     }
 

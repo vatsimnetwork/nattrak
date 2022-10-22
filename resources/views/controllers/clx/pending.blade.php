@@ -5,20 +5,27 @@
             <p class="header">
                 Pending RCL Messages
             </p>
-            <p class="lead">{{ $displayedTrack ? 'Displaying track '. $displayedTrack->identifier : 'All tracks + random routeing requests' }}</p>
-            <form method="GET" action="{{ route('controllers.clx.pending') }}" class="form-inline">
-                <label for="">Change track</label>
-                <select name="sortByTrack" id="" class="custom-select custom-select-sm mx-3">
-                    <option value="all">All tracks + random routeing requests</option>
-{{--                    <option value="rr">Random routeings</option>--}}
-                    @foreach ($tracks as $track)
-                        <option value="{{ $track->identifier }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
+            <p class="lead">{{ $displayed ? 'Tracks ' . implode(", ", $displayed) : 'None selected' }}</p>
+            <form method="GET" action="{{ route('controllers.clx.pending') }}">
+                <label for="">Select tracks</label>
+                <div class="mb-2">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="display[]" id="RR" value="RR">
+                        <label class="form-check-label" for="rr">RR</label>
+                    </div>
+                    @foreach ($tracks->sortBy('identifier') as $track)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="display[]" value="{{ $track->identifier }}">
+                        <label class="form-check-label">{{ $track->identifier }}</label>
+                    </div>
                     @endforeach
-                </select>
+                </div>
                 <button class="btn btn-sm btn-primary" type="submit">Sort</button>
             </form>
             <hr>
-            <livewire:controllers.pending-rcl-messages :track="$displayedTrack"/>
+            @if ($displayed)
+                <livewire:controllers.pending-rcl-messages :tracks="$displayed"/>
+            @endif
         </div>
     </div>
 @endsection
