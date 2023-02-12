@@ -1,36 +1,40 @@
 @extends('_layouts.main')
 @section('page')
-    @if (auth()->check() && (!auth()->user()->can('activePilot') && !auth()->user()->can('activeController')))
-        <div class="alert alert-danger">
-            <b>You must be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
+    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
+        <div>
+            <div class="uk-alert">
+                <p>Welcome to natTrak! Sign in, then select an option from the navigation bar above to get started.</p>
+            </div>
         </div>
-    @elseif (!auth()->check())
-        <div class="alert alert-danger">
-            <b>You must be logged in (via the nav bar) and be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
-        </div>
-    @endif
-    <img src="images/newsandnotams.png" class="img-fluid py-3" style="height: 100px;" />
-    <div class="row mt-4">
-        @if (count($notams) == 0)
-            <div class="col">
-                No NOTAMs available.
+        @if (auth()->check() && (!auth()->user()->can('activePilot') && !auth()->user()->can('activeController')))
+            <div class="uk-alert uk-alert-danger">
+                <b>You must be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
+            </div>
+        @elseif (!auth()->check())
+            <div class="uk-alert uk-alert-danger">
+                <b>You must be logged in (via the nav bar) and be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
             </div>
         @endif
-        @foreach ($notams as $notam)
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title text-body">{{ $notam->title }}</h6>
+        <h3>NOTAMs</h3>
+        <ul uk-accordion>
+            @foreach($notams as $notam)
+                <li class="{{ $loop->first ? 'uk-open' : '' }}">
+                    <a href="" class="uk-accordion-title">{{ $notam->title }}</a>
+                    <div class="uk-accordion-content">
                         @if ($notam->subtitle)
-                            <h6 class="card-subtitle mb-2 text-muted">{{ $notam->subtitle }}</h6>
+                            <p class="uk-text-italic">
+                                {{ $notam->subtitle }}
+                            </p>
                         @endif
-                        <p class="text-body">{{ $notam->content }}</p>
+                        <p>
+                            {{ $notam->content }}
+                        </p>
                         @if ($notam->url)
                             <a href="{{ $notam->url }}" class="card-link">Read more</a>
                         @endif
                     </div>
-                </div>
-            </div>
-        @endforeach
+                </li>
+            @endforeach
+        </ul>
     </div>
 @endsection
