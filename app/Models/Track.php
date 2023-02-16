@@ -41,12 +41,11 @@ class Track extends Model
         'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde'
     ];
 
-    protected $dates = [
-        'valid_to', 'valid_from', 'last_active'
-    ];
-
     protected $casts = [
-        'active' => 'bool'
+        'active' => 'bool',
+        'valid_from' => 'datetime',
+        'valid_to' => 'datetime',
+        'last_active' => 'datetime'
     ];
 
     /**

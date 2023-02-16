@@ -126,9 +126,9 @@ class RclMessage extends Model
      *
      * @var string[]
      */
-    protected $dates = [
-        'request_time',
-        'edit_lock_time'
+    protected $casts = [
+        'request_time' => 'datetime',
+        'edit_lock_time' => 'datetime'
     ];
 
     /**
