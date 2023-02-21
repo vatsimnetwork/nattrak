@@ -2,7 +2,7 @@
 @section('page')
     <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
         <div>
-            <div class="uk-alert">
+            <div class="uk-alert uk-alert-primary">
                 <p>Welcome to natTrak! Sign in, then select an option from the navigation bar above to get started.</p>
             </div>
         </div>
