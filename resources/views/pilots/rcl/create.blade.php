@@ -10,12 +10,13 @@
         </div>
         @if ($errors->any())
             <div class="uk-alert uk-alert-danger" role="alert">
-                <b>Some input was incorrect.</b>
+                <p class="uk-text-bold">Some input was incorrect.</p>
                 <ul>
                     @foreach ($errors->all() as $error)
                          <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+                <p>Need help? Press the <span class="uk-text-bold uk-text-small">HELP</span> button on the top right.</p>
             </div>
         @endif
         @if ($isConcorde)
