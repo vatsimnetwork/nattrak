@@ -2,7 +2,9 @@
 @section('page')
     <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
         <a href="{{ route('pilots.rcl.index') }}"><i class="fas fa-angle-left"></i> Back</a>
-        <h1 class="uk-text-bold uk-text-primary">Request oceanic clearance</h1>
+        <div class="uk-flex uk-flex-row uk-flex-between">
+            <h1 class="uk-text-bold uk-text-primary" id="start">Request oceanic clearance</h1>
+        </div>
         @if ($errors->any())
             <div class="uk-alert uk-alert-danger" role="alert">
                 <b>Some input was incorrect.</b>
@@ -14,12 +16,13 @@
             </div>
         @endif
         @if ($isConcorde)
-            <div class="uk-alert" role="alert">
+            <div class="uk-alert uk-alert-primary" role="alert">
                 Concorde aircraft type detected.
             </div>
         @endif
         <form class="uk-form-stacked" action="{{ route('pilots.rcl.store') }}" method="post">
             @csrf
+            <h4>Flight information</h4>
             <div class="uk-grid-small" uk-grid>
                 <div class="uk-width-1-2@m">
                     <label for="callsign" class="uk-form-label">Callsign</label>
@@ -70,52 +73,74 @@
                         </div>
                     </div>
                 @endif
-            </div>
-            <div class="form-row">
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="mach">Requested mach number</label>
-                    <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 080" maxlength="3" value="{{ old('mach') }}">
-                    <small class="uk-text-meta">Your requested mach number (don't include the dot at the start)</small>
+                <div class="uk-width-1-2@m">
+                    <label for="mach" class="uk-form-label">Requested mach number</label>
+                    <div class="uk-form-controls">
+                        <input required type="text" class="uk-input" name="mach" id="mach" placeholder="e.g. 080" maxlength="3" value="{{ old('mach') }}">
+                        <small class="uk-text-meta">Your requested mach number (don't include the dot at the start)</small>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div class="form-group">
-                <label for="track_id">Requested NAT Track</label>
-                <select class="form-control" id="track_id" name="track_id">
-                    <option value="" selected>None</option>
-                    @foreach($tracks as $track)
-                        <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
-                    @endforeach
-                </select>
-                <label><i>or</i></label><br>
-                <label for="random_routeing">Requested random routeing</label>
-                <input value="{{ old('random_routeing') }}" type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
-            </div>
-            <hr>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="entry_fix">Entry fix</label>
-                    <input value="{{ old('entry_fix') }}" required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
-                    <small class="uk-text-meta">The first fix in oceanic airspace.</small>
+            <h4>Route</h4>
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-width-2-5@m">
+                    <label for="track_id" class="uk-form-label">Requested NAT Track</label>
+                    <div class="uk-form-controls">
+                        <select class="uk-select" id="track_id" name="track_id">
+                            <option value="" selected>None</option>
+                            @foreach($tracks as $track)
+                                <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="entry_time">Estimate time at entry fix</label>
-                    <input value="{{ old('entry_time') }}" required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350">
-                    <small class="uk-text-meta">You can find this in your FMC, providing your simulator is set to real time.</small>
+                <div class="uk-width-expand@m">
+                    <div class="uk-flex uk-flex-middle uk-flex-column">
+                        <div class="uk-text-center uk-text-italic">or...</div>
+                    </div>
+                </div>
+                <div class="uk-width-2-5@m">
+                    <label for="random_routeing" class="uk-form-label">Requested random routeing</label>
+                    <div class="uk-form-controls">
+                        <input value="{{ old('random_routeing') }}" type="text" class="uk-input" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div class="form-group">
-                <label for="tmi">Current TMI (available in navigation bar)</label>
-                <input value="{{ old('tmi') }}" required type="text" class="form-control" name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
+            <h4>Oceanic entry</h4>
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-width-1-2@m">
+                    <label for="entry_fix" class="uk-form-label">Entry fix</label>
+                    <div class="uk-form-controls">
+                        <input value="{{ old('entry_fix') }}" required type="text" class="uk-input" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
+                        <small class="uk-text-meta">The first fix/waypoint in oceanic airspace.</small>
+                    </div>
+                </div>
+                <div class="uk-width-1-2@m">
+                    <label for="entry_time" class="uk-form-label">Estimated time of arrival for entry fix</label>
+                    <div class="uk-form-controls">
+                        <input value="{{ old('entry_time') }}" required type="number" class="uk-input" name="entry_time" id="entry_time" placeholder="e.g. 1350">
+                        <small class="uk-text-meta">You can find this in your FMC, providing your simulator is set to real time.</small>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="free_text">Free text (optional)</label>
-                <input value="{{ old('free_text') }}" type="text" class="form-control" name="free_text" id="free_text">
+            <h4>Metadata</h4>
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-width-1-2@m">
+                    <label for="tmi" class="uk-form-label">Current TMI (available at top of page)</label>
+                    <div class="uk-form-controls">
+                        <input type="text" class="uk-input" value="{{ old('tmi') }}" required name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
+                    </div>
+                </div>
+                <div class="uk-width-1-2@m">
+                    <label for="free_text" class="uk-form-label">Free text</label>
+                    <div class="uk-form-controls">
+                        <input type="text" class="uk-input" value="{{ old('free_text') }}" name="free_text" id="free_text">
+                    </div>
+                </div>
+                <div class="uk-form-controls">
+                    <button type="submit" class="uk-button uk-button-primary">Submit Oceanic Clearance Request</button>
+                </div>
             </div>
-            <hr>
             @if ($isConcorde)
                 <input type="hidden" name="is_concorde" value="1">
             @else
