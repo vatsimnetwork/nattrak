@@ -165,15 +165,30 @@
             action: tour.next
         }
 
-        tour.addStep({
-            id: 'start',
-            text: 'Trest',
-            attachTo: {
-                element: '#start',
-                on: 'bottom'
-            },
-            buttons: [ nextButton ]
-        })
+        const addTourStep = (id, text) => {
+            tour.addStep({
+                id: id,
+                text: text,
+                attachTo: {
+                    element: `#${id}`,
+                    on: 'bottom'
+                },
+                buttons: [ nextButton ]
+            })
+        }
+
+        addTourStep('start', 'This tour will guide you through each step of submitting your oceanic clearance request. Click Next step to continue');
+        addTourStep('callsign', 'Enter the callsign of your flight. For example: BAW21A, DLH625, AAL912. This needs to the same as the callsign you\'ve signed into vPilot/xPilot/Swift as.');
+        addTourStep('destination', 'Enter the 4 letter ICAO code of your destination airport. You can find this in your flight plan. For example, EGLL for London Heathrow.');
+        addTourStep('flight_level', 'Enter the flight level you wish to fly on the crossing. Generally this will be your current cruise level, or you could step climb prior to entry. Enter it as 3 digits e.g. 390, without the FL prefix.');
+        addTourStep('max_flight_level', 'Enter the maximum flight level you can fly during the crossing. The controller will use this information in case they need to change your flight level during the crossing. You can find this information in your aircraft\'s FMC/MCDU under the PROG (Airbus) or VNAV (Boeing) pages.');
+        addTourStep('mach', 'Enter the Mach number/speed you wish to fly on the crossing. Enter it as 3 digits e.g. 080 (.80 becomes 080), without the M prefix. If you need help with Mach numbers, check out the full Tutorial on the navigation bar.');
+        addTourStep('track_id', 'If you\'re flying a track, select it here. You can find it in your flight plan either directly or by cross referencing the track route to your flight plan. If you\'re not flying a track, leave this blank and enter a Random Routeing.');
+        addTourStep('random_routeing', 'If you\'re flying a random routeing (not a track), enter it here. It is the part of your flight plan route from oceanic entry to oceanic exit. Your flight plan OFP from SimBrief or similar services can help you figure out the entry and exit.');
+        addTourStep('entry_fix', 'Enter the entry fix/waypoint of your oceanic crossing here. Most of the time it is the first fix on the track or random routeing you selected.')
+        addTourStep('entry_time', 'Enter the estimated time of arrival to the entry fix in real Zulu/GMT time. You can find this in your FMC or flight plan. You may need to bring your sim back to real time to get an accurate reading. If you need further help, check out the full Tutorial on the navigation bar.');
+        addTourStep('tmi', 'Enter the current TMI, which you can find on the top of the page. This identifier confirms you\'re in receipt of up to date crossing information.')
+        addTourStep('free_text', 'If you have any extra information or requests for the controller, enter them here. Otherwise leave this blank.');
 
         function startTour() {
             tour.start();
