@@ -1,9 +1,12 @@
 @extends('_layouts.main')
 @section('page')
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
     <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
         <a href="{{ route('pilots.rcl.index') }}"><i class="fas fa-angle-left"></i> Back</a>
         <div class="uk-flex uk-flex-row uk-flex-between">
             <h1 class="uk-text-bold uk-text-primary" id="start">Request oceanic clearance</h1>
+            <button onclick="startTour()" class="uk-button">Help</button>
         </div>
         @if ($errors->any())
             <div class="uk-alert uk-alert-danger" role="alert">
@@ -146,7 +149,33 @@
             @else
                 <input type="hidden" name="is_concorde" value="0">
             @endif
-            <button type="submit" class="btn btn-primary">Submit Oceanic Clearance Request</button>
         </form>
     </div>
+    <script>
+        const tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                scrollTo: true
+            }
+        });
+
+        const nextButton = {
+            text: 'Next step',
+            action: tour.next
+        }
+
+        tour.addStep({
+            id: 'start',
+            text: 'Trest',
+            attachTo: {
+                element: '#start',
+                on: 'bottom'
+            },
+            buttons: [ nextButton ]
+        })
+
+        function startTour() {
+            tour.start();
+        }
+    </script>
 @endsection
