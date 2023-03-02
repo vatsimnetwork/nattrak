@@ -26,6 +26,7 @@ Route::prefix('auth')->name('auth')->group(function () {
     if (config('app.env') == 'local') {
         Route::get('/{cid}', function ($cid) {
             \Illuminate\Support\Facades\Auth::loginUsingId($cid);
+            flashAlert(type: 'info', title: 'Signed in', message: 'Dev mode as ' . $cid, toast: true, timer: true);
             return redirect()->route('welcome');
         });
     }
