@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @vite(['resources/scss/site.scss', 'resources/js/app.js'])
+    @vite(['resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
     @livewireStyles
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
