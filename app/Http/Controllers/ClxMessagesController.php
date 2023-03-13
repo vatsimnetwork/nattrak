@@ -36,20 +36,30 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        $track = null;
-        if ($request->has('sortByTrack') && !in_array($request->get('sortByTrack'), ['all', 'rr'])) {
-            $track = Track::active()->whereIdentifier($request->get('sortByTrack'))->firstOrFail();
+        $display = $request->get('display') ?? [];
+        $processedRclMsgs = collect();
+
+        foreach ($display as $id) {
+            $trackMessages = RclMessage::cleared()
+                ->with('latestClxMessage')
+                ->when($id != 'RR', function ($query) use ($id) { // Track
+                    $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
+                }, function ($query) { // RR
+                    $query->where('track_id', null);
+                })
+                ->orderByDesc('request_time')
+                ->get();
+
+            foreach ($trackMessages as $message) {
+                $processedRclMsgs->add($message);
+            }
         }
 
-        $processedRclMsgs = RclMessage::cleared()->with('latestClxMessage')->when($track, function ($query) use ($track) {
-            $query->whereTrackId($track->id);
-        })->orderBy('request_time')->get();
-
         return view('controllers.clx.processed', [
-            'displayedTrack' => $track,
+            'displayed' => $display,
             'tracks' => Track::active()->get(),
             'processedRclMsgs' => $processedRclMsgs,
-            '_pageTitle' => $track ? "Track {$track->identifier}" : "All tracks"
+            '_pageTitle' => $display ? 'Tracks ' . implode(", ", $display) : "Select tracks"
         ]);
     }
 
@@ -201,7 +211,7 @@ class ClxMessagesController extends Controller
             ->withProperties(['datalink' => $clxMessage->data_link_message])
             ->log("CLX Message Transmitted By " . $clxMessage->datalink_authority->name);
 
-        toastr()->success('Clearance transmitted.');
+        flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 
@@ -209,7 +219,7 @@ class ClxMessagesController extends Controller
     {
         $redirectToProcessed = $rclMessage->clxMessages->count() > 0;
         $rclMessage->delete();
-        toastr()->info('RCL deleted.');
+        flashAlert(type: 'success', title: null, message: 'Request deleted.', toast: true, timer: true);
         if ($redirectToProcessed) {
             return redirect()->route('controllers.clx.processed');
         } else {
@@ -226,7 +236,7 @@ class ClxMessagesController extends Controller
             'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.'
         ]);
 
-        toastr()->success('Revert to voice message sent. You can now delete the request.');
+        flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 }

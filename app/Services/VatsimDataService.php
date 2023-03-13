@@ -57,6 +57,8 @@ class VatsimDataService
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
+        //TODO: REMOVE FOR DEV
+        return true;
         $networkData = $this->getNetworkData();
         if (! $networkData) return false;
         return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
@@ -77,6 +79,8 @@ class VatsimDataService
 
     public function isActiveOceanicController(VatsimAccount $vatsimAccount)
     {
+        //TODO: REMOVE FOR DEV
+        return true;
         $networkData = $this->getNetworkData();
         if (! $networkData) return false;
         $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
@@ -100,7 +104,7 @@ class VatsimDataService
 
     public function getActiveControllerAuthority(VatsimAccount $vatsimAccount)
     {
-        if (! $this->isActiveOceanicController($vatsimAccount)) return null;
+        if (! $this->isActiveOceanicController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) return null;
 
         $callsignPrefix = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
 
@@ -115,6 +119,7 @@ class VatsimDataService
     {
         $networkData = $this->getNetworkData();
         if (! $networkData) return null;
+        $vatsimAccount->id = 899571;
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
             $data = $networkData->pilots[$key];
