@@ -5,16 +5,14 @@ namespace App\Services;
 use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
 use App\Models\VatsimAccount;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class VatsimDataService
 {
-    const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
-    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+    public const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
+    public const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
 
     private function getNetworkData()
     {
@@ -49,7 +47,9 @@ class VatsimDataService
                 return null;
             }
 
-            if (! $tracks[0]) return null;
+            if (! $tracks[0]) {
+                return null;
+            }
 
             return $tracks[0]->tmi;
         });
@@ -57,17 +57,19 @@ class VatsimDataService
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
-        //TODO: REMOVE FOR DEV
-        return true;
         $networkData = $this->getNetworkData();
-        if (! $networkData) return false;
+        if (! $networkData) {
+            return false;
+        }
         return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
     }
 
     public function getActiveControllerData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return null;
+        if (! $networkData) {
+            return null;
+        }
         if (in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->controllers, 'cid')));
             $data = $networkData->controllers[$key];
@@ -79,10 +81,10 @@ class VatsimDataService
 
     public function isActiveOceanicController(VatsimAccount $vatsimAccount)
     {
-        //TODO: REMOVE FOR DEV
-        return true;
         $networkData = $this->getNetworkData();
-        if (! $networkData) return false;
+        if (! $networkData) {
+            return false;
+        }
         $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
 
         if ($online) {
@@ -104,12 +106,16 @@ class VatsimDataService
 
     public function getActiveControllerAuthority(VatsimAccount $vatsimAccount)
     {
-        if (! $this->isActiveOceanicController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) return null;
+        if (! $this->isActiveOceanicController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) {
+            return null;
+        }
 
         $callsignPrefix = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
 
         foreach (DatalinkAuthorities::cases() as $authority) {
-            if ($callsignPrefix == $authority->value) return $authority;
+            if ($callsignPrefix == $authority->value) {
+                return $authority;
+            }
         }
 
         return null;
@@ -118,7 +124,9 @@ class VatsimDataService
     public function getActivePilotData(VatsimAccount $vatsimAccount)
     {
         $networkData = $this->getNetworkData();
-        if (! $networkData) return null;
+        if (! $networkData) {
+            return null;
+        }
         $vatsimAccount->id = 899571;
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
