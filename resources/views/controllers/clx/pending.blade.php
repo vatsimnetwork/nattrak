@@ -20,7 +20,8 @@
                         </div>
                     </div>
                 @endforeach
-                <button class="uk-button uk-button-small" type="submit">Sort</button>
+                <button class="uk-button uk-button-small uk-button-secondary" style="margin-left: 10px;" type="submit">Sort</button>
+                <button id="selectAll" class="uk-button uk-button-small" style="margin-left: 10px;">All</button>
             </div>
         </form>
         <hr>
@@ -28,4 +29,12 @@
             <livewire:controllers.pending-rcl-messages :tracks="$displayed"/>
         @endif
     </div>
+    <script type="module">
+        $('#selectAll').click(function (e) {
+            e.preventDefault();
+            $(':checkbox').each(function () {
+                this.checked = true;
+            });
+        })
+    </script>
 @endsection

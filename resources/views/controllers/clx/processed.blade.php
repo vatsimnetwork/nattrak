@@ -82,7 +82,6 @@
 
         $('#selectAll').click(function (e) {
             e.preventDefault();
-            alert('test');
             $(':checkbox').each(function () {
                 this.checked = true;
             });
