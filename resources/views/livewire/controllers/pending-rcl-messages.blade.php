@@ -1,15 +1,9 @@
 <div>
-    <link rel="stylesheet" href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    @if (config('services.clx-filtering.update.poll_for_updates') && config('services.clx-filtering.update.auto_populate_table'))
-    <div wire:poll.2s>
-    @else
-    <div>
-    @endif
+    <div @if (config('services.clx-filtering.update.poll_for_updates') && config('services.clx-filtering.update.auto_populate_table')) wire:poll.2s @endif>
         @if (config('services.clx-filtering.update.poll_for_updates') && config('services.clx-filtering.update.auto_populate_table'))
-            <p class="small">Automatic table updates enabled.</p>
+            <p class="uk-text-meta">Automatic table updates enabled.</p>
         @endif
-        <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
+        <table id="dataTable" class="dataTable uk-table uk-table-hover uk-table-striped uk-table-condensed">
             <thead>
             <tr>
                 <th>CS</th>
@@ -29,7 +23,7 @@
             <tbody>
             @foreach($pendingRclMsgs as $msg)
                 <tr>
-                    <th>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</th>
+                    <td class="uk-text-bold">{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</td>
                     <td>{{ $msg->destination }}
                     <td>{{ $msg->track ? 'NAT' : 'RR' }}</td>
                     <td>{{ $msg->track?->identifier }}</td>
@@ -40,17 +34,17 @@
                     <td>{{ $msg->mach }}</td>
                     <td>{{ $msg->request_time->format('Hi') }}</td>
                     <td>
-                        <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="btn btn-sm btn-primary"><b>ACTION</b></a>
+                        <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="uk-button uk-button-small uk-button-primary">ACTION</a>
                         @if ($msg->isEditLocked())
-                            <span class="text-danger"><i class="fas fa-lock"></i></span>
+                            <span class="uk-text-danger"><i class="fas fa-lock"></i></span>
                         @endif
                     </td>
                     <td>
                         <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
                             @csrf
-                            <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
+                            <button class="uk-button uk-button-small" onclick="return confirm('Are you sure?')">DEL</button>
                             @if ($msg->isEditLocked())
-                                <span class="text-danger"><i class="fas fa-lock"></i></span>
+                                <span class="uk-text-danger"><i class="fas fa-lock"></i></span>
                             @endif
                         </form>
                     </td>
@@ -58,10 +52,12 @@
             @endforeach
             </tbody>
         </table>
+{{--        <script type="module">--}}
+{{--            $(document).ready(function () {--}}
+{{--                let table = new DataTable('#dataTable', {--}}
+{{--                    responsive: true--}}
+{{--                });--}}
+{{--            })--}}
+{{--        </script>--}}
     </div>
-    {{--<script>
-        $(document).ready( function () {
-            $('#dataTable').DataTable();
-        } );
-    </script>--}}
 </div>
