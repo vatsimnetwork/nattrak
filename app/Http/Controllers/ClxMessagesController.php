@@ -36,7 +36,7 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        $display = $request->get('display');
+        $display = $request->get('display') ?? [];
         $processedRclMsgs = collect();
 
         foreach ($display as $id) {
@@ -47,7 +47,7 @@ class ClxMessagesController extends Controller
                 }, function ($query) { // RR
                     $query->where('track_id', null);
                 })
-                ->orderByDesc('latestClxMessage.created_at')
+                ->orderByDesc('request_time')
                 ->get();
 
             foreach ($trackMessages as $message) {

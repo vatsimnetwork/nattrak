@@ -20,7 +20,8 @@
                         </div>
                     </div>
                 @endforeach
-                <button class="uk-button uk-button-small" type="submit">Sort</button>
+                <button class="uk-button uk-button-small uk-button-secondary" style="margin-left: 10px;" type="submit">Sort</button>
+                <button id="selectAll" class="uk-button uk-button-small" style="margin-left: 10px;">All</button>
             </div>
         </form>
         <hr>
@@ -28,7 +29,7 @@
             No processed RCL messages.
         @endif
         <div>
-            <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
+            <table id="dataTable" class="dataTable uk-table uk-table-hover uk-table-striped uk-table-condensed">
                 <thead>
                 <tr>
                     <th>CS</th>
@@ -46,7 +47,7 @@
                 <tbody>
                 @foreach($processedRclMsgs as $msg)
                     <tr>
-                        <th>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</th>
+                        <td class="uk-text-bold">{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</td>
                         <td>{{ $msg->destination }}
                         <td>{{ $msg->latestClxMessage?->track ? 'NAT '. $msg->latestClxMessage?->track->identifier : 'RR' }} {{ $msg->latestClxMessage?->routeing_changed ? '*' : ''}}</td>
                         <td>{{ $msg->latestClxMessage?->entry_fix }}</td>
@@ -55,13 +56,12 @@
                         <td>{{ $msg->latestClxMessage?->mach }}{{ $msg->latestClxMessage?->mach != $msg->mach ? '*' : ''}}</td>
                         <td>{{ $msg->latestClxMessage->created_at->format('Hi') }}</td>
                         <td>
-                            <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}"
-                               class="btn btn-sm btn-primary"><b>View</b></a>
-                        </td>
+                            <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="uk-button uk-button-small uk-button-primary">ACTION</a>
+                           </td>
                         <td>
                             <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
                                 @csrf
-                                <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
+                                <button class="uk-button uk-button-small" onclick="return confirm('Are you sure?')">DEL</button>
                             </form>
                         </td>
                     </tr>
@@ -70,9 +70,22 @@
             </table>
         </div>
     </div>
-    <script>
+    <script type="module">
         $(document).ready(function () {
-            $('#dataTable').DataTable();
-        });
+            let table = new DataTable('#dataTable', {
+                responsive: true,
+                order: [[
+                    7, 'desc'
+                ]]
+            });
+        })
+
+        $('#selectAll').click(function (e) {
+            e.preventDefault();
+            alert('test');
+            $(':checkbox').each(function () {
+                this.checked = true;
+            });
+        })
     </script>
 @endsection
