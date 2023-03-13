@@ -21,6 +21,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.19.0",
+        "jn-jairo/laravel-ngrok": "^3.0",
         "laravel/pint": "^0.2.3",
         "laravel/sail": "^1.15.0",
         "mockery/mockery": "^1.5.0",
