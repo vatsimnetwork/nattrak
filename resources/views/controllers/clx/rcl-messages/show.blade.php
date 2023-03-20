@@ -94,7 +94,7 @@
                                     <div class="uk-margin">
                                         <label class="uk-form-label" for="">Change flight level to</label>
                                         <div class="uk-form-controls">
-                                            <select name="atc_fl" id="" autocomplete="off" class="uk-select uk-form-small">
+                                            <select name="atc_fl" id="atc_fl" autocomplete="off" class="uk-select uk-form-small">
                                                 <option value="" selected>Don't change</option>
                                                 @for ($i = 200; $i <= 450; $i += 10)
                                                     @if (in_array($i, [420, 440])) @continue @endif
@@ -106,7 +106,7 @@
                                     <div class="uk-margin">
                                         <label class="uk-form-label" for="">Change mach to</label>
                                         <div class="uk-form-controls">
-                                            <select name="atc_mach" id="" autocomplete="off" class="uk-select uk-form-small">
+                                            <select name="atc_mach" id="atc_mach" autocomplete="off" class="uk-select uk-form-small">
                                                 <option value="" selected>Don't change</option>
                                                 @for ($i = 55; $i < 99; $i++)
                                                     <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
@@ -120,21 +120,20 @@
                                     <label class="uk-form-label" for="">Entry time requirement for {{ $message->entry_fix }}</label>
                                     <div class="uk-form-controls">
                                         <select class="uk-select uk-form-small" autocomplete="off" name="entry_time_type" id="entry_time_type">
-                                            <option value="" selected>None</option>
+                                            <option value="=" selected>At</option>
                                             <option value="<">Before</option>
-                                            <option value="=">At</option>
                                             <option value=">">After</option>
                                         </select>
-                                        <input style="display:none" type="number" name="entry_time_requirement" id="entry_time_requirement" class="uk-input uk-form-small" placeholder="1015" maxlength="4">
-                                        <script type="module">
-                                            $('#entry_time_type').on('change', function () {
-                                                if (this.value == '') {
-                                                    $('#entry_time_requirement').hide();
-                                                } else {
-                                                    $('#entry_time_requirement').show();
-                                                }
-                                            });
-                                        </script>
+                                        <input type="number" name="entry_time_requirement" id="entry_time_requirement" class="uk-input uk-form-small" value="{{ $message->entry_time }}" maxlength="4">
+{{--                                        <script type="module">--}}
+{{--                                            $('#entry_time_type').on('change', function () {--}}
+{{--                                                if (this.value == '') {--}}
+{{--                                                    $('#entry_time_requirement').hide();--}}
+{{--                                                } else {--}}
+{{--                                                    $('#entry_time_requirement').show();--}}
+{{--                                                }--}}
+{{--                                            });--}}
+{{--                                        </script>--}}
                                     </div>
                                 </div>
                                 <hr>
@@ -161,6 +160,9 @@
                                     <div class="uk-form-controls">
                                         <input type="text" name="free_text" class="uk-input uk-form-small">
                                     </div>
+                                </div>
+                                <div class="uk-margin" style="border: 1px solid grey; padding: 5px; margin-bottom: 0;">
+                                    <livewire:controllers.conflict-checker level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
                                 </div>
                             </div>
                         </div>
@@ -202,4 +204,9 @@
             </form>
         </div>
     </div>
+    <script type="module">
+        $("#atc_fl").change(function () {
+            Livewire.emit('levelChanged', this.value);
+        });
+    </script>
 @endsection
