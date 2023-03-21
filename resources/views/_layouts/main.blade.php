@@ -135,6 +135,18 @@
                                     </button>
                                 </a>
                             </li>
+                            @if (config('app.env') == 'local')
+                                <li>
+                                    <a href="/auth/1234567">
+                                        <button class="uk-button uk-button-primary uk-button-small uk-text-capitalize">
+                                            <div class="uk-flex uk-flex-middle">
+                                                <i class="fa-solid fa-link" style="padding-right: 0.5em"></i>
+                                                <span>Sign In With Dev Account</span>
+                                            </div>
+                                        </button>
+                                    </a>
+                                </li>
+                            @endif
                         @endauth
                     </ul>
                 </div>
