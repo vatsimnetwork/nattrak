@@ -131,6 +131,7 @@ class ClxMessagesController extends Controller
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
+            'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' . $request->get('free_text') : $request->get('free_text'),
             'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority'))
         ]);
@@ -160,7 +161,8 @@ class ClxMessagesController extends Controller
         } else {
             $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach;
         }
-        if ($clxMessage->entry_time_restriction) {
+        // Only show crossing restriction if entry time =/= the restriction due to the bodge
+        if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
             $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
@@ -180,7 +182,8 @@ class ClxMessagesController extends Controller
         } else {
             $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         }
-        if ($clxMessage->entry_time_restriction) {
+        // Only show crossing restriction if entry time =/= the restriction due to the bodge
+        if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
             $msg .= " Cross {$clxMessage->entry_fix} " . strtolower($clxMessage->formatEntryTimeRestriction()) . ".";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {

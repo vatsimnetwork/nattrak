@@ -29,11 +29,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidTo($value)
- * @mixin \Eloquent
  * @method static Builder|Track active()
  * @property int $concorde
  * @method static Builder|Track concorde()
  * @method static Builder|Track whereConcorde($value)
+ * @mixin \Eloquent
  */
 class Track extends Model
 {
