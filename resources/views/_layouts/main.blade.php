@@ -148,6 +148,11 @@
                                 </li>
                             @endif
                         @endauth
+                        <li>
+                            <a>
+                                <span class="uk-button uk-button-secondary">TMI {{ current_tmi() }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
