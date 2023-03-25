@@ -2,10 +2,11 @@
 
 namespace App\Http\Livewire\Controllers;
 
+use App\Enums\ConflictLevelEnum;
 use App\Models\ClxMessage;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class ConflictChecker extends Component
@@ -18,6 +19,7 @@ class ConflictChecker extends Component
     public $time;
 
     public $conflicts = [];
+    public ConflictLevelEnum $conflictLevel = ConflictLevelEnum::None;
 
     protected $listeners = ['levelChanged', 'timeChanged'];
 
@@ -50,6 +52,7 @@ class ConflictChecker extends Component
         } else {
             $this->time = $newTime;
         }
+        $this->check();
     }
 
     private function getTimeRange(string $time, int $minutes): array
@@ -62,11 +65,33 @@ class ConflictChecker extends Component
         return $times;
     }
 
+    private function formatDiff(Carbon $a, Carbon $b): string
+    {
+        if ($a->diffInMinutes($b) < 2) {
+            return "Same";
+        } else {
+            return $a->longAbsoluteDiffForHumans($b);
+        }
+    }
+
+    private function determineConflictLevel(Collection $aircraft): ConflictLevelEnum
+    {
+        $level = ConflictLevelEnum::None;
+        foreach ($aircraft as $a) {
+            if ($a['diffMinutes'] < 5) {
+                $level = ConflictLevelEnum::Warning;
+            }
+            if ($a['diffMinutes'] >= 5 && $a['diffMinutes'] <= 10) {
+                $level = ConflictLevelEnum::Potential;
+            }
+        }
+
+        return $level;
+    }
+
     public function check()
     {
-        $timeArray = $this->getTimeRange($this->time, 5);
-        Log::info($timeArray);
-
+        $timeArray = $this->getTimeRange($this->time, 10);
         $this->conflicts = [];
         $results = ClxMessage::whereEntryFix($this->entry)
             ->whereIn(
@@ -81,9 +106,12 @@ class ConflictChecker extends Component
                 'id' => $key,
                 'callsign' => $message->rclMessage->callsign,
                 'level' => $message->flight_level,
-                'time' => $message->formatEntryTimeRestriction()
+                'time' => $message->formatEntryTimeRestriction(),
+                'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->raw_entry_time_restriction)),
+                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->raw_entry_time_restriction))
             ];
         });
+        $this->conflictLevel = $this->determineConflictLevel($mapped);
         $this->conflicts = $mapped;
     }
 }

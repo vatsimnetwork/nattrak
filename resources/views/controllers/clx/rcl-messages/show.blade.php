@@ -208,5 +208,9 @@
         $("#atc_fl").change(function () {
             Livewire.emit('levelChanged', this.value);
         });
+
+        $('#entry_time_requirement').blur(function () {
+            Livewire.emit('timeChanged', this.value);
+        })
     </script>
 @endsection
