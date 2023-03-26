@@ -1,3 +1,13 @@
+FROM node:18-bullseye AS nodejs
+
+WORKDIR /var/www/app
+COPY package.json package-lock.json vite.config.js /var/www/app/
+COPY resources /var/www/app/resources
+
+RUN set -ex \
+    && npm ci \
+    && npm run build
+
 FROM composer:2.4.2 as vendor
 
 WORKDIR /app
@@ -37,6 +47,7 @@ RUN pecl install redis && docker-php-ext-enable redis.so
 WORKDIR /var/www/app
 COPY --chown=www-data:www-data . /var/www/app
 COPY --chown=www-data:www-data --from=vendor /app/vendor /var/www/app/vendor
+COPY --chown=www-data:www-data --from=nodejs /var/www/app/public/build /var/www/app/public/build
 
 RUN rm /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
