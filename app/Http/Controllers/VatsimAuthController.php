@@ -95,7 +95,7 @@ class VatsimAuthController extends Controller
         Auth::login($user, false);
 
         //Redirect
-        toastr()->success("Hi, $user->given_name!");
+        flashAlert(type: 'success', title: 'Hello!', message: null, toast: true, timer: true);
         if ($request->session()->exists('intended')) {
             return redirect($request->session()->get('intended'));
         } else {

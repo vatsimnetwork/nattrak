@@ -50,7 +50,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereTrackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereVatsimAccountId($value)
- * @mixin \Eloquent
  * @property string|null $max_flight_level
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
@@ -84,6 +83,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereIsConcorde($value)
  * @method static Builder|RclMessage whereUpperFlightLevel($value)
  * @property-read \App\Models\ClxMessage|null $latestClxMessage
+ * @mixin \Eloquent
  */
 class RclMessage extends Model
 {

@@ -1,53 +1,67 @@
 <div>
     <div wire:poll.8s.keep-alive="pollForMessages">
-        <p class="lead">CPDLC Messages</p>
+        <h3>CPDLC Messages</h3>
         @foreach($cpdlcMessages as $message)
-            <div class="p-3 border d-flex flex-row ">
-                <div class="mr-2">
-                    <i class="fas fa-arrow-down" style="font-size: 2em;" ></i>
-                </div>
-                <div>
-                    <p class="lead">Message from {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->datalink_authority->name }}</p>
-                    <p>
-                        // {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->free_text }}
-                    </p>
+            <div class="uk-card uk-card-small uk-card-body">
+                <div class="uk-flex uk-flex-row">
+                    <div class="uk-margin-right">
+                        <i class="fas fa-arrow-down uk-text-secondary" style="font-size: 2em;" ></i>
+                    </div>
+                    <div>
+                        <h5>Message from {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->datalink_authority->name }}</h5>
+                        <p>
+                            // {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->free_text }}
+                        </p>
+                    </div>
                 </div>
             </div>
         @endforeach
-        <p class="lead">Clearance Messages</p>
+        <h3>Clearance Messages</h3>
         @foreach($clxMessages as $message)
-            <div class="p-3 border d-flex flex-row ">
-                <div class="mr-2">
-                    <i class="fas fa-arrow-down" style="font-size: 2em;" ></i>
+            <div class="uk-card uk-card-small uk-card-body">
+                <div class="uk-flex uk-flex-row">
+                    <div class="uk-margin-right">
+                        <i class="fas fa-arrow-down uk-text-secondary" style="font-size: 2em;" ></i>
+                    </div>
+                    <div>
+                        <h5>Oceanic Clearance Message - {{\Carbon\Carbon::parse($message['created_at'])}}</h5>
+                    </div>
                 </div>
                 <div>
-                    <p class="lead">Oceanic Clearance Message - {{\Carbon\Carbon::parse($message['created_at'])}}</p>
-                    <p>
+                    <p style="font-family: monospace">
                         @foreach(\App\Models\ClxMessage::whereId($message['id'])->first()->datalink_message as $line)
                             {{ $line }}<br>
                         @endforeach
                     </p>
                     <p>
-                       <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simple_datalink_message }}</b>
+                        <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simple_datalink_message }}</b>
                     </p>
                 </div>
             </div>
+            @if (! $loop->last)
+                <hr>
+            @endif
         @endforeach
-        <p class="lead">Request Messages</p>
+        <h3>Request Messages</h3>
         @foreach($rclMessages as $message)
-            <div class="p-3 border d-flex flex-row ">
-                <div class="mr-2">
-                    <i class="fas fa-arrow-up" style="font-size: 2em;" ></i>
+            <div class="uk-card uk-card-small uk-card-body">
+                <div class="uk-flex uk-flex-row">
+                    <div class="uk-margin-right">
+                        <i class="fas fa-arrow-up uk-text-secondary" style="font-size: 2em;" ></i>
+                    </div>
+                    <div>
+                        <h5>Oceanic Clearance Request - {{ $message->request_time }}</h5>
+                    </div>
                 </div>
-                <div>
-                    <p class="lead">Oceanic Clearance Request - {{ $message->request_time }}</p>
-                    <p>
-                        {{ $message->dataLinkMessage }}
-                    </p>
-                </div>
+                <p style="font-family: monospace">
+                    {{ $message->dataLinkMessage }}
+                </p>
             </div>
+            @if (! $loop->last)
+                <hr>
+            @endif
         @endforeach
-        <p class="small text-muted">Last updated {{ now() }}</p>
+        <p class="uk-text-meta">Last updated {{ now() }}</p>
     </div>
     <script>
         window.onload = function () {
