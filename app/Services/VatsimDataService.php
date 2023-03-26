@@ -127,7 +127,6 @@ class VatsimDataService
         if (! $networkData) {
             return null;
         }
-        $vatsimAccount->id = 899571;
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
             $data = $networkData->pilots[$key];
