@@ -10,7 +10,7 @@ class ViewsController extends Controller
     public function welcome()
     {
         $notams = Cache::remember('notams', now()->addMinutes(10), function () {
-            return json_decode(Http::timeout(5)->get('https://ganderoceanicoca.ams3.digitaloceanspaces.com/resources/data/nattrak/notams.json'));
+            return json_decode(Http::timeout(5)->get('https://gist.githubusercontent.com/liessdow/78c35cbdeeb97add6a721d3d6b6f0078/raw'));
         });
         return view('welcome', [
             'notams' => $notams
