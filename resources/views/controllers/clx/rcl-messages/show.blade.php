@@ -161,8 +161,10 @@
                                         <input type="text" name="free_text" class="uk-input uk-form-small">
                                     </div>
                                 </div>
-                                <div class="uk-margin" style="border: 1px solid grey; padding: 5px; margin-bottom: 0;">
-                                    <livewire:controllers.conflict-checker level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
+                                <div class="uk-margin">
+                                    <div class="uk-card uk-card-default uk-card-body uk-padding-remove" style="padding: 15px !important;">
+                                        <livewire:controllers.conflict-checker callsign="{{ $message->callsign }}" level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
