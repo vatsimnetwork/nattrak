@@ -103,7 +103,7 @@ class ConflictChecker extends Component
         if ($a->diffInMinutes($b) < 2) {
             return 'Same';
         } else {
-            return $a->longAbsoluteDiffForHumans($b);
+            return $a > $b ? "{$a->longAbsoluteDiffForHumans($b)} prior" : "{$a->longAbsoluteDiffForHumans($b)} after";
         }
     }
 
