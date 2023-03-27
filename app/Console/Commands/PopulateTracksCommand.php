@@ -6,7 +6,6 @@ use App\Models\Track;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class PopulateTracksCommand extends Command
 {
@@ -14,7 +13,7 @@ class PopulateTracksCommand extends Command
 
     protected $description = 'Populate active NAT tracks';
 
-    const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+    public const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
 
     public function handle()
     {

@@ -19,7 +19,9 @@ class PendingRclMessages extends Component
             }, function ($query) {
                 $query->where('track_id', null);
             })->orderBy('request_time')->get();
-            foreach ($trackMsgs as $msg) { $pendingRclMsgs->add($msg); }
+            foreach ($trackMsgs as $msg) {
+                $pendingRclMsgs->add($msg);
+            }
         }
 
         return view('livewire.controllers.pending-rcl-messages', [
