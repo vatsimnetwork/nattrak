@@ -48,6 +48,9 @@ WORKDIR /var/www/app
 COPY --chown=www-data:www-data . /var/www/app
 COPY --chown=www-data:www-data --from=vendor /app/vendor /var/www/app/vendor
 COPY --chown=www-data:www-data --from=nodejs /var/www/app/public/build /var/www/app/public/build
+RUN set -ex \
+    && php artisan vendor:publish --tag=livewire:assets --force \
+    && chown -R www-data:www-data public/vendor/livewire
 
 RUN rm /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
