@@ -35,23 +35,23 @@ return [
             'redirect_uri' => env('VATSIM_REDIRECT_URI'),
             'client_id' => env('VATSIM_CLIENT_ID'),
             'secret' => env('VATSIM_SECRET'),
-            'endpoint' => env('VATSIM_ENDPOINT')
-        ]
+            'endpoint' => env('VATSIM_ENDPOINT'),
+        ],
     ],
 
     'tracks' => [
         'auto_update' => env('UPDATE_TRACKS', true),
-        'override_tmi' => env('OVERRIDE_TMI', null)
+        'override_tmi' => env('OVERRIDE_TMI', null),
     ],
 
     'pruning' => [
-        'prune_msgs' => env('PRUNE_MSGS', true)
+        'prune_msgs' => env('PRUNE_MSGS', true),
     ],
 
     'clx-filtering' => [
         'update' => [
             'poll_for_updates' => env('POLL_CLX_TABLE', true),
-            'auto_populate_table' => env('AUTO_POPULATE_CLX_TABLE', true)
-        ]
-    ]
+            'auto_populate_table' => env('AUTO_POPULATE_CLX_TABLE', true),
+        ],
+    ],
 ];

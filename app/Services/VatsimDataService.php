@@ -11,17 +11,20 @@ use Illuminate\Support\Facades\Log;
 
 class VatsimDataService
 {
-    public const NETWORK_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
-    public const TRACK_API_ENDPOINT = "https://tracks.ganderoceanic.ca/data";
+    public const NETWORK_DATA_URL = 'https://data.vatsim.net/v3/vatsim-data.json';
+
+    public const TRACK_API_ENDPOINT = 'https://tracks.ganderoceanic.ca/data';
 
     private function getNetworkData()
     {
         $networkResponse = Cache::remember('vatsim-data', 30, function () {
             $request = Http::timeout(10)->get(self::NETWORK_DATA_URL);
             if (! $request->successful()) {
-                Log::warning('Failed to download network data, response was ' . $request->status());
+                Log::warning('Failed to download network data, response was '.$request->status());
+
                 return null;
             }
+
             return json_decode($request);
         });
 
@@ -31,14 +34,14 @@ class VatsimDataService
     public function getTmi(): ?string
     {
         if (config('services.tracks.override_tmi')) {
-            return (string)config('services.tracks.override_tmi');
+            return (string) config('services.tracks.override_tmi');
         }
 
         return Cache::remember('tmi', now()->addHours(1), function () {
             $trackData = Http::get(self::TRACK_API_ENDPOINT, [
                 'headers' => [
-                    'Accept' => 'application/json'
-                ]
+                    'Accept' => 'application/json',
+                ],
             ]);
 
             if ($trackData) {
@@ -61,7 +64,8 @@ class VatsimDataService
         if (! $networkData) {
             return false;
         }
-        return (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
+
+        return in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'));
     }
 
     public function getActiveControllerData(VatsimAccount $vatsimAccount)
@@ -73,6 +77,7 @@ class VatsimDataService
         if (in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->controllers, 'cid')));
             $data = $networkData->controllers[$key];
+
             return $data;
         } else {
             return null;
@@ -130,6 +135,7 @@ class VatsimDataService
         if (in_array($vatsimAccount->id, array_column($networkData->pilots, 'cid'))) {
             $key = (array_search($vatsimAccount->id, array_column($networkData->pilots, 'cid')));
             $data = $networkData->pilots[$key];
+
             return $data;
         } else {
             return null;

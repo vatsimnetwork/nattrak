@@ -18,12 +18,14 @@ class AdministrationController extends Controller
     public function accounts()
     {
         $privilegedAccounts = VatsimAccount::where('access_level', AccessLevelEnum::Administrator)->orWhere('access_level', AccessLevelEnum::Root)->get();
+
         return view('administration.accounts.index', compact('privilegedAccounts'));
     }
 
     public function controllers()
     {
         $controllerAccounts = VatsimAccount::whereAccessLevel(AccessLevelEnum::Controller)->get();
+
         return view('administration.accounts.controllers', compact('controllerAccounts'));
     }
 
@@ -31,8 +33,9 @@ class AdministrationController extends Controller
     {
         $vatsimAccount = VatsimAccount::whereId($request->get('id'))->first();
 
-        if (!$vatsimAccount) {
+        if (! $vatsimAccount) {
             toastr()->error('Account not found. They may need to login to natTrak first.');
+
             return redirect()->route('administration.accounts');
         }
 
@@ -40,6 +43,7 @@ class AdministrationController extends Controller
         $vatsimAccount->save();
 
         flashAlert(type: 'success', title: 'Account added', message: null, toast: true, timer: true);
+
         return redirect()->route('administration.accounts');
     }
 
@@ -47,11 +51,13 @@ class AdministrationController extends Controller
     {
         $vatsimAccount = VatsimAccount::whereId($request->get('id'))->first();
 
-        if (!$vatsimAccount) {
+        if (! $vatsimAccount) {
             flashAlert(type: 'error', title: 'Account not found. They may need to login to natTrak first.', message: null, toast: false, timer: false);
+
             return redirect()->route('administration.controllers');
         } elseif ($vatsimAccount->can('administrate')) {
             flashAlert(type: 'error', title: 'Account already an administrator.', message: null, toast: false, timer: false);
+
             return redirect()->route('administration.controllers');
         }
 
@@ -59,6 +65,7 @@ class AdministrationController extends Controller
         $vatsimAccount->save();
 
         flashAlert(type: 'success', title: 'Account added', message: null, toast: true, timer: true);
+
         return redirect()->route('administration.controllers');
     }
 
@@ -68,9 +75,11 @@ class AdministrationController extends Controller
 
         if (Auth::id() == $vatsimAccount->id) {
             flashAlert(type: 'error', title: 'You can\'t remove yourself!', message: null, toast: false, timer: false);
+
             return redirect()->route('administration.accounts');
         } elseif ($vatsimAccount->access_level == AccessLevelEnum::Root) {
             flashAlert(type: 'error', title: 'You can\'t remove a root user.', message: null, toast: false, timer: false);
+
             return redirect()->route('administration.accounts');
         }
 
@@ -83,6 +92,7 @@ class AdministrationController extends Controller
         $vatsimAccount->save();
 
         flashAlert(type: 'info', title: "$vatsimAccount->id's access has been removed.", message: null, toast: false, timer: false);
+
         return redirect()->route('administration.accounts');
     }
 
@@ -92,6 +102,7 @@ class AdministrationController extends Controller
 
         if (Auth::id() == $vatsimAccount->id) {
             flashAlert(type: 'error', title: 'You can\'t remove yourself!', message: null, toast: false, timer: false);
+
             return redirect()->route('administration.controllers');
         }
 
@@ -99,13 +110,14 @@ class AdministrationController extends Controller
         $vatsimAccount->save();
 
         flashAlert(type: 'info', title: "$vatsimAccount->id's access has been removed.", message: null, toast: false, timer: false);
+
         return redirect()->route('administration.controllers');
     }
 
     public function activityLog()
     {
         return view('administration.activity-log', [
-            'log' => Activity::all()
+            'log' => Activity::all(),
         ]);
     }
 }

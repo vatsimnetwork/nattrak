@@ -41,7 +41,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('administrate', function (VatsimAccount $account) {
-            return ($account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root);
+            return $account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root;
         });
 
         Gate::define('activePilot', function (VatsimAccount $account) use ($dataService) {

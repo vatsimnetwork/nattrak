@@ -14,6 +14,6 @@ class PreventRequestsDuringMaintenance extends Middleware
     protected $except = [
         '/api/plugins',
         '/pluginapi.php',
-        '/api/*'
+        '/api/*',
     ];
 }

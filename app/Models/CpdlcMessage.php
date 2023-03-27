@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VatsimAccount|null $controller
  * @property-read \App\Models\VatsimAccount|null $pilot
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage query()
@@ -48,11 +49,11 @@ class CpdlcMessage extends Model
     }
 
     protected $fillable = [
-        'pilot_id', 'pilot_callsign', 'datalink_authority', 'free_text'
+        'pilot_id', 'pilot_callsign', 'datalink_authority', 'free_text',
     ];
 
     protected $casts = [
-        'datalink_authority' => DatalinkAuthorities::class
+        'datalink_authority' => DatalinkAuthorities::class,
     ];
 
     public function pilot()

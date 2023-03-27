@@ -11,8 +11,11 @@ use Livewire\Component;
 class MessageHistory extends Component
 {
     public $rclMessages;
+
     public $clxMessages;
+
     public $cpdlcMessages;
+
     public $lastPollTime;
 
     public function mount()
@@ -58,10 +61,10 @@ class MessageHistory extends Component
             foreach ($this->rclMessages as $rclMessage) {
                 if ($rclMessage->clxMessages->count() > 0) {
                     foreach ($rclMessage->clxMessages->sortByDesc('created_at') as $clxMessage) {
-                        if (!$this->clxMessages->contains('id', $clxMessage->id)) {
+                        if (! $this->clxMessages->contains('id', $clxMessage->id)) {
                             $this->clxMessages->add($clxMessage);
                             $this->clxMessages->sortByDesc('created_at');
-                            $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: ' . $clxMessage->datalink_message[0]]);
+                            $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: '.$clxMessage->datalink_message[0]]);
                         }
                     }
                 }
@@ -71,7 +74,7 @@ class MessageHistory extends Component
         $newCpdlcMessages = CpdlcMessage::where('created_at', '>', $this->lastPollTime)->where('pilot_id', Auth::id())->get();
         foreach ($newCpdlcMessages as $message) {
             $this->cpdlcMessages->add($message);
-            $this->dispatchBrowserEvent('cpdlc-received', ['dl' => 'CPDLC message received: ' . $message->free_text]);
+            $this->dispatchBrowserEvent('cpdlc-received', ['dl' => 'CPDLC message received: '.$message->free_text]);
         }
 
         $this->lastPollTime = now();

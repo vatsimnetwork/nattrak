@@ -18,7 +18,8 @@ class ClxMessagesController extends Controller
 
     /**
      * Initialises VATSIM data service for grabbing active authority
-     * @param VatsimDataService $dataService
+     *
+     * @param  VatsimDataService  $dataService
      */
     public function __construct(VatsimDataService $dataService)
     {
@@ -30,7 +31,7 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.pending', [
             'displayed' => $request->get('display'),
             'tracks' => Track::active()->get(),
-            '_pageTitle' => $request->get('display') ? "Tracks " . implode(", ", $request->get('display')) : 'None selected'
+            '_pageTitle' => $request->get('display') ? 'Tracks '.implode(', ', $request->get('display')) : 'None selected',
         ]);
     }
 
@@ -59,7 +60,7 @@ class ClxMessagesController extends Controller
             'displayed' => $display,
             'tracks' => Track::active()->get(),
             'processedRclMsgs' => $processedRclMsgs,
-            '_pageTitle' => $display ? 'Tracks ' . implode(", ", $display) : "Select tracks"
+            '_pageTitle' => $display ? 'Tracks '.implode(', ', $display) : 'Select tracks',
         ]);
     }
 
@@ -81,7 +82,7 @@ class ClxMessagesController extends Controller
             'dlAuthorities' => DatalinkAuthorities::cases(),
             'tracks' => Track::active()->get(),
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
-            '_pageTitle' => $rclMessage->callsign
+            '_pageTitle' => $rclMessage->callsign,
         ]);
     }
 
@@ -105,11 +106,12 @@ class ClxMessagesController extends Controller
             $newTrack = Track::active()->where('id', $request->get('new_track_id'))->first();
             if (! $newTrack) {
                 toastr()->error('Track not found');
+
                 return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
             }
-            $newEntryFix = strtok($newTrack->last_routeing, " ");
+            $newEntryFix = strtok($newTrack->last_routeing, ' ');
         } elseif ($request->filled('new_random_routeing')) {
-            $newEntryFix = strtok($request->get('new_random_routeing'), " ");
+            $newEntryFix = strtok($request->get('new_random_routeing'), ' ');
         }
 
         /**
@@ -132,8 +134,8 @@ class ClxMessagesController extends Controller
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
-            'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' . $request->get('free_text') : $request->get('free_text'),
-            'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority'))
+            'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
+            'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority')),
         ]);
 
         /**
@@ -151,32 +153,32 @@ class ClxMessagesController extends Controller
          * Create datalink messages
          */
         $array = [
-            'CLX ' . now()->format('Hi dmy') . ' ' . $clxMessage->datalink_authority->name . ' CLRNCE ' . $clxMessage->id,
-            $rclMessage->callsign . ' CLRD TO ' . $rclMessage->destination . ' VIA ' . $clxMessage->entry_fix,
-            $clxMessage->track ? 'NAT ' . $clxMessage->track->identifier : 'RANDOM ROUTE',
+            'CLX '.now()->format('Hi dmy').' '.$clxMessage->datalink_authority->name.' CLRNCE '.$clxMessage->id,
+            $rclMessage->callsign.' CLRD TO '.$rclMessage->destination.' VIA '.$clxMessage->entry_fix,
+            $clxMessage->track ? 'NAT '.$clxMessage->track->identifier : 'RANDOM ROUTE',
             $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
         ];
         if ($rclMessage->is_concorde) {
-            $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN BLOCK LOWER F' . $clxMessage->flight_level . ' UPPER F' . $clxMessage->upper_flight_level . ' M' . $clxMessage->mach;
+            $array[] = 'FM '.$clxMessage->entry_fix.'/'.$rclMessage->entry_time.' MNTN BLOCK LOWER F'.$clxMessage->flight_level.' UPPER F'.$clxMessage->upper_flight_level.' M'.$clxMessage->mach;
         } else {
-            $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach;
+            $array[] = 'FM '.$clxMessage->entry_fix.'/'.$rclMessage->entry_time.' MNTN F'.$clxMessage->flight_level.' M'.$clxMessage->mach;
         }
         // Only show crossing restriction if entry time =/= the restriction due to the bodge
         if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
             $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
-            $array[] = "/ATC SPEED CHANGED";
+            $array[] = '/ATC SPEED CHANGED';
         }
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
-            $array[] = "/ATC FLIGHT LEVEL CHANGED";
+            $array[] = '/ATC FLIGHT LEVEL CHANGED';
         }
         if ($clxMessage->free_text) {
-            $array[] = "/ATC " . strtoupper($clxMessage->free_text);
+            $array[] = '/ATC '.strtoupper($clxMessage->free_text);
         }
-        $array[] = "END OF MESSAGE";
+        $array[] = 'END OF MESSAGE';
         $clxMessage->datalink_message = $array;
-        $msg = "";
+        $msg = '';
         if ($clxMessage->track) {
             $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         } else {
@@ -184,13 +186,13 @@ class ClxMessagesController extends Controller
         }
         // Only show crossing restriction if entry time =/= the restriction due to the bodge
         if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
-            $msg .= " Cross {$clxMessage->entry_fix} " . strtolower($clxMessage->formatEntryTimeRestriction()) . ".";
+            $msg .= " Cross {$clxMessage->entry_fix} ".strtolower($clxMessage->formatEntryTimeRestriction()).'.';
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
-            $msg .= " Speed changed.";
+            $msg .= ' Speed changed.';
         }
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
-            $msg .= " Flight level changed.";
+            $msg .= ' Flight level changed.';
         }
         if ($clxMessage->free_text) {
             $msg .= " {$clxMessage->free_text}";
@@ -212,9 +214,10 @@ class ClxMessagesController extends Controller
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log("CLX Message Transmitted By " . $clxMessage->datalink_authority->name);
+            ->log('CLX Message Transmitted By '.$clxMessage->datalink_authority->name);
 
         flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
+
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 
@@ -236,10 +239,11 @@ class ClxMessagesController extends Controller
             'pilot_id' => $rclMessage->vatsim_account_id,
             'pilot_callsign' => $rclMessage->callsign,
             'datalink_authority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
-            'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.'
+            'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.',
         ]);
 
         flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);
+
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 }
