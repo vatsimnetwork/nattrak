@@ -140,7 +140,7 @@
                                 <div class="uk-margin">
                                     <label class="uk-form-label" for="">Change route to another NAT</label>
                                     <div class="uk-form-controls">
-                                        <select class="uk-select uk-form-small" autocomplete="off" name="new_track_id">
+                                        <select class="uk-select uk-form-small" autocomplete="off" name="new_track_id" id="new_track_id">
                                             <option value="" selected>None</option>
                                             @foreach($tracks as $track)
                                                 <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
@@ -151,7 +151,7 @@
                                 <div class="uk-margin">
                                     <label class="uk-form-label" for="">Change route to another RR</label>
                                     <div class="uk-form-controls">
-                                        <input type="text" name="new_random_routeing" class="uk-input uk-form-small" autocomplete="off" placeholder="">
+                                        <input type="text" name="new_random_routeing" id="new_random_routeing" class="uk-input uk-form-small" autocomplete="off" placeholder="">
                                     </div>
                                 </div>
                                 <hr>
@@ -211,6 +211,14 @@
 
         $('#entry_time_requirement').blur(function () {
             Livewire.emit('timeChanged', this.value);
+        });
+
+        $('#new_track_id').change(function () {
+            Livewire.emit('trackChanged', this.value);
+        });
+
+        $('#new_random_routeing').blur(function () {
+            Livewire.emit('rrChanged', this.value);
         })
     </script>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Controllers;
 
 use App\Enums\ConflictLevelEnum;
 use App\Models\ClxMessage;
+use App\Models\Track;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
@@ -21,7 +22,7 @@ class ConflictChecker extends Component
     public $conflicts = [];
     public ConflictLevelEnum $conflictLevel = ConflictLevelEnum::None;
 
-    protected $listeners = ['levelChanged', 'timeChanged'];
+    protected $listeners = ['levelChanged', 'timeChanged', 'trackChanged', 'rrChanged'];
 
     public function render()
     {
@@ -51,6 +52,25 @@ class ConflictChecker extends Component
             $this->time = $this->originalTime;
         } else {
             $this->time = $newTime;
+        }
+        $this->check();
+    }
+
+    public function trackChanged(string $newTrackId)
+    {
+        if (empty($newTrackId)) {
+            $this->entry = $this->originalEntry;
+        } else {
+            $this->entry = strtok(Track::whereId($newTrackId)->firstOrFail()->last_routeing, " ");
+        }
+    }
+
+    public function rrChanged(string $newRouteing)
+    {
+        if (empty($newRouteing)) {
+            $this->entry = $this->originalEntry;
+        } else {
+            $this->entry = strtok($newRouteing, " ");
         }
         $this->check();
     }
