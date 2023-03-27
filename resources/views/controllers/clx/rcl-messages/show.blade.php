@@ -20,12 +20,11 @@
                     </ul>
                 </div>
             @endif
-            <hr>
             <div class="uk-grid uk-grid-small" uk-grid>
                 <div class="{{ $message->clxMessages->count() > 0 ? 'uk-width-1-2' : '' }}">
                     <div>
-                        <p style="margin-bottom: 0;">Request Data</p>
-                        <table id="dataTable" class="uk-table uk-table-small uk-table-striped uk-padding-remove uk-margin-remove uk-table-middle" style="width:100%">
+                        <h5 style="margin-bottom: 0;">Request Data</h5>
+                        <table id="dataTable" class="uk-table uk-table-small uk-table-striped uk-padding-remove uk-margin-remove uk-table-middle" style="width:100%;">
                             <thead>
                                 <td class="uk-width-small"></td>
                                 <th></th>
@@ -77,8 +76,8 @@
                         </table>
                     </div>
                     <div>
-                        <p style="margin: 20px 0 0;">ATC Requirements (changes only)</p>
-                        <div style="border: 1px solid grey; padding: 10px; margin-top: 10px; margin-bottom: 10px;">
+                        <h5 style="margin: 20px 0 0;">ATC Requirements (changes only)</h5>
+                        <div class="uk-margin">
                             <div class="uk-form-horizontal">
                                 <div class="uk-margin">
                                     <label class="uk-form-label" for="">Datalink authority</label>
@@ -161,8 +160,10 @@
                                         <input type="text" name="free_text" class="uk-input uk-form-small">
                                     </div>
                                 </div>
-                                <div class="uk-margin" style="border: 1px solid grey; padding: 5px; margin-bottom: 0;">
-                                    <livewire:controllers.conflict-checker level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
+                                <div class="uk-margin">
+                                    <div class="uk-card uk-card-default uk-card-body uk-padding-remove" style="padding: 15px !important;">
+                                        <livewire:controllers.conflict-checker callsign="{{ $message->callsign }}" level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +180,7 @@
                                 CLX Messages in reply to this RCL
                             </p>
                             @foreach($message->clxMessages->sortbyDesc('created_at') as $clx)
-                                <div class="uk-card uk-card-default uk-card-body uk-margin" style="padding: 10px;">
+                                <div class="uk-card uk-card-default uk-card-body uk-margin" style="padding: 10px; box-shadow: none !important;">
                                     <p>{{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }}</p>
                                     <p>
                                         @foreach($clx->datalink_message as $line)

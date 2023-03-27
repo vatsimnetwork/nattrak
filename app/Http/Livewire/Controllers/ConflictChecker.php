@@ -8,11 +8,14 @@ use App\Models\RclMessage;
 use App\Models\Track;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class ConflictChecker extends Component
 {
+    public $callsign;
+
     public $originalLevel;
 
     public $level;
@@ -100,7 +103,7 @@ class ConflictChecker extends Component
         if ($a->diffInMinutes($b) < 2) {
             return 'Same';
         } else {
-            return $a->longAbsoluteDiffForHumans($b);
+            return $a > $b ? "{$a->longAbsoluteDiffForHumans($b)} prior" : "{$a->longAbsoluteDiffForHumans($b)} after";
         }
     }
 
@@ -124,6 +127,12 @@ class ConflictChecker extends Component
         $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
 
         return ClxMessage::whereEntryFix($this->entry)
+            ->whereNot(function (Builder $query) {
+                $query->select('callsign')
+                    ->from('rcl_messages')
+                    ->whereColumn('rcl_messages.clx_message_id', 'clx_messages.id')
+                    ->limit(1);
+            }, $this->callsign)
             ->whereIn(
                 'raw_entry_time_restriction',
                 $timeArray
@@ -138,6 +147,7 @@ class ConflictChecker extends Component
         $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
 
         return RclMessage::pending()
+            ->where('callsign', '!=', $this->callsign)
             ->whereEntryFix($this->entry)
             ->whereIn('entry_time', $timeArray)
             ->whereFlightLevel($this->level)
@@ -149,6 +159,7 @@ class ConflictChecker extends Component
         return $messages->map(function (ClxMessage $message, $key) {
             return [
                 'id' => $key,
+                'url' => route('controllers.clx.show-rcl-message', $message),
                 'callsign' => $message->rclMessage->callsign,
                 'level' => $message->flight_level,
                 'time' => $message->formatEntryTimeRestriction(),
@@ -163,6 +174,7 @@ class ConflictChecker extends Component
         return $messages->map(function (RclMessage $message, $key) {
             return [
                 'id' => $key,
+                'url' => route('controllers.clx.show-rcl-message', $message),
                 'callsign' => $message->callsign,
                 'level' => $message->flight_level,
                 'time' => $message->entry_time,
