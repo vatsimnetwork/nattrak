@@ -45,31 +45,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($processedRclMsgs as $msg)
-                    <tr>
-                        <td class="uk-text-bold">{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</td>
-                        <td>{{ $msg->destination }}
-                        <td>{{ $msg->latestClxMessage?->track ? 'NAT '. $msg->latestClxMessage?->track->identifier : 'RR' }} {{ $msg->latestClxMessage?->routeing_changed ? '*' : ''}}</td>
-                        <td>{{ $msg->latestClxMessage?->entry_fix }}</td>
-                        <td>{{ $msg->latestClxMessage?->entry_time_restriction ? $msg->latestClxMessage?->entry_time_restriction . '*' : $msg->entry_time }}</td>
-                        <td>{{ $msg->latestClxMessage?->flight_level }}{{ $msg->latestClxMessage?->flight_level != $msg->flight_level ? '*' : ''}}</td>
-                        <td>{{ $msg->latestClxMessage?->mach }}{{ $msg->latestClxMessage?->mach != $msg->mach ? '*' : ''}}</td>
-                        <td>{{ $msg->latestClxMessage->created_at->format('Hi') }}</td>
-                        <td>
-                            <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="uk-button uk-button-small uk-button-primary">ACTION</a>
-                           </td>
-                        <td>
-                            <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
-                                @csrf
-                                <button class="uk-button uk-button-small" onclick="return confirm('Are you sure?')">DEL</button>
-                            </form>
-                        </td>
-                    </tr>
-                    </thead>
-                    <tbody>
                     @foreach($processedRclMsgs as $msg)
                         <tr>
-                            <th>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</th>
+                            <td>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</td>
                             <td>{{ $msg->destination }}
                             <td>
                                 {{ $msg->latestClxMessage?->track ? 'NAT '. $msg->latestClxMessage?->track->identifier : 'RR' }} {{ $msg->latestClxMessage?->routeing_changed ? '*' : ''}}
@@ -86,19 +64,18 @@
                             </td>
                             <td>{{ $msg->latestClxMessage->created_at->format('Hi') }}</td>
                             <td>
-                                <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}"
-                                   class="btn btn-sm btn-primary"><b>View</b></a>
+                                <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="uk-button uk-button-small uk-button-primary">View</a>
                             </td>
                             <td>
                                 <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
                                     @csrf
-                                    <button class="btn btn-sm" onclick="return confirm('Are you sure?')">DEL</button>
+                            <button class="uk-button uk-button-small" onclick="return confirm('Are you sure?')">DEL</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
         </div>
     </div>
     <script type="module">
