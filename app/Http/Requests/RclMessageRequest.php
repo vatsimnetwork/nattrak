@@ -21,7 +21,7 @@ class RclMessageRequest extends FormRequest
             'entry_time' => 'required|numeric|digits:4',
             'tmi' => 'required|numeric|min:001|max:366',
             'random_routeing' => 'nullable|regex:/^[A-Z\/0-9 _]*[A-Z\/0-9][A-Z\/0-9 _]*$/',
-            'is_concorde' => 'nullable'
+            'is_concorde' => 'nullable',
         ];
     }
 
@@ -31,7 +31,7 @@ class RclMessageRequest extends FormRequest
             'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
             'flight_level.max' => 'You must file a valid flight level.',
             'max_flight_level.max' => 'You must file a valid maximum flight level.',
-            'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134'
+            'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
         ];
     }
 
@@ -46,7 +46,7 @@ class RclMessageRequest extends FormRequest
             } elseif ($this->track_id == null && $this->random_routeing == null) {
                 $validator->errors()->add('select_one_routeing', 'You need to request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. (NAT Tracks are identified by a letter.)');
             }
-            if (!$this->is_concorde) {
+            if (! $this->is_concorde) {
                 /**
                  * Max FL > FL check
                  */

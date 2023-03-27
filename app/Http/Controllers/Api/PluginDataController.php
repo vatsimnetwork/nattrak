@@ -8,8 +8,8 @@ use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\VatsimDataService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class PluginDataController extends Controller
 {
@@ -22,7 +22,7 @@ class PluginDataController extends Controller
 
     private function formatTime($time)
     {
-        return substr($time, 0, 2) . ':' . substr($time, 2, 2);
+        return substr($time, 0, 2).':'.substr($time, 2, 2);
     }
 
     private function formatClxData(Collection $data): Collection
@@ -34,10 +34,10 @@ class PluginDataController extends Controller
                 'nat' => $msg->track ? $msg->track->identifier : 'RR',
                 'fix' => $msg->entry_fix,
                 'level' => $msg->flight_level,
-                'mach' => '0.' . substr($msg->mach, 1),
+                'mach' => '0.'.substr($msg->mach, 1),
                 'estimating_time' => $this->formatTime($msg->rclMessage->entry_time),
                 'clearance_issued' => $msg->created_at,
-                'extra_info' => $msg->free_text
+                'extra_info' => $msg->free_text,
             ];
         });
     }
@@ -51,10 +51,10 @@ class PluginDataController extends Controller
                 'nat' => $msg->track ? $msg->track->identifier : 'RR',
                 'fix' => $msg->entry_fix,
                 'level' => $msg->flight_level,
-                'mach' => '0.' . substr($msg->mach, 1),
+                'mach' => '0.'.substr($msg->mach, 1),
                 'estimating_time' => $this->formatTime($msg->entry_time),
                 'clearance_issued' => $msg->clxMessages->count() > 0 ? $msg->clxMessages->first()->created_at : null,
-                'extra_info' => $msg->free_text
+                'extra_info' => $msg->free_text,
             ];
         });
     }
@@ -88,36 +88,36 @@ class PluginDataController extends Controller
 
         $mapped = $clxMessages->map(function (ClxMessage $msg) {
             return [
-               'id' => $msg->id,
-               'time' => $msg->created_at,
-               'controller' => [
-                   'cid' => $msg->vatsimAccount->id ?? null,
-                   'callsign' => $this->dataService->getActiveControllerData($msg->vatsimAccount)->callsign ?? null,
-                   'datalink_authority' => $msg->datalink_authority->name
-               ],
-               'pilot' => [
-                   'cid' => $msg->rclMessage->vatsim_account_id ?? null
-               ],
-               'callsign' => $msg->rclMessage->callsign,
-               'dest' => $msg->rclMessage->destination,
-               'route' => $msg->track ? $msg->track->last_routeing : $msg->random_routeing,
-               'track' => $msg->track?->makeHidden(['created_at', 'updated_at', 'id']),
-               'flight_level' => [
-                   'requested' => $msg->rclMessage->flight_level,
-                   'cleared' => $msg->flight_level,
-                   'maximum' => $msg->rclMessage->max_flight_level
-               ],
-               'mach' => [
-                   'requested' => $msg->rclMessage->mach,
-                   'cleared' => $msg->mach
-               ],
-               'entry' => [
-                   'fix' => $msg->entry_fix,
-                   'estimate' => $this->formatTime($msg->rclMessage->entry_time),
-                   'restriction' => $msg->entry_time_restriction
-               ],
-               'extra_info' => $msg->free_text
-           ];
+                'id' => $msg->id,
+                'time' => $msg->created_at,
+                'controller' => [
+                    'cid' => $msg->vatsimAccount->id ?? null,
+                    'callsign' => $this->dataService->getActiveControllerData($msg->vatsimAccount)->callsign ?? null,
+                    'datalink_authority' => $msg->datalink_authority->name,
+                ],
+                'pilot' => [
+                    'cid' => $msg->rclMessage->vatsim_account_id ?? null,
+                ],
+                'callsign' => $msg->rclMessage->callsign,
+                'dest' => $msg->rclMessage->destination,
+                'route' => $msg->track ? $msg->track->last_routeing : $msg->random_routeing,
+                'track' => $msg->track?->makeHidden(['created_at', 'updated_at', 'id']),
+                'flight_level' => [
+                    'requested' => $msg->rclMessage->flight_level,
+                    'cleared' => $msg->flight_level,
+                    'maximum' => $msg->rclMessage->max_flight_level,
+                ],
+                'mach' => [
+                    'requested' => $msg->rclMessage->mach,
+                    'cleared' => $msg->mach,
+                ],
+                'entry' => [
+                    'fix' => $msg->entry_fix,
+                    'estimate' => $this->formatTime($msg->rclMessage->entry_time),
+                    'restriction' => $msg->entry_time_restriction,
+                ],
+                'extra_info' => $msg->free_text,
+            ];
         });
 
         return response($mapped);

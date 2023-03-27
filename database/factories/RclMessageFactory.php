@@ -19,7 +19,7 @@ class RclMessageFactory extends Factory
         $flightLevels = ['300', '320', '340'];
 
         return [
-            'callsign' => $callsigns[array_rand($callsigns)] . rand(100, 999),
+            'callsign' => $callsigns[array_rand($callsigns)].rand(100, 999),
             'destination' => $destinations[array_rand($destinations)],
             'flight_level' => $flightLevels[array_rand($flightLevels)],
             'mach' => '084',
@@ -30,7 +30,7 @@ class RclMessageFactory extends Factory
             'created_at' => Carbon::now(),
             'max_flight_level' => '410',
             'vatsim_account_id' => VatsimAccount::first()->id,
-            'atc_rejected' => false
+            'atc_rejected' => false,
         ];
     }
 
@@ -46,8 +46,8 @@ class RclMessageFactory extends Factory
         return $this->state(function (array $attributes) use ($track) {
             return [
                 'track_id' => $track->id,
-                'entry_fix' => strtok($track->last_routeing, " "),
-                'random_routeing' => null
+                'entry_fix' => strtok($track->last_routeing, ' '),
+                'random_routeing' => null,
             ];
         });
     }
@@ -61,10 +61,11 @@ class RclMessageFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $routeing = strtoupper($this->faker->text);
+
             return [
                 'track_id' => null,
                 'random_routeing' => $routeing,
-                'entry_fix' => strtok($routeing, " ")
+                'entry_fix' => strtok($routeing, ' '),
             ];
         });
     }

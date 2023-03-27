@@ -23,7 +23,7 @@ class ClearLockedRclMessagesCommand extends Command
                 $message->edit_lock_vatsim_account_id = null;
                 $message->edit_lock = false;
                 $message->save();
-                $this->info('Unlocked RCL message ' . $message->id);
+                $this->info('Unlocked RCL message '.$message->id);
             }
         }
     }

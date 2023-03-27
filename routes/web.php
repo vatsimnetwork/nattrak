@@ -26,12 +26,12 @@ Route::prefix('auth')->name('auth')->group(function () {
     if (config('app.env') == 'local') {
         Route::get('/{cid}', function ($cid) {
             \Illuminate\Support\Facades\Auth::loginUsingId($cid);
-            flashAlert(type: 'info', title: 'Signed in', message: 'Dev mode as ' . $cid, toast: true, timer: true);
+            flashAlert(type: 'info', title: 'Signed in', message: 'Dev mode as '.$cid, toast: true, timer: true);
+
             return redirect()->route('welcome');
         });
     }
-});;
-
+});
 
 Route::prefix('administration')->name('administration')->middleware('can:administrate')->group(function () {
     Route::get('/', [AdministrationController::class, 'index'])->name('index');
@@ -55,8 +55,8 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
 
     Route::get('message-history', function () {
         return view('pilots.message-history', [
-           '_pageTitle' => 'Message History'
-       ]);
+            '_pageTitle' => 'Message History',
+        ]);
     })->name('.message-history');
 });
 

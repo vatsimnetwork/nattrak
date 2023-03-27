@@ -6,9 +6,9 @@ use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ClxMessage
@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $free_text
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage query()
@@ -40,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereTrackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereVatsimAccountId($value)
+ *
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read array $data_link_message
@@ -48,15 +50,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read mixed $simple_message
  * @property-read \App\Models\VatsimAccount $vatsimAccount
  * @property DatalinkAuthorities $datalink_authority
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereDatalinkAuthority($value)
+ *
  * @property string $simple_datalink_message
  * @property mixed $datalink_message
+ *
  * @method static Builder|ClxMessage whereDatalinkMessage($value)
  * @method static Builder|ClxMessage whereSimpleDatalinkMessage($value)
+ *
  * @property string|null $upper_flight_level
+ *
  * @method static Builder|ClxMessage whereUpperFlightLevel($value)
+ *
  * @property-read bool $routeing_changed
  * @property-read string|null $raw_entry_time_restriction
+ *
  * @method static Builder|ClxMessage whereRawEntryTimeRestriction($value)
  * @mixin \Eloquent
  */
@@ -81,7 +90,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction'
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction',
     ];
 
     /**
@@ -101,7 +110,7 @@ class ClxMessage extends Model
      */
     protected $casts = [
         'datalink_authority' => DatalinkAuthorities::class,
-        'datalink_message' => 'array'
+        'datalink_message' => 'array',
     ];
 
     /**
@@ -125,10 +134,10 @@ class ClxMessage extends Model
     }
 
     /**
-    * Returns the track the CLX was for.
-    *
-    * @return BelongsTo
-    */
+     * Returns the track the CLX was for.
+     *
+     * @return BelongsTo
+     */
     public function vatsimAccount(): BelongsTo
     {
         return $this->belongsTo(VatsimAccount::class);
@@ -144,9 +153,9 @@ class ClxMessage extends Model
         }
 
         return match (substr($this->entry_time_restriction, 0, 1)) {
-            '<' => 'BEFORE ' . substr($this->entry_time_restriction, 1, 4),
-            '=' => 'AT ' . substr($this->entry_time_restriction, 1, 4),
-            '>' => 'AFTER ' . substr($this->entry_time_restriction, 1, 4),
+            '<' => 'BEFORE '.substr($this->entry_time_restriction, 1, 4),
+            '=' => 'AT '.substr($this->entry_time_restriction, 1, 4),
+            '>' => 'AFTER '.substr($this->entry_time_restriction, 1, 4),
         };
     }
 
@@ -156,9 +165,9 @@ class ClxMessage extends Model
     public function getRouteingChangedAttribute(): bool
     {
         if ($this->rclMessage->track) {
-            return !$this->track;
+            return ! $this->track;
         } elseif ($this->rclMessage->random_routeing) {
-            return !$this->random_routeing;
+            return ! $this->random_routeing;
         } else {
             return false;
         }

@@ -14,13 +14,19 @@ use Livewire\Component;
 class ConflictChecker extends Component
 {
     public $originalLevel;
+
     public $level;
+
     public $originalEntry;
+
     public $entry;
+
     public $originalTime;
+
     public $time;
 
     public $conflicts = [];
+
     public ConflictLevelEnum $conflictLevel = ConflictLevelEnum::None;
 
     public $pendingConflicts = [];
@@ -64,7 +70,7 @@ class ConflictChecker extends Component
         if (empty($newTrackId)) {
             $this->entry = $this->originalEntry;
         } else {
-            $this->entry = strtok(Track::whereId($newTrackId)->firstOrFail()->last_routeing, " ");
+            $this->entry = strtok(Track::whereId($newTrackId)->firstOrFail()->last_routeing, ' ');
         }
     }
 
@@ -73,7 +79,7 @@ class ConflictChecker extends Component
         if (empty($newRouteing)) {
             $this->entry = $this->originalEntry;
         } else {
-            $this->entry = strtok($newRouteing, " ");
+            $this->entry = strtok($newRouteing, ' ');
         }
         $this->check();
     }
@@ -85,13 +91,14 @@ class ConflictChecker extends Component
         foreach ($period as $time) {
             $times[] = $time->format('Hi');
         }
+
         return $times;
     }
 
     private function formatDiff(Carbon $a, Carbon $b): string
     {
         if ($a->diffInMinutes($b) < 2) {
-            return "Same";
+            return 'Same';
         } else {
             return $a->longAbsoluteDiffForHumans($b);
         }
@@ -115,6 +122,7 @@ class ConflictChecker extends Component
     private function fetchClearedConflicts(int $minutesSpan): Collection
     {
         $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
+
         return ClxMessage::whereEntryFix($this->entry)
             ->whereIn(
                 'raw_entry_time_restriction',
@@ -128,6 +136,7 @@ class ConflictChecker extends Component
     private function fetchPendingConflicts(int $minutesSpan): Collection
     {
         $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
+
         return RclMessage::pending()
             ->whereEntryFix($this->entry)
             ->whereIn('entry_time', $timeArray)
@@ -144,7 +153,7 @@ class ConflictChecker extends Component
                 'level' => $message->flight_level,
                 'time' => $message->formatEntryTimeRestriction(),
                 'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->raw_entry_time_restriction)),
-                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->raw_entry_time_restriction))
+                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->raw_entry_time_restriction)),
             ];
         });
     }
@@ -158,7 +167,7 @@ class ConflictChecker extends Component
                 'level' => $message->flight_level,
                 'time' => $message->entry_time,
                 'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->entry_time)),
-                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->entry_time))
+                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->entry_time)),
             ];
         });
     }

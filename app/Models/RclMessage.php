@@ -31,6 +31,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $clx_message_id
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage query()
@@ -50,6 +51,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereTrackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereVatsimAccountId($value)
+ *
  * @property string|null $max_flight_level
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
@@ -57,11 +59,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read int|null $clx_messages_count
  * @property-read \App\Models\Track|null $track
  * @property-read \App\Models\VatsimAccount $vatsimAccount
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage whereMaxFlightLevel($value)
+ *
  * @property-read mixed $data_link_message
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage cleared()
  * @method static \Illuminate\Database\Eloquent\Builder|RclMessage pending()
+ *
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ *
  * @method static \Illuminate\Database\Query\Builder|RclMessage onlyTrashed()
  * @method static Builder|RclMessage whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|RclMessage withTrashed()
@@ -69,19 +76,26 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Database\Factories\RclMessageFactory factory(...$parameters)
  * @method static Builder|RclMessage requestedRandomRouteing()
  * @method static Builder|RclMessage requestedTrack(\App\Models\Track $track)
+ *
  * @property int $atc_rejected
+ *
  * @method static Builder|RclMessage whereAtcRejected($value)
+ *
  * @property int $edit_lock
  * @property \Illuminate\Support\Carbon|null $edit_lock_time
  * @property int|null $edit_lock_vatsim_account_id
  * @property-read \App\Models\VatsimAccount|null $editLockVatsimAccount
+ *
  * @method static Builder|RclMessage whereEditLock($value)
  * @method static Builder|RclMessage whereEditLockTime($value)
  * @method static Builder|RclMessage whereEditLockVatsimAccountId($value)
+ *
  * @property string|null $upper_flight_level
  * @property int $is_concorde
+ *
  * @method static Builder|RclMessage whereIsConcorde($value)
  * @method static Builder|RclMessage whereUpperFlightLevel($value)
+ *
  * @property-read \App\Models\ClxMessage|null $latestClxMessage
  * @mixin \Eloquent
  */
@@ -118,7 +132,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde',
     ];
 
     /**
@@ -128,11 +142,11 @@ class RclMessage extends Model
      */
     protected $dates = [
         'request_time',
-        'edit_lock_time'
+        'edit_lock_time',
     ];
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopePending(Builder $query): Builder
@@ -141,7 +155,7 @@ class RclMessage extends Model
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeCleared(Builder $query): Builder
@@ -152,7 +166,7 @@ class RclMessage extends Model
     /**
      * Scope to messages for a specific track.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeRequestedTrack(Builder $query, Track $track): Builder
@@ -163,7 +177,7 @@ class RclMessage extends Model
     /**
      * Scope to messages for a random routeing.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeRequestedRandomRouteing(Builder $query): Builder

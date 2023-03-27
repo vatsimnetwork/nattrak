@@ -18,6 +18,7 @@ class VatsimAuthController extends Controller
         Auth::logout();
         Session::flush();
         toastr()->info('Logged out');
+
         return redirect()->route('welcome');
     }
 
@@ -29,12 +30,12 @@ class VatsimAuthController extends Controller
 
         //Build request
         $request = http_build_query([
-            'client_id'       => config('services.vatsim.auth.client_id'),
-            'redirect_uri'    => config('services.vatsim.auth.redirect_uri'),
-            'response_type'   => 'code',
-            'scope'           => 'full_name vatsim_details',
+            'client_id' => config('services.vatsim.auth.client_id'),
+            'redirect_uri' => config('services.vatsim.auth.redirect_uri'),
+            'response_type' => 'code',
+            'scope' => 'full_name vatsim_details',
             'required_scopes' => 'vatsim_details',
-            'state'           => $state,
+            'state' => $state,
         ]);
 
         //Send to VATSIM
@@ -50,17 +51,18 @@ class VatsimAuthController extends Controller
         try {
             $tokenJson = $http->post(config('services.vatsim.auth.endpoint').'/oauth/token', [
                 'form_params' => [
-                    'grant_type'    => 'authorization_code',
-                    'client_id'     => config('services.vatsim.auth.client_id'),
+                    'grant_type' => 'authorization_code',
+                    'client_id' => config('services.vatsim.auth.client_id'),
                     'client_secret' => config('services.vatsim.auth.secret'),
-                    'redirect_uri'  => config('services.vatsim.auth.redirect_uri'),
-                    'code'          => $request->code,
+                    'redirect_uri' => config('services.vatsim.auth.redirect_uri'),
+                    'code' => $request->code,
                 ],
             ]);
-            Session::put('token', json_decode((string)$tokenJson->getBody(), true));
+            Session::put('token', json_decode((string) $tokenJson->getBody(), true));
         } catch (ClientException $ex) {
             Log::alert($ex);
             toastr()->error($ex->getMessage());
+
             return redirect()->route('welcome');
         }
 
@@ -68,13 +70,14 @@ class VatsimAuthController extends Controller
         try {
             $userDataJson = $http->get(config('services.vatsim.auth.endpoint').'/api/user', [
                 'headers' => [
-                    'Accept'        => 'application/json',
-                    'Authorization' => 'Bearer ' . Session::get('token.access_token'),
-                ]
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer '.Session::get('token.access_token'),
+                ],
             ]);
         } catch (ClientException $ex) {
             Log::alert($ex);
             toastr()->error($ex->getMessage());
+
             return redirect()->route('welcome');
         }
 
@@ -87,7 +90,7 @@ class VatsimAuthController extends Controller
             [
                 'given_name' => $userData->data->personal->name_first ?? $userData->data->cid,
                 'surname' => $userData->data->personal->name_last ?? $userData->data->cid,
-                'rating_int' => $userData->data->vatsim->rating->id
+                'rating_int' => $userData->data->vatsim->rating->id,
             ]
         );
 

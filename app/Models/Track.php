@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $last_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Track newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Track newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Track query()
@@ -30,7 +31,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidTo($value)
  * @method static Builder|Track active()
+ *
  * @property int $concorde
+ *
  * @method static Builder|Track concorde()
  * @method static Builder|Track whereConcorde($value)
  * @mixin \Eloquent
@@ -38,19 +41,19 @@ use Illuminate\Database\Eloquent\Model;
 class Track extends Model
 {
     protected $fillable = [
-        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde'
+        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde',
     ];
 
     protected $dates = [
-        'valid_to', 'valid_from', 'last_active'
+        'valid_to', 'valid_from', 'last_active',
     ];
 
     protected $casts = [
-        'active' => 'bool'
+        'active' => 'bool',
     ];
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
@@ -59,7 +62,7 @@ class Track extends Model
     }
 
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeConcorde(Builder $query): Builder

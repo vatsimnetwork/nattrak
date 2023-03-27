@@ -14,7 +14,7 @@ class PendingRclMessages extends Component
     {
         $pendingRclMsgs = collect();
         foreach ($this->tracks as $track) {
-            $trackMsgs = RclMessage::pending()->when($track != "RR", function ($query) use ($track) {
+            $trackMsgs = RclMessage::pending()->when($track != 'RR', function ($query) use ($track) {
                 $query->where('track_id', Track::whereIdentifier($track)->firstOrFail()->id);
             }, function ($query) {
                 $query->where('track_id', null);
@@ -25,7 +25,7 @@ class PendingRclMessages extends Component
         }
 
         return view('livewire.controllers.pending-rcl-messages', [
-            'pendingRclMsgs' => $pendingRclMsgs
+            'pendingRclMsgs' => $pendingRclMsgs,
         ]);
     }
 }
