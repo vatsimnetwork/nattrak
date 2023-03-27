@@ -45,7 +45,7 @@
                 <p>Warning - Traffic within 5 minutes of aircraft on current selection</p>
             </div>
     @endswitch
-    <h5 class="uk-heading-line uk-margin-remove" style="margin: 10px 0px 10px 0px !important;"><span>Active Conflicts</span></h5>
+    <h5 class="uk-heading-line uk-margin-remove" style="margin: 10px 0px 10px 0px !important;"><span>Conflicts with Active traffic</span></h5>
     <ul class="uk-list uk-table-hover uk-margin-remove">
         @foreach($conflicts as $conflict)
             <li>
@@ -67,7 +67,7 @@
             </li>
         @endif
     </ul>
-    <h5 class="uk-heading-line uk-margin-remove" style="margin: 10px 0px 10px 0px !important;"><span>Pending Conflicts</span></h5>
+    <h5 class="uk-heading-line uk-margin-remove" style="margin: 10px 0px 10px 0px !important;"><span>Conflicts with Pending traffic</span></h5>
     <ul class="uk-list uk-table-hover uk-margin-remove">
         @foreach($pendingConflicts as $conflict)
             <li>
