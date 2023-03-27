@@ -29,11 +29,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereRatingInt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereSurname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereUpdatedAt($value)
- * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read mixed $full_name
  * @property-read \App\Enums\DatalinkAuthorities|null $active_datalink_authority
+ * @mixin \Eloquent
  */
 class VatsimAccount extends Authenticatable
 {

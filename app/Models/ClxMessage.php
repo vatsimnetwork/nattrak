@@ -40,7 +40,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereTrackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereVatsimAccountId($value)
- * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read array $data_link_message
@@ -57,6 +56,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $upper_flight_level
  * @method static Builder|ClxMessage whereUpperFlightLevel($value)
  * @property-read bool $routeing_changed
+ * @property-read string|null $raw_entry_time_restriction
+ * @method static Builder|ClxMessage whereRawEntryTimeRestriction($value)
+ * @mixin \Eloquent
  */
 class ClxMessage extends Model
 {
@@ -79,7 +81,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level'
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction'
     ];
 
     /**

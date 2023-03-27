@@ -36,20 +36,30 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        $track = null;
-        if ($request->has('sortByTrack') && !in_array($request->get('sortByTrack'), ['all', 'rr'])) {
-            $track = Track::active()->whereIdentifier($request->get('sortByTrack'))->firstOrFail();
+        $display = $request->get('display') ?? [];
+        $processedRclMsgs = collect();
+
+        foreach ($display as $id) {
+            $trackMessages = RclMessage::cleared()
+                ->with('latestClxMessage')
+                ->when($id != 'RR', function ($query) use ($id) { // Track
+                    $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
+                }, function ($query) { // RR
+                    $query->where('track_id', null);
+                })
+                ->orderByDesc('request_time')
+                ->get();
+
+            foreach ($trackMessages as $message) {
+                $processedRclMsgs->add($message);
+            }
         }
 
-        $processedRclMsgs = RclMessage::cleared()->with('latestClxMessage')->when($track, function ($query) use ($track) {
-            $query->whereTrackId($track->id);
-        })->orderBy('request_time')->get();
-
         return view('controllers.clx.processed', [
-            'displayedTrack' => $track,
+            'displayed' => $display,
             'tracks' => Track::active()->get(),
             'processedRclMsgs' => $processedRclMsgs,
-            '_pageTitle' => $track ? "Track {$track->identifier}" : "All tracks"
+            '_pageTitle' => $display ? 'Tracks ' . implode(", ", $display) : "Select tracks"
         ]);
     }
 
@@ -121,6 +131,7 @@ class ClxMessagesController extends Controller
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
+            'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE ' . now()->format('Hi') . ' ** ' . $request->get('free_text') : $request->get('free_text'),
             'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority'))
         ]);
@@ -150,7 +161,8 @@ class ClxMessagesController extends Controller
         } else {
             $array[] = 'FM ' . $clxMessage->entry_fix . '/' . $rclMessage->entry_time . ' MNTN F' . $clxMessage->flight_level . ' M' . $clxMessage->mach;
         }
-        if ($clxMessage->entry_time_restriction) {
+        // Only show crossing restriction if entry time =/= the restriction due to the bodge
+        if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
             $array[] = "/ATC CROSS {$clxMessage->entry_fix} {$clxMessage->formatEntryTimeRestriction()}";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
@@ -170,7 +182,8 @@ class ClxMessagesController extends Controller
         } else {
             $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         }
-        if ($clxMessage->entry_time_restriction) {
+        // Only show crossing restriction if entry time =/= the restriction due to the bodge
+        if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
             $msg .= " Cross {$clxMessage->entry_fix} " . strtolower($clxMessage->formatEntryTimeRestriction()) . ".";
         }
         if (($clxMessage->mach != $rclMessage->mach) || ($rclMessage->latestClxMessage && ($clxMessage->mach != $rclMessage->latestClxMessage->mach))) {
@@ -201,7 +214,7 @@ class ClxMessagesController extends Controller
             ->withProperties(['datalink' => $clxMessage->data_link_message])
             ->log("CLX Message Transmitted By " . $clxMessage->datalink_authority->name);
 
-        toastr()->success('Clearance transmitted.');
+        flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 
@@ -209,7 +222,7 @@ class ClxMessagesController extends Controller
     {
         $redirectToProcessed = $rclMessage->clxMessages->count() > 0;
         $rclMessage->delete();
-        toastr()->info('RCL deleted.');
+        flashAlert(type: 'success', title: null, message: 'Request deleted.', toast: true, timer: true);
         if ($redirectToProcessed) {
             return redirect()->route('controllers.clx.processed');
         } else {
@@ -226,7 +239,7 @@ class ClxMessagesController extends Controller
             'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.'
         ]);
 
-        toastr()->success('Revert to voice message sent. You can now delete the request.');
+        flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
 }
