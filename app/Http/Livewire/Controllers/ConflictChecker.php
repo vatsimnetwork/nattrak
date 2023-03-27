@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Controllers;
 
 use App\Enums\ConflictLevelEnum;
 use App\Models\ClxMessage;
+use App\Models\RclMessage;
 use App\Models\Track;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -21,6 +22,8 @@ class ConflictChecker extends Component
 
     public $conflicts = [];
     public ConflictLevelEnum $conflictLevel = ConflictLevelEnum::None;
+
+    public $pendingConflicts = [];
 
     protected $listeners = ['levelChanged', 'timeChanged', 'trackChanged', 'rrChanged'];
 
@@ -109,11 +112,10 @@ class ConflictChecker extends Component
         return $level;
     }
 
-    public function check()
+    private function fetchClearedConflicts(int $minutesSpan): Collection
     {
-        $timeArray = $this->getTimeRange($this->time, 10);
-        $this->conflicts = [];
-        $results = ClxMessage::whereEntryFix($this->entry)
+        $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
+        return ClxMessage::whereEntryFix($this->entry)
             ->whereIn(
                 'raw_entry_time_restriction',
                 $timeArray
@@ -121,7 +123,21 @@ class ConflictChecker extends Component
             ->whereFlightLevel($this->level)
             ->with('rclMessage')
             ->get();
-        $mapped = $results->map(function (ClxMessage $message, $key) {
+    }
+
+    private function fetchPendingConflicts(int $minutesSpan): Collection
+    {
+        $timeArray = $this->getTimeRange($this->time, $minutesSpan ?? 10);
+        return RclMessage::pending()
+            ->whereEntryFix($this->entry)
+            ->whereIn('entry_time', $timeArray)
+            ->whereFlightLevel($this->level)
+            ->get();
+    }
+
+    private function mapClxMessages(Collection $messages): Collection
+    {
+        return $messages->map(function (ClxMessage $message, $key) {
             return [
                 'id' => $key,
                 'callsign' => $message->rclMessage->callsign,
@@ -131,7 +147,36 @@ class ConflictChecker extends Component
                 'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->raw_entry_time_restriction))
             ];
         });
-        $this->conflictLevel = $this->determineConflictLevel($mapped);
-        $this->conflicts = $mapped;
+    }
+
+    private function mapRclMessages(Collection $messages): Collection
+    {
+        return $messages->map(function (RclMessage $message, $key) {
+            return [
+                'id' => $key,
+                'callsign' => $message->callsign,
+                'level' => $message->flight_level,
+                'time' => $message->entry_time,
+                'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->entry_time)),
+                'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->entry_time))
+            ];
+        });
+    }
+
+    public function check()
+    {
+        /**
+         * Set cleared conflicts (CLX messages) to null, fetch them from DB, map them to array, determine conflict level, then set public variable.
+         */
+        $this->conflicts = [];
+        $clearedConflicts = $this->fetchClearedConflicts(10);
+        $clearedConflictsMapped = $this->mapClxMessages($clearedConflicts);
+        $this->conflictLevel = $this->determineConflictLevel($clearedConflictsMapped);
+        $this->conflicts = $clearedConflictsMapped;
+
+        // Same but for pending RCLs
+        $this->pendingConflicts = [];
+        $pendingConflicts = $this->fetchPendingConflicts(10);
+        $this->pendingConflicts = $this->mapRclMessages($pendingConflicts);
     }
 }

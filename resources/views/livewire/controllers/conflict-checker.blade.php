@@ -50,5 +50,14 @@
             </li>
         @endforeach
     </ul>
+    <hr>
+    <p>Uncleared RCL conflicts:</p>
+    <ul class="uk-list uk-list-striped uk-margin-remove">
+        @foreach($pendingConflicts as $conflict)
+            <li>
+                {{ $conflict['callsign'] }} - {{ $conflict['time'] }} ({{ $conflict['diffVisual']  }}) - {{ $conflict['level'] }}
+            </li>
+        @endforeach
+    </ul>
 </div>
 
