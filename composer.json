@@ -17,6 +17,7 @@
         "marvinlabs/laravel-discord-logger": "^1.2.0",
         "opcodesio/log-viewer": "^2.3",
         "predis/predis": "^1.1.10",
+        "sentry/sentry-laravel": "*",
         "spatie/laravel-activitylog": "^4.5.3",
         "yoeunes/toastr": "^1.2.7"
     },
@@ -68,7 +69,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
