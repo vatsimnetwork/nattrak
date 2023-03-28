@@ -159,7 +159,7 @@ class ConflictChecker extends Component
         return $messages->map(function (ClxMessage $message, $key) {
             return [
                 'id' => $key,
-                'url' => route('controllers.clx.show-rcl-message', $message),
+                'url' => route('controllers.clx.show-rcl-message', $message->rclMessage),
                 'callsign' => $message->rclMessage->callsign,
                 'level' => $message->flight_level,
                 'time' => $message->formatEntryTimeRestriction(),
