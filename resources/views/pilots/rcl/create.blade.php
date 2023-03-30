@@ -93,7 +93,7 @@
                         <select class="uk-select" id="track_id" name="track_id">
                             <option value="" selected>None</option>
                             @foreach($tracks as $track)
-                                <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
+                                <option data-routeing="{{ $track->last_routeing }}" value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -117,6 +117,8 @@
                     <div class="uk-form-controls">
                         <input value="{{ old('entry_fix') }}" required type="text" class="uk-input" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
                         <small class="uk-text-meta">The first fix/waypoint in oceanic airspace.</small>
+                        <br/>
+                        <small class="uk-text-meta uk-text-bold" style="display: none;" id="oep-autofilled-msg">This fix was auto-filled, based on your selected track..</small>
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
@@ -124,6 +126,7 @@
                     <div class="uk-form-controls">
                         <input value="{{ old('entry_time') }}" required type="number" class="uk-input" name="entry_time" id="entry_time" placeholder="e.g. 1350">
                         <small class="uk-text-meta">You can find this in your FMC, providing your simulator is set to real time.</small>
+                        <a class="uk-link-text uk-text-meta" target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/#section-3-oceanic-entry">An example is available here.</a>
                     </div>
                 </div>
             </div>
@@ -152,6 +155,21 @@
             @endif
         </form>
     </div>
+    <script type="module">
+        $("#track_id").change(function () {
+            if (this.value == '') {
+                $("#entry_fix").prop('disabled', false).val('');
+                $("#oep-autofilled-msg").hide();
+                return;
+            }
+            const routeing = $(this).find(':selected').data("routeing");
+            if (routeing == '' || routeing == null) {
+                return;
+            }
+            $("#entry_fix").prop('disabled', true).val(routeing.replace(/ .*/,''));
+            $("#oep-autofilled-msg").show();
+        });
+    </script>
     <script>
         const tour = new Shepherd.Tour({
             useModalOverlay: true,
@@ -165,6 +183,11 @@
             action: tour.next
         }
 
+        const cancelButton = {
+            text: 'Cancel tour',
+            action: tour.cancel
+        }
+
         const addTourStep = (id, text) => {
             tour.addStep({
                 id: id,
@@ -173,7 +196,7 @@
                     element: `#${id}`,
                     on: 'bottom'
                 },
-                buttons: [ nextButton ]
+                buttons: [ cancelButton, nextButton ]
             })
         }
 
