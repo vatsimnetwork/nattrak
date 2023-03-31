@@ -75,6 +75,7 @@ class ConflictChecker extends Component
         } else {
             $this->entry = strtok(Track::whereId($newTrackId)->firstOrFail()->last_routeing, ' ');
         }
+        $this->check();
     }
 
     public function rrChanged(string $newRouteing)
