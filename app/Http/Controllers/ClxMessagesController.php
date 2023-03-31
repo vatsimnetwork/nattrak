@@ -74,7 +74,7 @@ class ClxMessagesController extends Controller
                 $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
             }, function ($query) {
                 $query->where('track_id', null);
-            })->orderByDesc('created_at')->get();
+            })->with('rclMessage')->orderByDesc('created_at')->get();
 
             foreach ($messagesOnTrack as $message) {
                 $messages->add($message);

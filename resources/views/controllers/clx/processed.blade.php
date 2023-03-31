@@ -25,7 +25,7 @@
             </div>
         </form>
         <hr>
-        @if ($processedRclMsgs->count() == 0)
+        @if ($messages->count() == 0)
             No processed RCL messages.
         @endif
         <div>
@@ -45,29 +45,29 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($processedRclMsgs as $msg)
+                    @foreach($messages as $msg)
                         <tr>
-                            <td>{{ $msg->callsign }} {{ $msg->is_concorde ? '(CONC)' : '' }}</td>
-                            <td>{{ $msg->destination }}
+                            <td>{{ $msg->rclMessage->callsign }} {{ $msg->rclMessage->is_concorde ? '(CONC)' : '' }}</td>
+                            <td>{{ $msg->rclMessage->destination }}
                             <td>
-                                {{ $msg->latestClxMessage?->track ? 'NAT '. $msg->latestClxMessage?->track->identifier : 'RR' }} {{ $msg->latestClxMessage?->routeing_changed ? '*' : ''}}
+                                {{ $msg->track ? 'NAT '. $msg->track->identifier : 'RR' }} {{ $msg->routeing_changed ? '*' : ''}}
                             </td>
-                            <td>{{ $msg->latestClxMessage?->entry_fix }}</td>
-                            <td data-order="{{ $msg->latestClxMessage?->entry_time_restriction ? $msg->latestClxMessage?->entry_time_restriction : $msg->entry_time }}">
-                                {{ $msg->latestClxMessage?->entry_time_restriction ? $msg->latestClxMessage?->entry_time_restriction . '*' : $msg->entry_time }}
+                            <td>{{ $msg->entry_fix }}</td>
+                            <td data-order="{{ $msg->entry_time_restriction }}">
+                                {{ $msg->entry_time_restriction }} {{ $msg->raw_entry_time_restriction != $msg->rclMessage->entry_time ? '*' : ''  }}
                             </td>
-                            <td data-order="{{ $msg->latestClxMessage?->flight_level }}">
-                                {{ $msg->latestClxMessage?->flight_level }}{{ $msg->latestClxMessage?->flight_level != $msg->flight_level ? '*' : ''}}
+                            <td data-order="{{ $msg->flight_level }}">
+                                {{ $msg->flight_level }}{{ $msg->flight_level != $msg->rclMessage->flight_level ? '*' : ''}}
                             </td>
-                            <td data-order="{{ $msg->latestClxMessage?->mach }}">
-                                {{ $msg->latestClxMessage?->mach }}{{ $msg->latestClxMessage?->mach != $msg->mach ? '*' : ''}}
+                            <td data-order="{{ $msg->mach }}">
+                                {{ $msg->mach }}{{ $msg->mach != $msg->rclMessage->mach ? '*' : ''}}
                             </td>
-                            <td>{{ $msg->latestClxMessage->created_at->format('Hi') }}</td>
+                            <td>{{ $msg->created_at->format('Hi') }}</td>
                             <td>
-                                <a href="{{ route('controllers.clx.show-rcl-message', $msg) }}" class="uk-button uk-button-small uk-button-primary">View</a>
+                                <a href="{{ route('controllers.clx.show-rcl-message', $msg->rclMessage) }}" class="uk-button uk-button-small uk-button-primary">View</a>
                             </td>
                             <td>
-                                <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg) }}">
+                                <form method="POST" action="{{ route('controllers.clx.delete-rcl-message', $msg->rclMessage) }}">
                                     @csrf
                             <button class="uk-button uk-button-small" onclick="return confirm('Are you sure?')">DEL</button>
                                 </form>
