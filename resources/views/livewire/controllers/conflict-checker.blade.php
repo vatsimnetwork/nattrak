@@ -56,7 +56,7 @@
                         <span class="uk-badge conflict-potential" style="margin-right: 1em;"></span>
                     @endif
                     <span>
-                        <a href="{{ $conflict['url'] }}" class="uk-link-text uk-text-bold" style="border-bottom: 1px grey dotted;">{{ $conflict['callsign'] }}</a> - {{ $conflict['time'] }} ({{ $conflict['diffVisual']  }}) - FL {{ $conflict['level'] }}
+                        <a href="{{ $conflict['url'] }}" class="uk-link-text uk-text-bold" style="border-bottom: 1px grey dotted;">{{ $conflict['callsign'] }}</a> - {{ $conflict['time'] }} ({{ $conflict['diffVisual']  }}) - FL{{ $conflict['level'] }} M{{ $conflict['mach'] }}
                     </span>
                 </div>
             </li>
@@ -78,7 +78,7 @@
                         <span class="uk-badge conflict-potential" style="margin-right: 1em;"></span>
                     @endif
                     <span>
-                        <a href="{{ $conflict['url'] }}" class="uk-link-text uk-text-bold" style="border-bottom: 1px grey dotted;">{{ $conflict['callsign'] }}</a> - {{ $conflict['time'] }} ({{ $conflict['diffVisual']  }}) - FL {{ $conflict['level'] }}
+                        <a href="{{ $conflict['url'] }}" class="uk-link-text uk-text-bold" style="border-bottom: 1px grey dotted;">{{ $conflict['callsign'] }}</a> - {{ $conflict['time'] }} ({{ $conflict['diffVisual']  }}) - FL{{ $conflict['level'] }} M{{ $conflict['mach'] }}
                     </span>
                 </div>
             </li>
