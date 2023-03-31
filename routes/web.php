@@ -63,7 +63,7 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
     Route::prefix('clx')->name('.clx')->controller(ClxMessagesController::class)->group(function () {
         Route::get('/pending', 'getPending')->name('.pending');
-        Route::get('/processed', 'getProcessed')->name('.processed');
+        Route::get('/processed', 'getProcessedViaClxModels')->name('.processed');
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
