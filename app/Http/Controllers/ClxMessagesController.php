@@ -9,6 +9,7 @@ use App\Models\CpdlcMessage;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\VatsimDataService;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,31 @@ class ClxMessagesController extends Controller
             'displayed' => $display,
             'tracks' => Track::active()->get(),
             'processedRclMsgs' => $processedRclMsgs,
+            '_pageTitle' => $display ? 'Tracks '.implode(', ', $display) : 'Select tracks',
+        ]);
+    }
+
+    public function getProcessedViaClxModels(Request $request)
+    {
+        $display = $request->get('display') ?? [];
+        $messages = collect();
+
+        foreach ($display as $id) {
+            $messagesOnTrack = ClxMessage::when($id != 'RR', function (Builder $query) use ($id) {
+                $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
+            }, function (Builder $query) {
+                $query->where('track_id', null);
+            })->orderByDesc('created_at')->get();
+
+            foreach ($messagesOnTrack as $message) {
+                $messages->add($message);
+            }
+        }
+
+        return view('controllers.clx.processed', [
+            'displayed' => $display,
+            'tracks' => Track::active()->get(),
+            'messages' => $messages,
             '_pageTitle' => $display ? 'Tracks '.implode(', ', $display) : 'Select tracks',
         ]);
     }
