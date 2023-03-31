@@ -70,11 +70,15 @@ class ClxMessagesController extends Controller
         $messages = collect();
 
         foreach ($display as $id) {
-            $messagesOnTrack = ClxMessage::when($id != 'RR', function ($query) use ($id) {
-                $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
-            }, function ($query) {
-                $query->where('track_id', null);
-            })->with('rclMessage')->orderByDesc('created_at')->get();
+            $messagesOnTrack = ClxMessage::where('overwritten', false)
+                ->when($id != 'RR', function ($query) use ($id) {
+                    $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
+                }, function ($query) {
+                    $query->where('track_id', null);
+                })
+                ->with('rclMessage')
+                ->orderByDesc('created_at')
+                ->get();
 
             foreach ($messagesOnTrack as $message) {
                 $messages->add($message);
@@ -228,6 +232,14 @@ class ClxMessagesController extends Controller
          * Save
          */
         $clxMessage->save();
+
+        //If there is a previous CLX, override it first
+        if ($rclMessage->latestClxMessage) {
+            $rclMessage->latestClxMessage->update([
+                'overwritten' => true,
+                'overwritten_by_clx_message_id' => $rclMessage->latestClxMessage->id,
+            ]);
+        }
 
         /**
          * Assign Clx message to Rcl
