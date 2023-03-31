@@ -202,6 +202,13 @@ class ClxMessagesController extends Controller
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
             $array[] = '/ATC FLIGHT LEVEL CHANGED';
         }
+        if ($clxMessage->routeing_changed) {
+            if ($clxMessage->track) {
+                $array[] = '/ROUTE CHANGED TO TRACK '.$clxMessage->track->identifier;
+            } else {
+                $array[] = '/ROUTE CHANGED TO RANDOM ROUTEING';
+            }
+        }
         if ($clxMessage->free_text) {
             $array[] = '/ATC '.strtoupper($clxMessage->free_text);
         }
