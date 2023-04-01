@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ClearLockedRclMessagesCommand extends Command
 {
-    protected $signature = 'rcl-messages:clearlocks {--minutes : Specify minutes locked}';
+    protected $signature = 'rcl-messages:clearlocks {--minutes=: Specify minutes locked}';
 
     protected $description = 'Command description';
 
@@ -26,5 +26,7 @@ class ClearLockedRclMessagesCommand extends Command
                 $this->info('Unlocked RCL message '.$message->id);
             }
         }
+
+        $this->info('Complete');
     }
 }
