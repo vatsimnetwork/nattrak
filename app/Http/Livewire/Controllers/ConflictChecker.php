@@ -75,6 +75,7 @@ class ConflictChecker extends Component
         } else {
             $this->entry = strtok(Track::whereId($newTrackId)->firstOrFail()->last_routeing, ' ');
         }
+        $this->check();
     }
 
     public function rrChanged(string $newRouteing)
@@ -162,6 +163,7 @@ class ConflictChecker extends Component
                 'url' => route('controllers.clx.show-rcl-message', $message->rclMessage),
                 'callsign' => $message->rclMessage->callsign,
                 'level' => $message->flight_level,
+                'mach' => $message->mach,
                 'time' => $message->formatEntryTimeRestriction(),
                 'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->raw_entry_time_restriction)),
                 'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->raw_entry_time_restriction)),
@@ -177,6 +179,7 @@ class ConflictChecker extends Component
                 'url' => route('controllers.clx.show-rcl-message', $message),
                 'callsign' => $message->callsign,
                 'level' => $message->flight_level,
+                'mach' => $message->mach,
                 'time' => $message->entry_time,
                 'diffVisual' => $this->formatDiff(Carbon::parse($this->time), Carbon::parse($message->entry_time)),
                 'diffMinutes' => Carbon::parse($this->time)->diffInMinutes(Carbon::parse($message->entry_time)),

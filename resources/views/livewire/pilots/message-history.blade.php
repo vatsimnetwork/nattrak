@@ -28,14 +28,18 @@
                     </div>
                 </div>
                 <div>
-                    <p style="font-family: monospace">
-                        @foreach(\App\Models\ClxMessage::whereId($message['id'])->first()->datalink_message as $line)
-                            {{ $line }}<br>
-                        @endforeach
-                    </p>
-                    <p>
-                        <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simple_datalink_message }}</b>
-                    </p>
+                    @if(\App\Models\ClxMessage::whereId($message['id'])->exists())
+                        <p style="font-family: monospace">
+                            @foreach(\App\Models\ClxMessage::whereId($message['id'])->first()->datalink_message as $line)
+                                {{ $line }}<br>
+                            @endforeach
+                        </p>
+                        <p>
+                            <b>{{ \App\Models\ClxMessage::whereId($message['id'])->first()->simple_datalink_message }}</b>
+                        </p>
+                    @else
+                        <p class="uk-text-italic">Clearance withdrawn.</p>
+                    @endif
                 </div>
             </div>
             @if (! $loop->last)

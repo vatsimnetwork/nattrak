@@ -64,6 +64,35 @@ class ClxMessagesController extends Controller
         ]);
     }
 
+    public function getProcessedViaClxModels(Request $request)
+    {
+        $display = $request->get('display') ?? [];
+        $messages = collect();
+
+        foreach ($display as $id) {
+            $messagesOnTrack = ClxMessage::where('overwritten', false)
+                ->when($id != 'RR', function ($query) use ($id) {
+                    $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
+                }, function ($query) {
+                    $query->where('track_id', null);
+                })
+                ->with('rclMessage')
+                ->orderByDesc('created_at')
+                ->get();
+
+            foreach ($messagesOnTrack as $message) {
+                $messages->add($message);
+            }
+        }
+
+        return view('controllers.clx.processed', [
+            'displayed' => $display,
+            'tracks' => Track::active()->get(),
+            'messages' => $messages,
+            '_pageTitle' => $display ? 'Tracks '.implode(', ', $display) : 'Select tracks',
+        ]);
+    }
+
     /**
      * Shows a pilot RCL message
      * GET /controllers/clx/rcl-msg/{rclMessage:id}
@@ -173,6 +202,13 @@ class ClxMessagesController extends Controller
         if (($clxMessage->flight_level != $rclMessage->flight_level) || ($rclMessage->latestClxMessage && ($clxMessage->flight_level != $rclMessage->latestClxMessage->flight_level))) {
             $array[] = '/ATC FLIGHT LEVEL CHANGED';
         }
+        if ($clxMessage->routeing_changed) {
+            if ($clxMessage->track) {
+                $array[] = '/ROUTE CHANGED TO TRACK '.$clxMessage->track->identifier;
+            } else {
+                $array[] = '/ROUTE CHANGED TO RANDOM ROUTEING';
+            }
+        }
         if ($clxMessage->free_text) {
             $array[] = '/ATC '.strtoupper($clxMessage->free_text);
         }
@@ -203,6 +239,14 @@ class ClxMessagesController extends Controller
          * Save
          */
         $clxMessage->save();
+
+        //If there is a previous CLX, override it first
+        if ($rclMessage->latestClxMessage) {
+            $rclMessage->latestClxMessage->update([
+                'overwritten' => true,
+                'overwritten_by_clx_message_id' => $rclMessage->latestClxMessage->id,
+            ]);
+        }
 
         /**
          * Assign Clx message to Rcl
