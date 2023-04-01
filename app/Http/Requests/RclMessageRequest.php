@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Track;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,15 @@ class RclMessageRequest extends FormRequest
             'max_flight_level.max' => 'You must file a valid maximum flight level.',
             'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        if (! $this->has('entry_fix') && $this->has('track_id')) {
+            $this->merge([
+                'entry_fix' => strtok(Track::whereId($this->get('track_id'))->firstOrFail()->last_routeing, ' '),
+            ]);
+        }
     }
 
     public function withValidator($validator)
