@@ -102,7 +102,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class RclMessage extends Model
 {
     use LogsActivity;
-    use SoftDeletes;
+
+    //use SoftDeletes;
     use HasFactory;
     use Prunable;
 
