@@ -67,7 +67,7 @@ class PluginDataController extends Controller
                 abort(400, "Track with identifier {$request->get('track')} not active at present time.");
             }
             $query->where('track_id', $track->id);
-        })->get();
+        })->with('clxMessages')->get();
 
         return response($this->formatRclData($rclMessages));
     }
@@ -84,7 +84,7 @@ class PluginDataController extends Controller
 
         $clxMessages = ClxMessage::where('overwritten', false)->when($requestAsksForTrack, function (Builder $query) use ($trackToSortBy) {
             $query->where('track_id', $trackToSortBy->id);
-        })->orderByDesc('created_at')->get();
+        })->orderByDesc('created_at')->with('vatsimAccount', 'rclMessage', 'track')->get();
 
         $mapped = $clxMessages->map(function (ClxMessage $msg) {
             return [
