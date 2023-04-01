@@ -1,5 +1,5 @@
 <div>
-    <div wire:poll.8s.keep-alive="pollForMessages">
+    <div wire:poll.15s.keep-alive="pollForMessages">
         <h3>CPDLC Messages</h3>
         @foreach($cpdlcMessages as $message)
             <div class="uk-card uk-card-small uk-card-body">
