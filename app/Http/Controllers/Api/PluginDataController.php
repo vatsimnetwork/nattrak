@@ -82,7 +82,7 @@ class PluginDataController extends Controller
             $trackToSortBy = Track::active()->whereIdentifier($request->get('track'))->firstOrFail();
         }
 
-        $clxMessages = ClxMessage::when($requestAsksForTrack, function (Builder $query) use ($trackToSortBy) {
+        $clxMessages = ClxMessage::where('overwritten', false)->when($requestAsksForTrack, function (Builder $query) use ($trackToSortBy) {
             $query->where('track_id', $trackToSortBy->id);
         })->orderByDesc('created_at')->get();
 
