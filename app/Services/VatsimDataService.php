@@ -60,6 +60,9 @@ class VatsimDataService
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
     {
+        if (! auth()->check()) {
+            return false;
+        }
         $networkData = $this->getNetworkData();
         if (! $networkData) {
             return false;
@@ -86,6 +89,9 @@ class VatsimDataService
 
     public function isActiveOceanicController(VatsimAccount $vatsimAccount)
     {
+        if (! auth()->check()) {
+            return false;
+        }
         $networkData = $this->getNetworkData();
         if (! $networkData) {
             return false;
