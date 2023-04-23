@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [\App\Http\Controllers\ViewsController::class, 'welcome'])->name('welcome');
+Route::view('/about', 'about')->name('about');
 
 Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');

@@ -1,171 +1,105 @@
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en" class="h-100" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @vite(['resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
+    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
     @livewireStyles
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
 <body>
-<div class="uk-background-muted uk-height-viewport">
-    <div class="uk-background-default">
-        <div class="uk-container">
-            <nav class="uk-background-default uk-dark" uk-navbar="dropbar: true">
-                <div class="uk-navbar-left">
-                    <ul class="uk-navbar-nav">
-                        <a href="{{ route('welcome') }}" class="uk-navbar-item uk-logo">
-                            <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" style="height: 2em;" alt="">
-                        </a>
-                        <li class="{{ Request::is('pilots/*') ? 'uk-active' : '' }}">
-                            <a href="#" class="uk-text-capitalize">Pilots</a>
-                            <div class="uk-navbar-dropdown">
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                    @can('activePilot')
-                                        <li style="padding-bottom: 1em;">
-                                        <a href="{{ route('pilots.rcl.index') }}">
-                                            <button class="uk-button uk-button-primary uk-button-small">
-                                                Request Oceanic Clearance
-                                            </button>
-                                        </a>
-                                    </li>
-                                        <li>
-                                        <a href="{{ route('pilots.message-history') }}">
-                                            <div>
-                                                Clearance Status
-                                                <div class="uk-navbar-subtitle" style="font-size: 0.8em; padding-top: 5px;">Your oceanic clearance and other message history is accessible here.</div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    @else
-                                        <div class="uk-alert uk-alert-danger">
-                                            We can't detect an active flight on your VATSIM account. Check your are connected to VATSIM as a pilot and then reload this page.
-                                        </div>
-                                    @endcan
-                                    <li class="uk-nav-divider"></li>
-                                    <li class="uk-nav-header uk-text-capitalize">Help</li>
-                                    <li>
-                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/">Requesting Oceanic Clearance</a>
-                                        <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/receiving-your-clearance/">Receiving Clearance</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        @can('activeController')
-                            <li class="{{ Request::is('controllers/*') ? 'uk-active' : '' }}">
-                            <a href="#" class="uk-text-capitalize">Oceanic Controllers</a>
-                            <div class="uk-navbar-dropdown uk-navbar-dropdown-width-2">
-                                <div class="uk-navbar-dropdown-grid uk-child-width-1-2" uk-grid>
-                                    <div>
-                                        <ul class="uk-nav uk-navbar-dropdown-nav">
-                                            <li>
-                                                <a href="{{ route('controllers.clx.pending') }}">
-                                                    Pending RCL Messages
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ route('controllers.clx.processed') }}">
-                                                    Processed RCL Messages
-                                                </a>
-                                            </li>
-                                            <li class="uk-nav-header"></li>
-                                            <li class="uk-nav-header uk-text-capitalize">Help</li>
-                                            <li>
-                                                <a target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/pending-rcl-messages" class="dropdown-item">RCL Messages List</a>
-                                                <a target="_blank" href="https://knowledgebase.ganderoceanic.ca//nattrak/issuing-clx" class="dropdown-item">Issuing Clearance</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        @endcan
-                        @can('administrate')
-                            <li class="{{ Request::is('administration/*') ? 'active' : '' }}">
-                                <a href="" class="uk-text-capitalize">Administration</a>
-                                <div class="uk-navbar-dropdown">
-                                    <ul class="uk-nav uk-navbar-dropdown-nav">
-                                        @if (Auth::user()->access_level >= \App\Enums\AccessLevelEnum::Root)
-                                            <li>
-                                                <a href="{{ route('administration.accounts') }}">Manage admin users</a>
-                                            </li>
-                                        @endif
-                                        <li>
-                                            <a href="{{ route('administration.controllers') }}">Manage controller permissions</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('administration.activity-log') }}">Activity log</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('notams.index') }}">NOTAMs</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        @endcan
-                    </ul>
-                </div>
-                <div class="uk-navbar-right">
-                    <ul class="uk-navbar-nav">
+<header id="header">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ route('welcome') }}">
+                    <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" alt="natTrak" class="img-fluid" style="max-height: 2.5em;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authNav" aria-controls="authNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="authNav">
+                    <ul class="navbar-nav gap-2">
                         @auth
-                            <li>
-                                <a href="">
-                                    <div>
-                                        <i class="fa-solid fa-user" style="padding-right: 5px"></i>
-                                        <span class="uk-text-capitalize">
-                                            {{ Auth::user()->full_name ?? Auth::user()->id }}
-                                        </span>
-                                    </div>
-                                </a>
-                                <div class="uk-navbar-dropdown">
-                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                            @can('administrate')
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                                        Admin
+                                    </a>
+                                    <ul class="dropdown-menu">
                                         <li>
-                                            <a href="{{ route('auth.deauthenticate') }}">
-                                                Sign Out
-                                            </a>
+                                            <a href="{{ route('administration.controllers') }}" class="dropdown-item">Controller permissions</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('administration.accounts') }}" class="dropdown-item">Admin permissions</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('administration.activity-log') }}" class="dropdown-item">Activity log</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item">Tracks</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-item">NOTAMs</a>
                                         </li>
                                     </ul>
-                                </div>
+                                </li>
+                            @endcan
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ auth()->user()->full_name }} {{ auth()->user()->id }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Sign out</a></li>
+                                </ul>
                             </li>
                         @else
-                            <li>
-                                <a href="{{ route('auth.redirect') }}">
-                                    <button class="uk-button uk-button-primary uk-button-small uk-text-capitalize">
-                                        <div class="uk-flex uk-flex-middle">
-                                            <i class="fa-solid fa-link" style="padding-right: 0.5em"></i>
-                                            <span>Sign In With VATSIM</span>
-                                        </div>
-                                    </button>
+                            <li class="nav-item">
+                                <a class="btn btn-primary font-display" href="{{ route('auth.redirect') }}" role="button">
+                                    Sign In With VATSIM
                                 </a>
                             </li>
                             @if (config('app.env') == 'local')
-                                <li>
-                                    <a href="/auth/1234567">
-                                        <button class="uk-button uk-button-primary uk-button-small uk-text-capitalize">
-                                            <div class="uk-flex uk-flex-middle">
-                                                <i class="fa-solid fa-link" style="padding-right: 0.5em"></i>
-                                                <span>Sign In With Dev Account</span>
-                                            </div>
-                                        </button>
+                                <li class="nav-item">
+                                    <a href="/auth/1234567" role="button" class="btn btn-outline-primary font-display">
+                                        Dev Account
                                     </a>
                                 </li>
                             @endif
                         @endauth
-                        <li>
-                            <a>
-                                <span class="uk-button uk-button-secondary">TMI {{ current_tmi() }}</span>
-                            </a>
+                        <li class="nav-item">
+                            <div class="mh-100">
+                                <span class="badge rounded-pill text-bg-primary">Primary</span>
+
+                            </div>
                         </li>
                     </ul>
                 </div>
-            </nav>
-            <div class="uk-navbar-dropbar"></div>
-        </div>
+            </div>
+        </nav>
     </div>
-    <div class="uk-flex-auto">
+    @can('activePilot')
+        @include('pilots.nav')
+    @endcan
+    <main class="mt-4 mb-4">
         @yield('page')
-    </div>
-</div>
+    </main>
+    <footer class="mt-5">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <p class="col-md-4 mb-0 text-body-secondary">A service of <a href="https://vatsim.net">VATSIM</a></p>
+
+                <p class="col-md-4 mb-0 text-center text-body-secondary">Version x</p>
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item"><a href="{{ route('about') }}" class="nav-link px-2 text-body-secondary">About</a></li>
+                    <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak" class="nav-link px-2 text-body-secondary">GitHub</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Report Issue</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</header>
 @livewireScripts
 @if (Session::has('alert'))
     <script>
