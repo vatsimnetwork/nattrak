@@ -32,8 +32,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         $dataService = new VatsimDataService();
 
         Gate::before(function (VatsimAccount $account) {
