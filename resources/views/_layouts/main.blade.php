@@ -96,6 +96,9 @@
                                         <li>
                                             <a href="{{ route('administration.activity-log') }}">Activity log</a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('notams.index') }}">NOTAMs</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
