@@ -46,7 +46,7 @@ class RclMessagesController extends Controller
     public function store(RclMessageRequest $request)
     {
         if (RclMessage::whereVatsimAccountId($request->user()->id)->whereClxMessageId(null)->exists()) {
-            toastr()->error('You already have a pending oceanic clearance request. If it has been waiting for more than 10 minutes, let the controller know.');
+            flashAlert(type: 'warning', title: 'You can\'t submit another request yet.', message: 'You already have a pending oceanic clearance request. If it has been waiting for more than 10 minutes, let the controller know via vPilot/xPilot/Swift private message.', toast: false, timer: false);
 
             return redirect()->route('pilots.rcl.index');
         }
@@ -56,8 +56,6 @@ class RclMessagesController extends Controller
         $rclMessage->request_time = now();
         $rclMessage->atc_rejected = false;
         $rclMessage->save();
-
-        toastr()->info('Your messaged has been received. Accept notifications from this site and we can let you know when it\'s been replied to!');
 
         return redirect()->route('pilots.message-history');
     }
