@@ -89,19 +89,19 @@
                                         </select>
                                     </div>
                                 </div>
-                                @if (!$message->is_concorde)
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label" for="">Change flight level to</label>
-                                        <div class="uk-form-controls">
-                                            <select name="atc_fl" id="atc_fl" autocomplete="off" class="uk-select uk-form-small">
-                                                <option value="" selected>Don't change</option>
-                                                @for ($i = 200; $i <= 450; $i += 10)
-                                                    @if (in_array($i, [420, 440])) @continue @endif
-                                                    <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                <div class="uk-margin">
+                                    <label class="uk-form-label" for="">Change {{ $message->is_concorde ? 'lower block' : '' }} flight level to</label>
+                                    <div class="uk-form-controls">
+                                        <select name="atc_fl" id="atc_fl" autocomplete="off" class="uk-select uk-form-small">
+                                            <option value="" selected>Don't change</option>
+                                            @for ($i = 200; $i <= 600; $i += 10)
+                                                @if (in_array($i, [420, 440])) @continue @endif
+                                                <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
+                                            @endfor
+                                        </select>
                                     </div>
+                                </div>
+                                @if (!$message->is_concorde)
                                     <div class="uk-margin">
                                         <label class="uk-form-label" for="">Change mach to</label>
                                         <div class="uk-form-controls">
@@ -109,6 +109,19 @@
                                                 <option value="" selected>Don't change</option>
                                                 @for ($i = 55; $i < 99; $i++)
                                                     <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="uk-margin">
+                                        <label class="uk-form-label" for="">Change upper block flight level to</label>
+                                        <div class="uk-form-controls">
+                                            <select name="atc_ufl" id="atc_ufl" autocomplete="off" class="uk-select uk-form-small">
+                                                <option value="" selected>Don't change</option>
+                                                @for ($i = 200; $i <= 600; $i += 10)
+                                                    @if (in_array($i, [420, 440])) @continue @endif
+                                                    <option value="{{ $i }}">FL {{ $i }} @if ($message->upper_flight_level == $i) (pilot request)@endif</option>
                                                 @endfor
                                             </select>
                                         </div>

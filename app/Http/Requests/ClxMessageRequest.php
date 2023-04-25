@@ -12,6 +12,7 @@ class ClxMessageRequest extends FormRequest
     {
         return [
             'atc_fl' => 'nullable|numeric|digits:3',
+            'atc_ufl' => 'nullable|numeric|digits:3',
             'atc_mach' => 'nullable|numeric|digits:3',
             'free_text' => 'nullable',
             'entry_time_type' => 'nullable|required_with:entry_time_requirement', Rule::in(['<', '=', '>']),

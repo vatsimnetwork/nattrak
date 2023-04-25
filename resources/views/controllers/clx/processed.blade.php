@@ -20,6 +20,12 @@
                         </div>
                     </div>
                 @endforeach
+                <div>
+                    <div class="uk-form-controls">
+                        <input type="checkbox" class="uk-checkbox" name="display[]" value="CONC">
+                        <label class="uk-form-label">CONC</label>
+                    </div>
+                </div>
                 <button class="uk-button uk-button-small uk-button-secondary" style="margin-left: 10px;" type="submit">Sort</button>
                 <button id="selectAll" class="uk-button uk-button-small" style="margin-left: 10px;">All</button>
             </div>
