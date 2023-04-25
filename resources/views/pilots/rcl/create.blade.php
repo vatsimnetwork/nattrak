@@ -149,14 +149,16 @@
                 </div>
             </div>
             @if ($isConcorde)
-                <input type="hidden" name="is_concorde" value="1">
+                <input type="hidden" id="is_concorde" name="is_concorde" value="1">
             @else
-                <input type="hidden" name="is_concorde" value="0">
+                <input type="hidden" id="is_concorde" name="is_concorde" value="0">
             @endif
         </form>
     </div>
     <script type="module">
         $("#track_id").change(function () {
+            if ($("#is_concorde").val() == 1) return;
+
             if (this.value == '') {
                 $("#entry_fix").prop('disabled', false).val('');
                 $("#oep-autofilled-msg").hide();

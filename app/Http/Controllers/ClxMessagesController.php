@@ -71,10 +71,14 @@ class ClxMessagesController extends Controller
 
         foreach ($display as $id) {
             $messagesOnTrack = ClxMessage::where('overwritten', false)
-                ->when($id != 'RR', function ($query) use ($id) {
+                ->when(in_array($id, ['RR', 'CONC']) == false, function ($query) use ($id) {
                     $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
-                }, function ($query) {
-                    $query->where('track_id', null);
+                }, function ($query) use ($id) {
+                    if ($id == 'RR') {
+                        $query->where('track_id', null);
+                    } elseif ($id == 'CONC') {
+                        $query->where('is_concorde', true);
+                    }
                 })
                 ->with('rclMessage')
                 ->orderByDesc('created_at')
@@ -109,7 +113,7 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
             'dlAuthorities' => DatalinkAuthorities::cases(),
-            'tracks' => Track::active()->get(),
+            'tracks' => $rclMessage->is_concorde ? Track::concorde()->get() : Track::active()->get(),
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
             '_pageTitle' => $rclMessage->callsign,
         ]);
@@ -158,13 +162,14 @@ class ClxMessagesController extends Controller
             'vatsim_account_id' => $request->user()->id,
             'rcl_message_id' => $rclMessage->id,
             'flight_level' => $request->filled('atc_fl') ? $request->get('atc_fl') : $rclMessage->flight_level,
-            'upper_flight_level' => $rclMessage->upper_flight_level ?? null,
+            'upper_flight_level' => $rclMessage->upper_flight_level ? ($request->get('atc_ufl') ?? $rclMessage->upper_flight_level) : null,
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
             'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority')),
+            'is_concorde' => $rclMessage->is_concorde,
         ]);
 
         /**
