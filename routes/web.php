@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\BulletinsController;
 use App\Http\Controllers\ClxMessagesController;
 use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\VatsimAuthController;
@@ -69,4 +70,11 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/revert-to-voice', 'revertToVoice')->name('.revert-to-voice');
     });
+});
+
+Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->group(function () {
+    Route::get('/', 'index')->name('.index');
+    Route::get('/create', 'create')->name('.create');
+    Route::post('/', 'store')->name('.store');
+    Route::delete('/{bulletin:id}', 'destroy')->name('.destroy');
 });

@@ -21,6 +21,9 @@
                 <li class="{{ $loop->first ? 'uk-open' : '' }}">
                     <a href="" class="uk-accordion-title">{{ $notam->title }}</a>
                     <div class="uk-accordion-content">
+                        <p class="uk-text-italic">
+                            {{ $notam->created_at->toDayDateTimeString() }}
+                        </p>
                         @if ($notam->subtitle)
                             <p class="uk-text-italic">
                                 {{ $notam->subtitle }}
@@ -29,12 +32,13 @@
                         <p>
                             {{ $notam->content }}
                         </p>
-                        @if ($notam->url)
-                            <a href="{{ $notam->url }}" class="card-link">Read more</a>
+                        @if ($notam->action_url)
+                            <a href="{{ $notam->action_url }}" class="card-link">Read more</a>
                         @endif
                     </div>
                 </li>
             @endforeach
         </ul>
+        <a href="{{ route('notams.index') }}">View all NOTAMs</a>
     </div>
 @endsection
