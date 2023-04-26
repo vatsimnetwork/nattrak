@@ -11,4 +11,9 @@ enum AccessLevelEnum: int
     case Controller = 1;
     case Administrator = 2;
     case Root = 3;
+
+    public function labelPowergridFilter(): string
+    {
+        return $this->name;
+    }
 }

@@ -37,30 +37,10 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        $display = $request->get('display') ?? [];
-        $processedRclMsgs = collect();
-
-        foreach ($display as $id) {
-            $trackMessages = RclMessage::cleared()
-                ->with('latestClxMessage')
-                ->when($id != 'RR', function ($query) use ($id) { // Track
-                    $query->where('track_id', Track::whereIdentifier($id)->firstOrFail()->id);
-                }, function ($query) { // RR
-                    $query->where('track_id', null);
-                })
-                ->orderByDesc('request_time')
-                ->get();
-
-            foreach ($trackMessages as $message) {
-                $processedRclMsgs->add($message);
-            }
-        }
-
-        return view('controllers.clx.processed', [
-            'displayed' => $display,
+        return view('controllers.clx.processedPg', [
+            'displayed' => $request->get('display'),
             'tracks' => Track::active()->get(),
-            'processedRclMsgs' => $processedRclMsgs,
-            '_pageTitle' => $display ? 'Tracks '.implode(', ', $display) : 'Select tracks',
+            '_pageTitle' => $request->get('display') ? 'Tracks '.implode(', ', $request->get('display')) : 'None selected',
         ]);
     }
 
