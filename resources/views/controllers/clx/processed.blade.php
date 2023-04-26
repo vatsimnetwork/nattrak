@@ -1,6 +1,6 @@
 @extends('_layouts.main')
 @section('page')
-    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
+    <div class="container">
         <h3 class="uk-text-primary uk-margin-remove-top">Processed RCL messages</h3>
         <h5 class="uk-margin-remove-top">{{ $displayed ? 'Tracks ' . implode(", ", $displayed) : 'None selected' }}</h5>
         <form method="GET" action="{{ route('controllers.clx.processed') }}">

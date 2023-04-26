@@ -11,4 +11,18 @@ enum DatalinkAuthorities: string
     case LPPO = 'LPPO';
     case NAT = 'NAT';
     case TTZO = 'TTZO';
+
+    public function description(): string
+    {
+        return match ($this) {
+            DatalinkAuthorities::NAT => 'North Atlantic Bandbox',
+            DatalinkAuthorities::BIRD => 'Reykjavik',
+            DatalinkAuthorities::TTZO => 'Piarco',
+            DatalinkAuthorities::LPPO => 'Santa Maria',
+            DatalinkAuthorities::CZQX => 'Gander',
+            DatalinkAuthorities::EGGX => 'Shanwick',
+            DatalinkAuthorities::KZNY => 'New York',
+            default => 'N/A'
+        };
+    }
 }

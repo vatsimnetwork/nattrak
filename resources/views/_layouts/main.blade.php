@@ -40,7 +40,7 @@
                                             <a href="#" class="dropdown-item">Tracks</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="dropdown-item">NOTAMs</a>
+                                            <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -68,9 +68,8 @@
                             @endif
                         @endauth
                         <li class="nav-item">
-                            <div class="mh-100">
-                                <span class="badge rounded-pill text-bg-primary">Primary</span>
-
+                            <div href="" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
+                                TMI {{ current_tmi() }}
                             </div>
                         </li>
                     </ul>
@@ -80,6 +79,9 @@
     </div>
     @can('activePilot')
         @include('pilots.nav')
+    @endcan
+    @can('activeController')
+        @include('controllers.nav')
     @endcan
     <main class="mt-4 mb-4">
         @yield('page')

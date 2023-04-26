@@ -6,7 +6,6 @@ use App\Enums\AccessLevelEnum;
 use App\Models\VatsimAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Activitylog\Models\Activity;
 
 class AdministrationController extends Controller
 {
@@ -17,16 +16,12 @@ class AdministrationController extends Controller
 
     public function accounts()
     {
-        $privilegedAccounts = VatsimAccount::where('access_level', AccessLevelEnum::Administrator)->orWhere('access_level', AccessLevelEnum::Root)->get();
-
-        return view('administration.accounts.index', compact('privilegedAccounts'));
+        return view('administration.accounts.index');
     }
 
     public function controllers()
     {
-        $controllerAccounts = VatsimAccount::whereAccessLevel(AccessLevelEnum::Controller)->get();
-
-        return view('administration.accounts.controllers', compact('controllerAccounts'));
+        return view('administration.accounts.controllers');
     }
 
     public function addAccess(Request $request)
@@ -116,8 +111,6 @@ class AdministrationController extends Controller
 
     public function activityLog()
     {
-        return view('administration.activity-log', [
-            'log' => Activity::all(),
-        ]);
+        return view('administration.activity-log');
     }
 }

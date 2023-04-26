@@ -73,6 +73,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  *
  * @method static Builder|ClxMessage whereOverwritten($value)
  * @method static Builder|ClxMessage whereOverwrittenByClxMessageId($value)
+ *
+ * @property int $is_concorde
+ *
+ * @method static Builder|ClxMessage whereIsConcorde($value)
  * @mixin \Eloquent
  */
 class ClxMessage extends Model

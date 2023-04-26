@@ -16,6 +16,7 @@
         "livewire/livewire": "^2.10.6",
         "marvinlabs/laravel-discord-logger": "^1.2.0",
         "opcodesio/log-viewer": "^2.3",
+        "power-components/livewire-powergrid": "^4.4",
         "predis/predis": "^1.1.10",
         "sentry/sentry-laravel": "*",
         "spatie/laravel-activitylog": "^4.5.3"
