@@ -37,7 +37,7 @@
                                             <a href="{{ route('administration.activity-log') }}" class="dropdown-item">Activity log</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="dropdown-item">Tracks</a>
+                                            <a href="{{ route('tracks.index') }}" class="dropdown-item">Tracks</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
@@ -68,9 +68,9 @@
                             @endif
                         @endauth
                         <li class="nav-item">
-                            <div href="" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
+                            <a href="{{ route('tracks.index') }}" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
                                 TMI {{ current_tmi() }}
-                            </div>
+                            </a>
                         </li>
                     </ul>
                 </div>
