@@ -31,7 +31,7 @@ class RclMessagesController extends Controller
         }
 
         $data = $this->dataService->getActivePilotData(Auth::user());
-        $isConcorde = true; // $data?->flight_plan?->aircraft_short == 'CONC';
+        $isConcorde = $data?->flight_plan?->aircraft_short == 'CONC';
 
         return view('pilots.rcl.create', [
             'callsign' => $data?->callsign ?? null,
