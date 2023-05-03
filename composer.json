@@ -6,8 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "barryvdh/laravel-debugbar": "^3.6.8",
-        "barryvdh/laravel-ide-helper": "^2.12.3",
         "genealabs/laravel-caffeine": "^10.0.1",
         "guzzlehttp/guzzle": "^7.4.5",
         "laravel/framework": "^10.0",
@@ -15,7 +13,6 @@
         "laravel/tinker": "^2.7.2",
         "livewire/livewire": "^2.10.6",
         "marvinlabs/laravel-discord-logger": "^1.2.0",
-        "opcodesio/log-viewer": "^2.3",
         "power-components/livewire-powergrid": "^4.4",
         "predis/predis": "^1.1.10",
         "sentry/sentry-laravel": "*",
@@ -29,7 +26,10 @@
         "mockery/mockery": "^1.5.0",
         "nunomaduro/collision": "^6.2.1",
         "phpunit/phpunit": "^9.5.21",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.0",
+        "opcodesio/log-viewer": "^2.3",
+        "barryvdh/laravel-debugbar": "^3.6.8",
+        "barryvdh/laravel-ide-helper": "^2.12.3"
     },
     "autoload": {
         "files": [
