@@ -1,18 +1,30 @@
 @extends('_layouts.main')
 @section('page')
-    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
-        <form method="POST" action="{{ route('controllers.clx.transmit', $message) }}" class="col-lg-12 bg-light rounded pt-3 pb-3">
+    <div class="container">
+        <form method="POST" action="{{ route('controllers.clx.transmit', $message) }}">
             @csrf
-            <a href="{{ route('controllers.clx.pending') }}"><i class="fas fa-angle-left"></i> Back</a>
-            <h3>{{ $message->callsign }} RCL Message</h3>
+            <p class="mb-1">
+                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Pending
+                </a>
+            </p>
+            <p class="mb-4">
+                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Processed
+                </a>
+            </p>
+            <h5 class="text-secondary font-display">Request Message</h5>
+            <h3 class="font-display">{{ $message->callsign }} to {{ $message->destination }} {{ $message->is_concorde ? '(Concorde)' : '' }}</h3>
             @if ($message->isEditLocked() && $message->editLockVatsimAccount != Auth::user())
-                <div class="uk-alert uk-alert-warning">
-                    <h6>{{ $message->editLockVatsimAccount->full_name }} {{ $message->editLockVatsimAccount->id }} is editing this as of {{ $message->edit_lock_time->diffForHumans() }}.</h6>
+                <div class="alert alert-warning">
+                    <span>{{ $message->editLockVatsimAccount->full_name }} {{ $message->editLockVatsimAccount->id }} is editing this as of {{ $message->edit_lock_time->diffForHumans() }}.</span>
                 </div>
             @endif
             @if ($errors->any())
-                <div class="uk-alert uk-alert-danger" role="alert">
-                    <h6>Some input was incorrect.</h6>
+                <div class="alert alert-danger" role="alert">
+                    <p>Some input was incorrect.</p>
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -20,14 +32,12 @@
                     </ul>
                 </div>
             @endif
-            <div class="uk-grid uk-grid-small" uk-grid>
-                <div class="{{ $message->clxMessages->count() > 0 ? 'uk-width-1-2' : '' }}">
+            <div class="row mt-4">
+                <div class="col-md">
                     <div>
-                        <h5 style="margin-bottom: 0;">Request Data</h5>
-                        <table id="dataTable" class="uk-table uk-table-small uk-table-striped uk-padding-remove uk-margin-remove uk-table-middle" style="width:100%;">
+                        <h5>Request Data</h5>
+                        <table class="table table-bordered table-sm">
                             <thead>
-                                <td class="uk-width-small"></td>
-                                <th></th>
                             </thead>
                             <tbody>
                             <tr>
@@ -72,40 +82,66 @@
                                 <td>TIME</td>
                                 <td>{{ $message->request_time->format('Hi') }}</td>
                             </tr>
+                            <tr>
+                                <td>CID</td>
+                                <td>{{ $message->vatsimAccount->full_name }} {{ $message->vatsimAccount->id }}</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                     <div>
-                        <h5 style="margin: 20px 0 0;">ATC Requirements (changes only)</h5>
-                        <div class="uk-margin">
-                            <div class="uk-form-horizontal">
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="">Datalink authority</label>
-                                    <div class="uk-form-controls">
-                                        <select name="datalink_authority" id="" autocomplete="off" class="uk-select uk-form-small">
+                        <h5>
+                            Clearances
+                        </h5>
+                        @foreach($message->clxMessages->sortbyDesc('created_at') as $clx)
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="text-secondary">Issued by {{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }} ({{ $clx->created_at->diffForHumans() }})</p>
+                                    <p>
+                                        @foreach($clx->datalink_message as $line)
+                                            {{ $line }}<br>
+                                        @endforeach
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                        @if ($message->clxMessages->isEmpty())
+                            <p>None issued.</p>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div>
+                        <h5>Send clearance</h5>
+                        <div>
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label" for="">Datalink authority</label>
+                                    <div class="">
+                                        <select name="datalink_authority" id="" autocomplete="off" class="form-select form-select-sm">
                                             @foreach($dlAuthorities as $authority)
                                                 <option value="{{ $authority->value }}" @if($authority->value == $activeDlAuthority->value) selected="selected" @endif>{{ $authority->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                @if (!$message->is_concorde)
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label" for="">Change flight level to</label>
-                                        <div class="uk-form-controls">
-                                            <select name="atc_fl" id="atc_fl" autocomplete="off" class="uk-select uk-form-small">
-                                                <option value="" selected>Don't change</option>
-                                                @for ($i = 200; $i <= 450; $i += 10)
-                                                    @if (in_array($i, [420, 440])) @continue @endif
-                                                    <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                <div class="col">
+                                    <label class="form-label" for="">Change {{ $message->is_concorde ? 'lower block' : '' }} flight level to</label>
+                                    <div class="uk-form-controls">
+                                        <select name="atc_fl" id="atc_fl" autocomplete="off" class="form-select form-select-sm">
+                                            <option value="" selected>Don't change</option>
+                                            @for ($i = 200; $i <= 600; $i += 10)
+                                                @if (in_array($i, [420, 440])) @continue @endif
+                                                <option value="{{ $i }}">FL {{ $i }} @if ($message->flight_level == $i) (pilot request) @elseif ($message->max_flight_level == $i) (max pilot flight level) @endif</option>
+                                            @endfor
+                                        </select>
                                     </div>
-                                    <div class="uk-margin">
-                                        <label class="uk-form-label" for="">Change mach to</label>
+                                </div>
+                                @if (!$message->is_concorde)
+                                    <div class="col">
+                                        <label class="form-label" for="">Change mach to</label>
                                         <div class="uk-form-controls">
-                                            <select name="atc_mach" id="atc_mach" autocomplete="off" class="uk-select uk-form-small">
+                                            <select name="atc_mach" id="atc_mach" autocomplete="off" class="form-select form-select-sm">
                                                 <option value="" selected>Don't change</option>
                                                 @for ($i = 55; $i < 99; $i++)
                                                     <option value="0{{ $i }}">0{{ $i }} @if ($message->mach == '0' . $i) (pilot request) @endif</option>
@@ -113,33 +149,46 @@
                                             </select>
                                         </div>
                                     </div>
+                                @else
+                                    <div class="col">
+                                        <label class="form-label" for="">Change upper block flight level to</label>
+                                        <div class="uk-form-controls">
+                                            <select name="atc_ufl" id="atc_ufl" autocomplete="off" class="form-select form-select-sm">
+                                                <option value="" selected>Don't change</option>
+                                                @for ($i = 200; $i <= 600; $i += 10)
+                                                    @if (in_array($i, [420, 440])) @continue @endif
+                                                    <option value="{{ $i }}">FL {{ $i }} @if ($message->upper_flight_level == $i) (pilot request)@endif</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
                                 @endif
-                                <hr>
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="">Entry time requirement for {{ $message->entry_fix }}</label>
-                                    <div class="uk-form-controls">
-                                        <select class="uk-select uk-form-small" autocomplete="off" name="entry_time_type" id="entry_time_type">
+                                <hr class="my-3">
+                                <div class="col">
+                                    <label class="form-label" for="">Entry time requirement for {{ $message->entry_fix }}</label>
+                                    <div class="input-group">
+                                        <select class="form-select form-select-sm" autocomplete="off" name="entry_time_type" id="entry_time_type">
                                             <option value="=" selected>At</option>
                                             <option value="<">Before</option>
                                             <option value=">">After</option>
                                         </select>
-                                        <input type="number" name="entry_time_requirement" id="entry_time_requirement" class="uk-input uk-form-small" value="{{ $message->entry_time }}" maxlength="4">
-{{--                                        <script type="module">--}}
-{{--                                            $('#entry_time_type').on('change', function () {--}}
-{{--                                                if (this.value == '') {--}}
-{{--                                                    $('#entry_time_requirement').hide();--}}
-{{--                                                } else {--}}
-{{--                                                    $('#entry_time_requirement').show();--}}
-{{--                                                }--}}
-{{--                                            });--}}
-{{--                                        </script>--}}
+                                        <input type="number" name="entry_time_requirement" id="entry_time_requirement" class="form-control form-conrtol-sm" value="{{ $message->entry_time }}" maxlength="4">
+                                        {{--                                        <script type="module">--}}
+                                        {{--                                            $('#entry_time_type').on('change', function () {--}}
+                                        {{--                                                if (this.value == '') {--}}
+                                        {{--                                                    $('#entry_time_requirement').hide();--}}
+                                        {{--                                                } else {--}}
+                                        {{--                                                    $('#entry_time_requirement').show();--}}
+                                        {{--                                                }--}}
+                                        {{--                                            });--}}
+                                        {{--                                        </script>--}}
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="">Change route to another NAT</label>
-                                    <div class="uk-form-controls">
-                                        <select class="uk-select uk-form-small" autocomplete="off" name="new_track_id" id="new_track_id">
+                                <hr class="my-3">
+                                <div class="col">
+                                    <label class="form-label" for="">Change route to another NAT</label>
+                                    <div >
+                                        <select class="form-select form-select-sm" autocomplete="off" name="new_track_id" id="new_track_id">
                                             <option value="" selected>None</option>
                                             @foreach($tracks as $track)
                                                 <option value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
@@ -147,61 +196,42 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="">Change route to another RR</label>
+                                <div class="col">
+                                    <label class="form-label" for="">Change route to another RR</label>
                                     <div class="uk-form-controls">
-                                        <input type="text" name="new_random_routeing" id="new_random_routeing" class="uk-input uk-form-small" autocomplete="off" placeholder="">
+                                        <input type="text" name="new_random_routeing" id="new_random_routeing" class="form-control form-conrtol-sm" autocomplete="off" placeholder="">
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="uk-margin">
-                                    <label class="uk-form-label" for="">Free text</label>
+                                <hr class="my-3">
+                                <div class="col">
+                                    <label class="form-label" for="">Free text</label>
                                     <div class="uk-form-controls">
-                                        <input type="text" name="free_text" class="uk-input uk-form-small">
+                                        <input type="text" name="free_text" class="form-control form-conrtol-sm">
                                     </div>
                                 </div>
-                                <div class="uk-margin">
-                                    <div class="uk-card uk-card-default uk-card-body uk-padding-remove" style="padding: 15px !important;">
+                                <hr class="my-3"/>
+                                <div class="col">
+                                    <div class="card card-body" style="padding: 15px !important;">
                                         <livewire:controllers.conflict-checker callsign="{{ $message->callsign }}" level="{{ $message->flight_level }}" time="{{ $message->entry_time }}" entry="{{ $message->entry_fix }}"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <p class="uk-text-meta">Pilot details: {{ $message->vatsimAccount->id }}</p>
-                    <div class="form-inline">
-                        <button class="uk-button uk-button-primary" onclick="" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
+                    <div class="mt-3 d-grid gap-2">
+                        <button class="btn btn-success" onclick="" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
                     </div>
                 </div>
-                @if ($message->clxMessages->count() > -1)
-                    <div class="uk-width-1-2">
-                        <div>
-                            <p>
-                                CLX Messages in reply to this RCL
-                            </p>
-                            @foreach($message->clxMessages->sortbyDesc('created_at') as $clx)
-                                <div class="uk-card uk-card-default uk-card-body uk-margin" style="padding: 10px; box-shadow: none !important;">
-                                    <p>{{ $clx->vatsimAccount->full_name }} {{ $clx->vatsimAccount->id }} - {{ $clx->created_at }}</p>
-                                    <p>
-                                        @foreach($clx->datalink_message as $line)
-                                            {{ $line }}<br>
-                                        @endforeach
-                                    </p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
             </div>
         </form>
-        <div class="uk-margin uk-grid" uk-grid>
+        <div class="d-flex gap-2" uk-grid>
             <form action="{{ route('controllers.clx.revert-to-voice', $message) }}" method="post">
                 @csrf
-                <button class="uk-button uk-button-small">Revert To Voice</button>
+                <button class="btn btn-sm btn-outline-secondary">Revert To Voice</button>
             </form>
             <form action="{{ route('controllers.clx.delete-rcl-message', $message) }}" method="post">
                 @csrf
-                <button class="uk-button uk-button-small" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">Delete Request</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure? Make sure to communicate with the pilot.')">Delete Request</button>
             </form>
         </div>
     </div>

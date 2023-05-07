@@ -1,17 +1,16 @@
-// 1. Your custom variables and variable overwrites.
-$global-primary-background: #2b3890;
-$global-link-color: #2b3890;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@600&display=swap');
 
-// 2. Import default variables and available mixins.
-@import "uikit/src/scss/variables-theme.scss";
-@import "uikit/src/scss/mixins-theme.scss";
+$primary: #2b3890;
+$font-size-base: 0.9rem;
+// set changes
+@import "bootstrap";
 
-// 3. Your custom mixin overwrites.
-@mixin hook-heading-misc() {
-    h1,h2,h3,h4,h4,h5,h6 {
-        font-weight: 700;
-    }
+body {
+    --bs-font-sans-serif: 'Inter', sans-serif;
+    --bs-body-font-family: var(--bs-font-sans-serif);
 }
 
-// 4. Import UIkit.
-@import "uikit/src/scss/uikit-theme.scss";
+.font-display {
+    font-family: 'Montserrat';
+    font-weight: 600;
+}

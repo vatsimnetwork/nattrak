@@ -17,7 +17,7 @@ class VatsimAuthController extends Controller
     {
         Auth::logout();
         Session::flush();
-        toastr()->info('Logged out');
+        flashAlert(type: 'info', title: 'Signed out', message: null, toast: true, timer: true);
 
         return redirect()->route('welcome');
     }

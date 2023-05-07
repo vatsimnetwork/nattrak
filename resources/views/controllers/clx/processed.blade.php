@@ -1,6 +1,6 @@
 @extends('_layouts.main')
 @section('page')
-    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
+    <div class="container">
         <h3 class="uk-text-primary uk-margin-remove-top">Processed RCL messages</h3>
         <h5 class="uk-margin-remove-top">{{ $displayed ? 'Tracks ' . implode(", ", $displayed) : 'None selected' }}</h5>
         <form method="GET" action="{{ route('controllers.clx.processed') }}">
@@ -20,6 +20,12 @@
                         </div>
                     </div>
                 @endforeach
+                <div>
+                    <div class="uk-form-controls">
+                        <input type="checkbox" class="uk-checkbox" name="display[]" value="CONC">
+                        <label class="uk-form-label">CONC</label>
+                    </div>
+                </div>
                 <button class="uk-button uk-button-small uk-button-secondary" style="margin-left: 10px;" type="submit">Sort</button>
                 <button id="selectAll" class="uk-button uk-button-small" style="margin-left: 10px;">All</button>
             </div>

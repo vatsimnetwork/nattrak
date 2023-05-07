@@ -14,10 +14,14 @@ class PendingRclMessages extends Component
     {
         $pendingRclMsgs = collect();
         foreach ($this->tracks as $track) {
-            $trackMsgs = RclMessage::pending()->when($track != 'RR', function ($query) use ($track) {
+            $trackMsgs = RclMessage::pending()->when(in_array($track, ['RR', 'CONC']) == false, function ($query) use ($track) {
                 $query->where('track_id', Track::whereIdentifier($track)->firstOrFail()->id);
-            }, function ($query) {
-                $query->where('track_id', null);
+            }, function ($query) use ($track) {
+                if ($track == 'RR') {
+                    $query->where('track_id', null);
+                } elseif ($track == 'CONC') {
+                    $query->where('is_concorde', true);
+                }
             })->orderBy('request_time')->get();
             foreach ($trackMsgs as $msg) {
                 $pendingRclMsgs->add($msg);

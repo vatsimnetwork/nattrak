@@ -1,40 +1,49 @@
 @extends('_layouts.main')
 @section('page')
-    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
-        <div>
-            <div class="uk-alert uk-alert-primary">
-                <p>Welcome to natTrak! Sign in, then select an option from the navigation bar above to get started.</p>
+    <div class="container">
+        <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg bg-primary mb-5">
+            <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+                <h2 class="font-display text-light">Request and receive your VATSIM oceanic clearance here</h2>
+                <p class="lead text-light mt-5">Available for pilots in the Shanwick EGGX, Gander CZQX, Reykjavik BIRD, and Santa Maria LPPO OCAs.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-5">
+                    @auth
+                    @else
+                        <a href="{{ route('auth.redirect') }}" role="button" class="btn btn-secondary btn-lg px-4 me-md-2 fw-bold">Sign in with VATSIM</a>
+                    @endauth
+                </div>
             </div>
         </div>
-        @if (auth()->check() && (!auth()->user()->can('activePilot') && !auth()->user()->can('activeController')))
-            <div class="uk-alert uk-alert-danger">
-                <b>You must be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
-            </div>
-        @elseif (!auth()->check())
-            <div class="uk-alert uk-alert-danger">
-                <b>You must be logged in (via the nav bar) and be connected as either a pilot or oceanic controller to access natTrak functionality.</b>
-            </div>
-        @endif
-        <h3>NOTAMs</h3>
-        <ul uk-accordion>
+        <p class="text-body-emphasis font-display fs-2">NOTAMs</p>
+        <div class="accordion" id="notamsAccordion">
             @foreach($notams as $notam)
-                <li class="{{ $loop->first ? 'uk-open' : '' }}">
-                    <a href="" class="uk-accordion-title">{{ $notam->title }}</a>
-                    <div class="uk-accordion-content">
-                        @if ($notam->subtitle)
-                            <p class="uk-text-italic">
-                                {{ $notam->subtitle }}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button {{ !$loop->first ? 'collapsed' : '' }} font-display fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#{{ $loop->index }}">
+                            {{ $notam->title }}
+                        </button>
+                    </h2>
+                    <div id="{{ $loop->index }}" class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <p class="fw-bold">
+                                {{ $notam->created_at->toDayDateTimeString() }}
                             </p>
-                        @endif
-                        <p>
-                            {{ $notam->content }}
-                        </p>
-                        @if ($notam->url)
-                            <a href="{{ $notam->url }}" class="card-link">Read more</a>
-                        @endif
+                            @if ($notam->subtitle)
+                                <p class="fst-italic">{{ $notam->subtitle }}</p>
+                            @endif
+                            <p>{{ $notam->content }}</p>
+                            @if ($notam->action_url)
+                                <a href="{{ $notam->action_url }}">Read more</a>
+                            @endif
+                        </div>
                     </div>
-                </li>
+                </div>
             @endforeach
-        </ul>
+        </div>
+        <p class="my-3">
+            <a class="icon-link icon-link-hover" href="{{ route('notams.index') }}">
+                All NOTAMs
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </p>
     </div>
 @endsection

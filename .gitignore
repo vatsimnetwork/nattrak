@@ -18,3 +18,4 @@ yarn-error.log
 /.phpstorm.meta.php
 /storage/debugbar/
 .DS_Store
+public/vendor/log-viewer

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdministrationController;
+use App\Http\Controllers\BulletinsController;
 use App\Http\Controllers\ClxMessagesController;
 use App\Http\Controllers\RclMessagesController;
+use App\Http\Controllers\TracksController;
 use App\Http\Controllers\VatsimAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [\App\Http\Controllers\ViewsController::class, 'welcome'])->name('welcome');
+Route::view('/about', 'about')->name('about');
 
 Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');
@@ -63,10 +66,22 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
     Route::prefix('clx')->name('.clx')->controller(ClxMessagesController::class)->group(function () {
         Route::get('/pending', 'getPending')->name('.pending');
-        Route::get('/processed', 'getProcessedViaClxModels')->name('.processed');
+        Route::get('/processed-dt', 'getProcessedViaClxModels')->name('.processed-dt');
+        Route::get('/processed', 'getProcessed')->name('.processed');
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/revert-to-voice', 'revertToVoice')->name('.revert-to-voice');
     });
+});
+
+Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->group(function () {
+    Route::get('/', 'index')->name('.index');
+    Route::get('/create', 'create')->name('.create');
+    Route::post('/', 'store')->name('.store');
+    Route::delete('/{bulletin:id}', 'destroy')->name('.destroy');
+});
+
+Route::prefix('tracks')->name('tracks')->controller(TracksController::class)->group(function () {
+    Route::get('/', 'index')->name('.index');
 });

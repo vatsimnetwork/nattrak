@@ -2,15 +2,21 @@
 @section('page')
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
-    <div class="uk-container uk-padding uk-padding-remove-left uk-padding-remove-right">
-        <a href="{{ route('pilots.rcl.index') }}"><i class="fas fa-angle-left"></i> Back</a>
-        <div class="uk-flex uk-flex-row uk-flex-between">
-            <h1 class="uk-text-bold uk-text-primary" id="start">Request oceanic clearance</h1>
-            <button onclick="startTour()" class="uk-button">Help</button>
+    <div class="container">
+        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Pilots</li>
+                <li class="breadcrumb-item"><a href="{{ route('pilots.rcl.index') }}">Request Clearance</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Form</li>
+            </ol>
+        </nav>
+        <div class="d-flex flex-row justify-content-between my-4">
+            <h1 class="fs-2 text-primary-emphasis font-display" id="start">Request oceanic clearance</h1>
+            <button onclick="startTour()" class="btn btn-outline-primary">Help</button>
         </div>
         @if ($errors->any())
-            <div class="uk-alert uk-alert-danger" role="alert">
-                <p class="uk-text-bold">Some input was incorrect.</p>
+            <div class="alert alert-danger" role="alert">
+                <p class="fw-bold">Some input was incorrect.</p>
                 <ul>
                     @foreach ($errors->all() as $error)
                          <li>{{ $error }}</li>
@@ -20,145 +26,146 @@
             </div>
         @endif
         @if ($isConcorde)
-            <div class="uk-alert uk-alert-primary" role="alert">
+            <div class="alert alert-info" role="alert">
                 Concorde aircraft type detected.
             </div>
         @endif
-        <form class="uk-form-stacked" action="{{ route('pilots.rcl.store') }}" method="post">
+        <form action="{{ route('pilots.rcl.store') }}" method="post">
             @csrf
-            <h4>Flight information</h4>
-            <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-2@m">
-                    <label for="callsign" class="uk-form-label">Callsign</label>
-                    <div class="uk-form-controls">
-                        <input maxlength="7" required type="text" class="uk-input" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign ?? old('callsign') }}" onblur="this.value = this.value.toUpperCase()">
-                        @if ($callsign)
-                            <small class="uk-text-meta">Your callsign was automatically collected. You may change the callsign if it is incorrect.</small>
-                        @endif
+
+            <h5 class="font-display">Flight information</h5>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input maxlength="7" required type="text" class="form-control" name="callsign" id="callsign" placeholder="Enter callsign" value="{{ $callsign ?? old('callsign') }}" onblur="this.value = this.value.toUpperCase()">
+                        <label for="callsign" class="uk-form-label">Callsign</label>
                     </div>
+                    @if (!$callsign)
+                        <div class="form-text">Your callsign was automatically collected. You may change the callsign if it is incorrect.</div>
+                    @endif
                 </div>
-                <div class="uk-width-1-2@m">
-                    <label for="destination" class="uk-form-label">Destination ICAO</label>
-                    <div class="uk-form-controls">
-                        <input required type="text" class="uk-input" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao ?? old('destination') }}" onblur="this.value = this.value.toUpperCase()">
-                        @if (!$arrival_icao)
-                            <small class="uk-text-meta">Your destination was automatically collected. You may change the destination if it is incorrect.</small>
-                        @endif
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input required type="text" class="form-control" name="destination" id="destination" placeholder="Enter destination ICAO (e.g. EGLL)" maxlength="4" value="{{ $arrival_icao ?? old('destination') }}" onblur="this.value = this.value.toUpperCase()">
+                        <label for="destination">Destination ICAO</label>
                     </div>
+                    @if (!$arrival_icao)
+                        <div class="form-text">Your destination was automatically collected. You may change the destination if it is incorrect.</div>
+                    @endif
                 </div>
-                <div class="uk-width-1-2@m">
-                    <label for="flight_level" class="uk-form-label">Requested {{ $isConcorde ? 'lower block' : '' }} flight level</label>
-                    <div class="uk-form-controls">
-                        <input required type="text" class="uk-input" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
-                        @if (config('app.ctp_info_enabled'))
-                            <small class="uk-text-meta"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></small>
-                        @endif
-                        @if ($flight_level)
-                            <small class="uk-text-meta">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</small>
-                        @endif
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
+                        <label for="flight_level">Requested {{ $isConcorde ? 'lower block' : '' }} flight level (digits only, e.g. 340)</label>
                     </div>
+                    @if (config('app.ctp_info_enabled'))
+                        <div class="form-text"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></div>
+                    @endif
+                    @if ($flight_level)
+                        <div class="form-text">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</div>
+                    @endif
                 </div>
                 @if ($isConcorde)
-                    <div class="uk-width-1-2@m">
-                        <label for="flight_level" class="uk-form-label">Requested upper block flight level</label>
-                        <div class="uk-form-controls">
-                            <input required type="text" class="uk-input" name="upper_flight_level" id="upper_flight_level" placeholder="e.g. 310" maxlength="3" value="{{ old('upper_flight_level') }}">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input required type="text" class="form-control" name="upper_flight_level" id="upper_flight_level" placeholder="e.g. 310" maxlength="3" value="{{ old('upper_flight_level') }}">
+                            <label for="flight_level">Requested upper block flight level</label>
                         </div>
                     </div>
                 @else
-                    <div class="uk-width-1-2@m">
-                        <label for="max_flight_level" class="uk-form-label">Maximum flight level</label>
-                        <div class="uk-form-controls">
-                            <input type="text" class="uk-input" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
-                            @if (config('app.ctp_info_enabled'))
-                                <small class="uk-text-meta"><b>Ensure you enter your max flight level as per your booking!</b></small>
-                            @endif
-                            <small class="uk-text-meta">This is the highest flight level you can accept.</small>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
+                            <label for="max_flight_level" class="uk-form-label">Maximum flight level</label>
                         </div>
+                        @if (config('app.ctp_info_enabled'))
+                            <div class="form-text"><b>Ensure you enter your max flight level as per your booking!</b></div>
+                        @endif
+                        <div class="form-text">This is the highest flight level you can accept.</div>
                     </div>
                 @endif
-                <div class="uk-width-1-2@m">
-                    <label for="mach" class="uk-form-label">Requested mach number</label>
-                    <div class="uk-form-controls">
-                        <input required type="text" class="uk-input" name="mach" id="mach" placeholder="e.g. 080" maxlength="3" value="{{ old('mach') }}">
-                        <small class="uk-text-meta">Your requested mach number (don't include the dot at the start)</small>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input required type="text" class="form-control" name="mach" id="mach" placeholder="e.g. 080" maxlength="3" value="{{ old('mach') }}">
+                        <label for="mach" class="uk-form-label">Requested mach number (digits only, e.g. 080)</label>
                     </div>
                 </div>
             </div>
-            <h4>Route</h4>
-            <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-2-5@m">
-                    <label for="track_id" class="uk-form-label">Requested NAT Track</label>
-                    <div class="uk-form-controls">
-                        <select class="uk-select" id="track_id" name="track_id">
+            <h5 class="font-display">Route</h5>
+            <div class="row gap-4 mb-4">
+                <div class="col-auto">
+                    <div class="form-floating">
+                        <select class="form-select" id="track_id" name="track_id">
                             <option value="" selected>None</option>
                             @foreach($tracks as $track)
                                 <option data-routeing="{{ $track->last_routeing }}" value="{{ $track->id }}">{{ $track->identifier }} ({{ $track->last_routeing }})</option>
                             @endforeach
                         </select>
+                        <label for="track_id">Requested NAT Track</label>
                     </div>
                 </div>
-                <div class="uk-width-expand@m">
-                    <div class="uk-flex uk-flex-middle uk-flex-column">
-                        <div class="uk-text-center uk-text-italic">or...</div>
+                <div class="col-auto">
+                    <div class="d-flex justify-content-center">
+                        <div class="fst-italic">or...</div>
                     </div>
                 </div>
-                <div class="uk-width-2-5@m">
-                    <label for="random_routeing" class="uk-form-label">Requested random routeing</label>
-                    <div class="uk-form-controls">
-                        <input value="{{ old('random_routeing') }}" type="text" class="uk-input" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
-                    </div>
-                </div>
-            </div>
-            <h4>Oceanic entry</h4>
-            <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-2@m">
-                    <label for="entry_fix" class="uk-form-label">Entry fix</label>
-                    <div class="uk-form-controls">
-                        <input value="{{ old('entry_fix') }}" required type="text" class="uk-input" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
-                        <small class="uk-text-meta">The first fix/waypoint in oceanic airspace.</small>
-                        <br/>
-                        <small class="uk-text-meta uk-text-bold" style="display: none;" id="oep-autofilled-msg">This fix was auto-filled, based on your selected track..</small>
-                    </div>
-                </div>
-                <div class="uk-width-1-2@m">
-                    <label for="entry_time" class="uk-form-label">Estimated time of arrival for entry fix</label>
-                    <div class="uk-form-controls">
-                        <input value="{{ old('entry_time') }}" required type="number" class="uk-input" name="entry_time" id="entry_time" placeholder="e.g. 1350">
-                        <small class="uk-text-meta">You can find this in your FMC, providing your simulator is set to real time.</small>
-                        <a class="uk-link-text uk-text-meta" target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/#section-3-oceanic-entry">An example is available here.</a>
+                <div class="col-auto">
+                    <div class="form-floating">
+                        <input value="{{ old('random_routeing') }}" type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
+                        <label for="random_routeing">Requested random routeing</label>
                     </div>
                 </div>
             </div>
-            <h4>Metadata</h4>
-            <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-2@m">
-                    <label for="tmi" class="uk-form-label">Current TMI (available at top of page)</label>
-                    <div class="uk-form-controls">
-                        <input type="text" class="uk-input" value="{{ old('tmi') }}" required name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
+            <h5 class="font-display">Oceanic entry</h5>
+            <div class="row gap-4 mb-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input value="{{ old('entry_fix') }}" required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">
+                        <label for="entry_fix" class="uk-form-label">Entry fix</label>
+                    </div>
+                    <div class="form-text">The first fix/waypoint in oceanic airspace.</div>
+                    <div class="uk-text-meta uk-text-bold" style="display: none;" id="oep-autofilled-msg">This fix was auto-filled, based on your selected track..</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input value="{{ old('entry_time') }}" required type="number" class="form-control" name="entry_time" id="entry_time" placeholder="e.g. 1350">
+                        <label for="entry_time" class="uk-form-label">Estimated time of arrival for entry fix</label>
+                    </div>
+                    <div class="form-text">You can find this in your FMC, providing your simulator is set to real time.</div>
+                    <a class="form-text" target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/#section-3-oceanic-entry">An example is available here.</a>
+                </div>
+            </div>
+            <h5 class="font-display">Metadata</h5>
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" value="{{ old('tmi') }}" required name="tmi" id="tmi" placeholder="e.g. 090" maxlength="4">
+                        <label for="tmi" class="uk-form-label">Current TMI (available at top of page)</label>
                     </div>
                 </div>
-                <div class="uk-width-1-2@m">
-                    <label for="free_text" class="uk-form-label">Free text</label>
-                    <div class="uk-form-controls">
-                        <input type="text" class="uk-input" value="{{ old('free_text') }}" name="free_text" id="free_text">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" value="{{ old('free_text') }}" name="free_text" id="free_text">
+                        <label for="free_text" class="uk-form-label">Free text</label>
                     </div>
                 </div>
-                <div class="uk-form-controls">
-                    <button type="submit" class="uk-button uk-button-primary">Submit Oceanic Clearance Request</button>
-                </div>
+            </div>
+            <div class="">
+                <button type="submit" class="btn btn-success btn-lg">Submit Oceanic Clearance Request</button>
             </div>
             @if ($isConcorde)
-                <input type="hidden" name="is_concorde" value="1">
+                <input type="hidden" id="is_concorde" name="is_concorde" value="1">
             @else
-                <input type="hidden" name="is_concorde" value="0">
+                <input type="hidden" id="is_concorde" name="is_concorde" value="0">
             @endif
         </form>
     </div>
     <script type="module">
         $("#track_id").change(function () {
+            if ($("#is_concorde").val() == 1) return;
+
             if (this.value == '') {
-                $("#entry_fix").prop('disabled', false).val('');
+                $("#entry_fix").prop('readonly', false).removeClass('form-control-plaintext').addClass('form-control').val('');
                 $("#oep-autofilled-msg").hide();
                 return;
             }
@@ -166,7 +173,7 @@
             if (routeing == '' || routeing == null) {
                 return;
             }
-            $("#entry_fix").prop('disabled', true).val(routeing.replace(/ .*/,''));
+            $("#entry_fix").prop('readonly', true).addClass('form-control-plaintext').removeClass('form-control').val(routeing.replace(/ .*/,''));
             $("#oep-autofilled-msg").show();
         });
     </script>
