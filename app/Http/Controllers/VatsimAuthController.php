@@ -61,7 +61,7 @@ class VatsimAuthController extends Controller
             Session::put('token', json_decode((string) $tokenJson->getBody(), true));
         } catch (ClientException $ex) {
             Log::alert($ex);
-            toastr()->error($ex->getMessage());
+            flashAlert(type: 'error', title: 'Error', message: $ex->getMessage(), toast: false, timer: false);
 
             return redirect()->route('welcome');
         }
@@ -76,7 +76,7 @@ class VatsimAuthController extends Controller
             ]);
         } catch (ClientException $ex) {
             Log::alert($ex);
-            toastr()->error($ex->getMessage());
+            flashAlert(type: 'error', title: 'Error', message: $ex->getMessage(), toast: false, timer: false);
 
             return redirect()->route('welcome');
         }
