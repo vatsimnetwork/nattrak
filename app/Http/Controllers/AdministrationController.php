@@ -29,7 +29,7 @@ class AdministrationController extends Controller
         $vatsimAccount = VatsimAccount::whereId($request->get('id'))->first();
 
         if (! $vatsimAccount) {
-            toastr()->error('Account not found. They may need to login to natTrak first.');
+            flashAlert(type: 'error', title: 'Account not found. They may need to login to natTrak first.', message: null, toast: false, timer: false);
 
             return redirect()->route('administration.accounts');
         }
