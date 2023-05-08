@@ -118,7 +118,7 @@ class ClxMessagesController extends Controller
         if ($request->filled('new_track_id')) {
             $newTrack = Track::active()->where('id', $request->get('new_track_id'))->first();
             if (! $newTrack) {
-                toastr()->error('Track not found');
+                flashAlert(type: 'error', title: 'Track not found.', message: null, toast: false, timer: false);
 
                 return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
             }
