@@ -2,8 +2,6 @@
 
 namespace App\Enums;
 
-use Barryvdh\Debugbar\Twig\Extension\Debug;
-
 enum DatalinkAuthorities: string
 {
     case CZQX = 'CZQO';
