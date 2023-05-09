@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use Barryvdh\Debugbar\Twig\Extension\Debug;
+
 enum DatalinkAuthorities: string
 {
     case CZQX = 'CZQO';
@@ -11,6 +13,8 @@ enum DatalinkAuthorities: string
     case LPPO = 'LPPO';
     case NAT = 'NAT';
     case TTZO = 'TTZO';
+    case CZQXD = 'CZQX';
+    case CZQMD = 'CZQM';
 
     public function description(): string
     {
@@ -22,6 +26,8 @@ enum DatalinkAuthorities: string
             DatalinkAuthorities::CZQX => 'Gander',
             DatalinkAuthorities::EGGX => 'Shanwick',
             DatalinkAuthorities::KZNY => 'New York',
+            DatalinkAuthorities::CZQMD => 'Moncton (Domestic)',
+            DatalinkAuthorities::CZQXD => 'Gander (Domestic)',
             default => 'N/A'
         };
     }
