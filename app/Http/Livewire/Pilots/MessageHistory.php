@@ -14,7 +14,7 @@ class MessageHistory extends Component
 
     public $clxMessages;
 
-    public $cpdlcMessages;
+    public Collection $cpdlcMessages;
 
     public $lastPollTime;
 
@@ -28,11 +28,11 @@ class MessageHistory extends Component
         /**
          * Populate previous CPDLC messages (collection)
          */
-        /*$this->cpdlcMessages = collect();
+        $this->cpdlcMessages = collect();
         $cpdlcMessages = CpdlcMessage::wherePilotId(Auth::id())->orderByDesc('created_at')->get();
         foreach ($cpdlcMessages as $msg) {
-            $this->cpdlcMessages->add($msg);
-        }*/
+            $this->cpdlcMessages->add($msg->toMessageHistoryFormat());
+        }
 
         /**
          * Populate previous CLX messages (collection)
@@ -51,6 +51,7 @@ class MessageHistory extends Component
 
         return [
             "echo-private:clearance.{$id},.clx.issued" => 'addNewClx',
+            "echo-private:cpdlc.{$id},.cpdlc.sent" => 'addNewCpdlc',
         ];
     }
 
@@ -62,7 +63,16 @@ class MessageHistory extends Component
     public function addNewClx($data)
     {
         $this->clxMessages->add($data);
+        $this->clxMessages = $this->clxMessages->sortByDesc('created_at');
         $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: '.$data['datalink_message'][0]]);
+    }
+
+    public function addNewCpdlc($data)
+    {
+        $this->cpdlcMessages->add($data);
+        $this->cpdlcMessages = $this->cpdlcMessages->sortBy('created_at');
+
+        $this->dispatchBrowserEvent('cpdlc-received', ['dl' => 'Message received from '.$data['datalink_authority']['description']]);
     }
 
     /*public function pollForMessages()

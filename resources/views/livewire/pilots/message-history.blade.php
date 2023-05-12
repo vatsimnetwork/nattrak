@@ -5,7 +5,7 @@
                 <div class="fst-italic">No messages. If you haven't received clearance within 10 minutes of requesting, contact the controller.</div>
             @endif
             @foreach($clxMessages as $message)
-                <div class="card">
+                <div class="card" wire:key="clx-{{ $message['created_at'] }}">
                     <div class="card-body">
                         <div class="d-flex flex-row align-items-center mb-3">
                             <div class="me-3">
@@ -33,34 +33,39 @@
                 @endif
             @endforeach
     </div>
-{{--    <div class="mb-4">--}}
-{{--        <h5>CPDLC Messages</h5>--}}
-{{--        @if (count($cpdlcMessages) == 0)--}}
-{{--            <div class="fst-italic">No messages.</div>--}}
-{{--        @endif--}}
-{{--        @foreach($cpdlcMessages as $message)--}}
-{{--            <div class="card">--}}
-{{--                <div class="card-body">--}}
-{{--                    <div class="d-flex flex-row align-items-center mb-3">--}}
-{{--                        <div class="me-3">--}}
-{{--                            <i class="fas fa-arrow-down text-secondary" style="font-size: 2em;" ></i>--}}
-{{--                        </div>--}}
-{{--                        <h5>Message from {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->datalink_authority->value }} ({{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->datalink_authority->description() }})</h5>--}}
-{{--                    </div>--}}
-{{--                    <p class="font-monospace">--}}
-{{--                        // {{ \App\Models\CpdlcMessage::whereId($message['id'])->first()->free_text }}--}}
-{{--                    </p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        @endforeach--}}
-{{--    </div>--}}
+    <div class="mb-4">
+        <h5>CPDLC Messages</h5>
+        @if (count($cpdlcMessages) == 0)
+            <div class="fst-italic">No messages.</div>
+        @endif
+        @foreach($cpdlcMessages as $message)
+            <div class="card" wire:key="cpdlc-{{ $message['created_at'] }}">
+                <div class="card-body">
+                    <div class="d-flex flex-row align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="fas fa-arrow-down text-secondary" style="font-size: 2em;" ></i>
+                        </div>
+                        <h5>Message from {{ $message['datalink_authority']['id'] }} ({{ $message['datalink_authority']['description'] }}) - {{\Carbon\Carbon::parse($message['created_at'])}} Z</h5>
+                    </div>
+                    <p class="font-monospace">
+                        {{ $message['message'] }}
+                    </p>
+                    <p>
+                        <b>
+                            {{ $message['caption'] ?? '' }}
+                        </b>
+                    </p>
+                </div>
+            </div>
+        @endforeach
+    </div>
     <div class="mb-4">
         <h5>Request Messages</h5>
         @if (count($rclMessages) == 0)
             <div class="fst-italic">No messages. Request clearance via the Request Clearance button on the pilots toolbar.</div>
         @endif
         @foreach($rclMessages as $message)
-            <div class="card">
+            <div class="card" wire:key="rcl-{{ $message['created_at'] }}">
                 <div class="card-body">
                     <div class="d-flex flex-row align-items-center mb-3">
                         <div class="me-3">

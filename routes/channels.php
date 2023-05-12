@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('clearance.{accountId}', function (App\Models\VatsimAccount $account, int $accountId) {
     return $account->id === $accountId;
 });
+
+Broadcast::channel('cpdlc.{accountId}', function (App\Models\VatsimAccount $account, int $accountId) {
+    return $account->id === $accountId;
+});
