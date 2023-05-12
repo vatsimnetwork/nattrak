@@ -21,23 +21,18 @@ class MessageHistory extends Component
     public function mount()
     {
         /**
-         * Record current time
-         */
-        $this->lastPollTime = now();
-
-        /**
          * Populate previous RCL messages
          */
-        $this->rclMessages = RclMessage::whereVatsimAccountId(Auth::id())->get();
+        $this->rclMessages = RclMessage::whereVatsimAccountId(Auth::id())->get()->load('clxMessages');
 
         /**
          * Populate previous CPDLC messages (collection)
          */
-        $this->cpdlcMessages = collect();
+        /*$this->cpdlcMessages = collect();
         $cpdlcMessages = CpdlcMessage::wherePilotId(Auth::id())->orderByDesc('created_at')->get();
         foreach ($cpdlcMessages as $msg) {
             $this->cpdlcMessages->add($msg);
-        }
+        }*/
 
         /**
          * Populate previous CLX messages (collection)
@@ -45,9 +40,18 @@ class MessageHistory extends Component
         $this->clxMessages = collect();
         foreach ($this->rclMessages as $rclMessage) {
             foreach ($rclMessage->clxMessages->sortByDesc('created_at') as $clxMessage) {
-                $this->clxMessages->add($clxMessage);
+                $this->clxMessages->add($clxMessage->toMessageHistoryFormat());
             }
         }
+    }
+
+    public function getListeners()
+    {
+        $id = auth()->id();
+
+        return [
+            "echo-private:clearance.{$id},.clx.issued" => 'addNewClx',
+        ];
     }
 
     public function render()
@@ -55,7 +59,13 @@ class MessageHistory extends Component
         return view('livewire.pilots.message-history');
     }
 
-    public function pollForMessages()
+    public function addNewClx($data)
+    {
+        $this->clxMessages->add($data);
+        $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: '.$data['datalink_message'][0]]);
+    }
+
+    /*public function pollForMessages()
     {
         if ($this->rclMessages->count() > 0) {
             foreach ($this->rclMessages as $rclMessage) {
@@ -78,5 +88,5 @@ class MessageHistory extends Component
         }
 
         $this->lastPollTime = now();
-    }
+    }*/
 }

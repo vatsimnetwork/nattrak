@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DatalinkAuthorities;
+use App\Events\ClxIssuedEvent;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
 use App\Models\CpdlcMessage;
@@ -238,6 +239,8 @@ class ClxMessagesController extends Controller
          */
         $rclMessage->clx_message_id = $clxMessage->id;
         $rclMessage->save();
+
+        ClxIssuedEvent::dispatch($rclMessage->vatsimAccount, $clxMessage);
 
         activity('datalink')
             ->causedBy($clxMessage->vatsimAccount)
