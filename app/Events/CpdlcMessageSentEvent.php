@@ -14,6 +14,8 @@ class CpdlcMessageSentEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $afterCommit = true;
+
     /**
      * @param  VatsimAccount  $account
      * @param  CpdlcMessage  $cpdlcMessage

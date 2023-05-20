@@ -14,10 +14,24 @@ class ClxIssuedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $afterCommit = true;
+
+    /**
+     * __construct
+     *
+     * @param  mixed $account
+     * @param  mixed $clxMessage
+     * @return void
+     */
     public function __construct(public VatsimAccount $account, public ClxMessage $clxMessage)
     {
     }
 
+    /**
+     * broadcastOn
+     *
+     * @return array
+     */
     public function broadcastOn(): array
     {
         return [
@@ -25,11 +39,21 @@ class ClxIssuedEvent implements ShouldBroadcast
         ];
     }
 
+    /**
+     * broadcastWith
+     *
+     * @return array
+     */
     public function broadcastWith(): array
     {
         return $this->clxMessage->toMessageHistoryFormat();
     }
 
+    /**
+     * broadcastAs
+     *
+     * @return string
+     */
     public function broadcastAs(): string
     {
         return 'clx.issued';
