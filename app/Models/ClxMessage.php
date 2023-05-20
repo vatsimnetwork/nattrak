@@ -182,4 +182,19 @@ class ClxMessage extends Model
             return false;
         }
     }
+
+    public function toMessageHistoryFormat(): array
+    {
+        return [
+            'id' => $this->id,
+            'rcl_message_id' => $this->rcl_message_id,
+            'simple_datalink_message' => $this->simple_datalink_message,
+            'datalink_message' => $this->datalink_message,
+            'datalink_authority' => [
+                'id' => $this->datalink_authority->name,
+                'description' => $this->datalink_authority->description(),
+            ],
+            'created_at' => $this->created_at,
+        ];
+    }
 }
