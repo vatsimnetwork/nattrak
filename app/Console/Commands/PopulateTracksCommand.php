@@ -54,6 +54,7 @@ class PopulateTracksCommand extends Command
                 'valid_to' => Carbon::createFromTimestamp($track->validTo),
                 'active' => true,
                 'last_active' => now(),
+                'flight_levels' => $track->flightLevels,
             ]);
         }
 

@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $last_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|Track newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Track newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Track query()
@@ -31,17 +30,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Track whereValidTo($value)
  * @method static Builder|Track active()
- *
  * @property int $concorde
- *
  * @method static Builder|Track concorde()
  * @method static Builder|Track whereConcorde($value)
+ * @property string|null $flight_levels
+ * @method static Builder|Track whereFlightLevels($value)
+ * @property-read mixed $predominantly_odd_or_even
  * @mixin \Eloquent
  */
 class Track extends Model
 {
     protected $fillable = [
-        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde',
+        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde', 'flight_levels'
     ];
 
     protected $casts = [
@@ -49,6 +49,7 @@ class Track extends Model
         'valid_to' => 'datetime',
         'valid_from' => 'datetime',
         'last_active' => 'datetime',
+        'flight_levels' => 'array'
     ];
 
     /**
@@ -75,5 +76,23 @@ class Track extends Model
         $this->valid_to = null;
         $this->active = false;
         $this->save();
+    }
+
+    public function getPredominantlyOddOrEvenAttribute(): string
+    {
+        $odd = 0;
+        $even = 0;
+
+        foreach ($this->flight_levels as $fl) {
+            if (substr((string)$fl, -1, 1) % 2 == 0) {
+                $even++;
+            }
+            else {
+                $odd++;
+            }
+        }
+
+        if ($odd == 0 && $even == 0) return "na";
+        return $odd >= $even ? "odd" : "even";
     }
 }

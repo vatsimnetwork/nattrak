@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Database\Factories\BulletinFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Bulletin newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bulletin newQuery()
