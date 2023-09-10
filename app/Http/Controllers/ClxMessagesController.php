@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DatalinkAuthorities;
+use App\Enums\RclErrorsEnum;
+use App\Events\ClxIssuedEvent;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
-use App\Models\CpdlcMessage;
 use App\Models\RclMessage;
 use App\Models\Track;
+use App\Services\CpdlcService;
 use App\Services\VatsimDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +18,18 @@ class ClxMessagesController extends Controller
 {
     public VatsimDataService $dataService;
 
+    public CpdlcService $cpdlcService;
+
     /**
-     * Initialises VATSIM data service for grabbing active authority
+     * Initialises VATSIM data service for grabbing active authority and CPDLC message service
      *
      * @param  VatsimDataService  $dataService
+     * @param  CpdlcService  $cpdlcService
      */
-    public function __construct(VatsimDataService $dataService)
+    public function __construct(VatsimDataService $dataService, CpdlcService $cpdlcService)
     {
         $this->dataService = $dataService;
+        $this->cpdlcService = $cpdlcService;
     }
 
     public function getPending(Request $request)
@@ -239,6 +245,8 @@ class ClxMessagesController extends Controller
         $rclMessage->clx_message_id = $clxMessage->id;
         $rclMessage->save();
 
+        ClxIssuedEvent::dispatch($rclMessage->vatsimAccount, $clxMessage);
+
         activity('datalink')
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
@@ -264,12 +272,14 @@ class ClxMessagesController extends Controller
 
     public function revertToVoice(Request $request, RclMessage $rclMessage)
     {
-        CpdlcMessage::create([
-            'pilot_id' => $rclMessage->vatsim_account_id,
-            'pilot_callsign' => $rclMessage->callsign,
-            'datalink_authority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
-            'free_text' => 'REVERT TO VOICE. REQUEST FREQ FROM DOMESTIC CONTROL.',
-        ]);
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthorities::NAT;
+        $this->cpdlcService->sendMessage(
+            author: $datalinkAuthority,
+            recipient: $rclMessage->callsign,
+            recipientAccount: $rclMessage->vatsimAccount,
+            message: sprintf(RclErrorsEnum::Contact->value, strtoupper($datalinkAuthority->description())),
+            caption: RclErrorsEnum::Contact->text()
+        );
 
         flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);
 

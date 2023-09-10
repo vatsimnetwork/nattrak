@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property int $pilot_id
  * @property string $pilot_callsign
  * @property DatalinkAuthorities $datalink_authority
- * @property string|null $free_text
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VatsimAccount|null $controller
@@ -26,7 +25,6 @@ use Illuminate\Database\Eloquent\Prunable;
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereControllerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereDatalinkAuthority($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereFreeText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage wherePilotCallsign($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage wherePilotId($value)
@@ -52,7 +50,7 @@ class CpdlcMessage extends Model
     }
 
     protected $fillable = [
-        'pilot_id', 'pilot_callsign', 'datalink_authority', 'free_text',
+        'pilot_id', 'pilot_callsign', 'datalink_authority', 'message', 'caption',
     ];
 
     protected $casts = [
@@ -61,6 +59,20 @@ class CpdlcMessage extends Model
 
     public function pilot()
     {
-        return $this->hasOne(VatsimAccount::class, 'pilot_id');
+        return $this->belongsTo(VatsimAccount::class, 'pilot_id');
+    }
+
+    public function toMessageHistoryFormat(): array
+    {
+        return [
+            'id' => $this->id,
+            'datalink_authority' => [
+                'id' => $this->datalink_authority->name,
+                'description' => $this->datalink_authority->description(),
+            ],
+            'message' => $this->message,
+            'caption' => $this->caption,
+            'created_at' => $this->created_at,
+        ];
     }
 }
