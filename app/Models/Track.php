@@ -78,13 +78,13 @@ class Track extends Model
         $this->save();
     }
 
-    public function getPredominantlyOddOrEvenAttribute(): string
+    public function getPredominantlyOddOrEvenAttribute(): string|null
     {
         $odd = 0;
         $even = 0;
 
         foreach ($this->flight_levels as $fl) {
-            if (substr((string)$fl, -1, 1) % 2 == 0) {
+            if (substr((string)$fl, 1, 1) % 2 == 0) {
                 $even++;
             }
             else {
@@ -92,7 +92,12 @@ class Track extends Model
             }
         }
 
-        if ($odd == 0 && $even == 0) return "na";
-        return $odd >= $even ? "odd" : "even";
+        if ($odd == $even) {
+            return null;
+        }
+        elseif ($odd > $even) {
+            return "odd";
+        }
+        else return "even";
     }
 }
