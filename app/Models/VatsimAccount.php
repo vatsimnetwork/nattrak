@@ -19,7 +19,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property AccessLevelEnum $access_level
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount query()
@@ -30,7 +29,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereRatingInt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereSurname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VatsimAccount whereUpdatedAt($value)
- *
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read mixed $full_name

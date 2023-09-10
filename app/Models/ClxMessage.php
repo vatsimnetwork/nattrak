@@ -25,7 +25,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $free_text
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage query()
@@ -41,7 +40,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereTrackId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereVatsimAccountId($value)
- *
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Activitylog\Models\Activity[] $activities
  * @property-read int|null $activities_count
  * @property-read array $data_link_message
@@ -50,32 +48,21 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read mixed $simple_message
  * @property-read \App\Models\VatsimAccount $vatsimAccount
  * @property DatalinkAuthorities $datalink_authority
- *
  * @method static \Illuminate\Database\Eloquent\Builder|ClxMessage whereDatalinkAuthority($value)
- *
  * @property string $simple_datalink_message
  * @property mixed $datalink_message
- *
  * @method static Builder|ClxMessage whereDatalinkMessage($value)
  * @method static Builder|ClxMessage whereSimpleDatalinkMessage($value)
- *
  * @property string|null $upper_flight_level
- *
  * @method static Builder|ClxMessage whereUpperFlightLevel($value)
- *
  * @property-read bool $routeing_changed
  * @property-read string|null $raw_entry_time_restriction
- *
  * @method static Builder|ClxMessage whereRawEntryTimeRestriction($value)
- *
  * @property int $overwritten
  * @property int|null $overwritten_by_clx_message_id
- *
  * @method static Builder|ClxMessage whereOverwritten($value)
  * @method static Builder|ClxMessage whereOverwrittenByClxMessageId($value)
- *
  * @property int $is_concorde
- *
  * @method static Builder|ClxMessage whereIsConcorde($value)
  * @mixin \Eloquent
  */

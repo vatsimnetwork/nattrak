@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VatsimAccount|null $controller
  * @property-read \App\Models\VatsimAccount|null $pilot
- *
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage query()
@@ -30,10 +29,8 @@ use Illuminate\Database\Eloquent\Prunable;
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage wherePilotCallsign($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage wherePilotId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CpdlcMessage whereUpdatedAt($value)
- *
  * @property string $message
  * @property string|null $caption
- *
  * @method static Builder|CpdlcMessage whereCaption($value)
  * @method static Builder|CpdlcMessage whereMessage($value)
  * @mixin \Eloquent

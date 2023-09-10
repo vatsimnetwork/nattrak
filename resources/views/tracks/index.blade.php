@@ -22,6 +22,10 @@
                                     <span>
                                         Active from {{ $track->valid_from }} to {{ $track->valid_to }}
                                     </span>
+                                    <br>
+                                    <span>
+                                        @if($track->predominantly_odd_or_even)Primarily {{ $track->predominantly_odd_or_even }} levels.@endif Valid at @foreach ($track->flight_levels as $fl)FL{{ altitudeToFlightLevel($fl) }}@if(!$loop->last), @endif @endforeach
+                                    </span>
                                 </div>
                             </div>
                         </li>
