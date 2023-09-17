@@ -47,6 +47,9 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
     Route::post('/controllers/remove-access', [AdministrationController::class, 'removeControllerAccess'])->name('.controllers.remove-access');
 
     Route::get('/activity-log', [AdministrationController::class, 'activityLog'])->name('.activity-log');
+
+    Route::get('/utility', [AdministrationController::class, 'utility'])->name('.utility');
+    Route::post('/utility/clear', [AdministrationController::class, 'clearDb'])->name('.clear-db');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
