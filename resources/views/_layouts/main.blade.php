@@ -42,6 +42,9 @@
                                         <li>
                                             <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
+                                        </li>
                                     </ul>
                                 </li>
                             @endcan

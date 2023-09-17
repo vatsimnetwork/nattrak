@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AccessLevelEnum;
+use App\Models\ClxMessage;
+use App\Models\CpdlcMessage;
+use App\Models\RclMessage;
 use App\Models\VatsimAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AdministrationController extends Controller
 {
@@ -112,5 +116,37 @@ class AdministrationController extends Controller
     public function activityLog()
     {
         return view('administration.activity-log');
+    }
+
+    public function utility()
+    {
+        return view('administration.utility', [
+            'countRcl' => RclMessage::count(),
+            'countClx' => ClxMessage::count(),
+            'countCpdlc' => CpdlcMessage::count()
+        ]);
+    }
+
+    public function clearDb(Request $request)
+    {
+        if ($request->user()->access_level != AccessLevelEnum::Root) {
+            flashAlert(type: 'error', title: 'Insufficient permissions', message: null, toast: false, timer: false);
+            return redirect()->route('administration.utility');
+        }
+        
+        try {
+            CpdlcMessage::query()->delete();
+            ClxMessage::query()->delete();
+            RclMessage::query()->delete();
+        }
+        catch (\Exception $e) {
+            flashAlert(type: 'error', title: $e->getMessage(), message: null, toast: false, timer: false);
+            Log::error($e);
+            return redirect()->route('administration.utility');
+        }
+
+        flashAlert(type: 'success', title: 'Cleared', message: null, toast: true, timer: true);
+
+        return redirect()->route('administration.utility');
     }
 }
