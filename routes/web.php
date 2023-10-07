@@ -64,6 +64,12 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
             '_pageTitle' => 'Message History',
         ]);
     })->name('.message-history');
+
+    Route::get('notify-new-eta', function () {
+        return view('pilots.notify-new-eta', [
+            '_pageTitle' => 'Notify New ETA',
+        ]);
+    })->name('.notify-new-eta');
 });
 
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {
