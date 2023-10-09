@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClxCancellationReasons;
 use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -64,6 +65,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|ClxMessage whereOverwrittenByClxMessageId($value)
  * @property int $is_concorde
  * @method static Builder|ClxMessage whereIsConcorde($value)
+ * @property int $cancelled
+ * @property string|null $cancellation_reason
+ * @method static Builder|ClxMessage whereCancellationReason($value)
+ * @method static Builder|ClxMessage whereCancelled($value)
  * @mixin \Eloquent
  */
 class ClxMessage extends Model
@@ -87,7 +92,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde',
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde', 'cancelled', 'cancellation_reason'
     ];
 
     /**
@@ -108,6 +113,7 @@ class ClxMessage extends Model
     protected $casts = [
         'datalink_authority' => DatalinkAuthorities::class,
         'datalink_message' => 'array',
+        'cancellation_reason' => ClxCancellationReasons::class,
     ];
 
     /**
@@ -181,6 +187,8 @@ class ClxMessage extends Model
                 'id' => $this->datalink_authority->name,
                 'description' => $this->datalink_authority->description(),
             ],
+            'cancelled' => $this->cancelled,
+            'cancellation_reason' => $this->cancellation_reason?->text(),
             'created_at' => $this->created_at,
         ];
     }

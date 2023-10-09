@@ -97,7 +97,9 @@ final class PgPendingRclMessages extends PowerGridComponent
                 return $entry->track?->identifier;
             })
             ->addColumn('entry_fix')
-            ->addColumn('entry_time')
+            ->addColumn('entry_time', function ($entry) {
+                return $entry->new_entry_time ? "{$entry->entry_time}**" : $entry->entry_time;
+            })
             ->addColumn('flight_level')
             ->addColumn('max_flight_level')
             ->addColumn('mach')

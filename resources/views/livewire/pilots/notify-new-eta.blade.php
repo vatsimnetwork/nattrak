@@ -1,4 +1,5 @@
 <div>
+    @if (!$reject)
     <form wire:submit.prevent="submit">
         <div class="row g-4 mb-4">
             <div class="col-md-3">
@@ -41,8 +42,19 @@
                 <p>Need help? Press the <span class="uk-text-bold uk-text-small">HELP</span> button on the top right.</p>
             </div>
         @endif
+        @if ($latestClxMessage)
+            <p>
+                Your existing clearance will be cancelled. Expect a re-issued clearance in your message history page shortly after submitting this form.
+            </p>
+        @endif
         <div class="">
             <button type="submit" class="btn btn-success btn-lg">Submit</button>
         </div>
     </form>
+    @else
+        <div class="alert alert-info">
+            <p class="fw-bold">Use this page to notify the controller of a revised oceanic entry time after you have submitted oceanic clearance</p>
+            <p><a href="{{ route('pilots.rcl.create') }}">Submit Oceanic Clearance</a></p>
+        </div>
+    @endif
 </div>

@@ -89,6 +89,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereNewEntryTime($value)
  * @method static Builder|RclMessage wherePreviousClxMessage($value)
  * @method static Builder|RclMessage wherePreviousEntryTime($value)
+ * @property \Illuminate\Support\Carbon|null $new_entry_time_notified_at
+ * @method static Builder|RclMessage whereNewEntryTimeNotifiedAt($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -125,7 +127,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at'
     ];
 
     /**
@@ -136,6 +138,8 @@ class RclMessage extends Model
     protected $casts = [
         'request_time' => 'datetime',
         'edit_lock_time' => 'datetime',
+        'new_entry_time_notified_at' => 'datetime',
+        'previous_clx_message' => 'array'
     ];
 
     /**
