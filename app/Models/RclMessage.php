@@ -83,6 +83,12 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereIsConcorde($value)
  * @method static Builder|RclMessage whereUpperFlightLevel($value)
  * @property-read \App\Models\ClxMessage|null $latestClxMessage
+ * @property string|null $previous_entry_time
+ * @property int $new_entry_time
+ * @property mixed|null $previous_clx_message
+ * @method static Builder|RclMessage whereNewEntryTime($value)
+ * @method static Builder|RclMessage wherePreviousClxMessage($value)
+ * @method static Builder|RclMessage wherePreviousEntryTime($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -119,7 +125,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde',
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message'
     ];
 
     /**
