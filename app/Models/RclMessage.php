@@ -83,6 +83,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage whereIsConcorde($value)
  * @method static Builder|RclMessage whereUpperFlightLevel($value)
  * @property-read \App\Models\ClxMessage|null $latestClxMessage
+ * @property int $re_request
+ * @method static Builder|RclMessage whereReRequest($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -119,7 +121,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde',
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 're_request'
     ];
 
     /**
