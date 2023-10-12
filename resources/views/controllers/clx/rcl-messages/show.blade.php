@@ -22,6 +22,11 @@
                     <span>{{ $message->editLockVatsimAccount->full_name }} {{ $message->editLockVatsimAccount->id }} is editing this as of {{ $message->edit_lock_time->diffForHumans() }}.</span>
                 </div>
             @endif
+            @if ($message->re_request)
+                <div class="alert alert-warning">
+                    <span>This is a re-request.</span>
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
                     <p>Some input was incorrect.</p>
