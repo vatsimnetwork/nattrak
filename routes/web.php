@@ -54,7 +54,9 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
     Route::prefix('rcl')->name('.rcl')->controller(RclMessagesController::class)->group(function () {
-        Route::get('/', 'index')->name('.index');
+        Route::get('/', function () {
+            return redirect(status: 301)->route('pilots.rcl.create');
+        })->name('.index');
         Route::get('/create', 'create')->name('.create');
         Route::post('/create', 'store')->name('.store');
     });
