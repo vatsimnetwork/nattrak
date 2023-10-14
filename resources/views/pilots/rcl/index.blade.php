@@ -8,6 +8,16 @@
         @if (config('app.ctp_info_enabled'))
             <p><b>Please note that if you are flying across the oceanic without a CTP slot, you will be delayed and likely asked to move outside of the vertical limits of oceanic airspace.</b></p>
         @endif
-        <a class="btn btn-primary" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>
+        @if ($pendingRclExists)
+            <div class="alert alert-info pb-0">
+                <p>
+                    You have a pending oceanic clearance request. You may re-request oceanic clearance, overriding your previous request.
+                </p>
+                <p class="fst-italic fw-bold">Please do not re-request in an attempt to get your clearance faster. Requests are processed in order of receipt.</p>
+            </div>
+            <a class="btn btn-primary" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>
+        @else
+            <a class="btn btn-primary" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>
+        @endif
     </div>
 @endsection
