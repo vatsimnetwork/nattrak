@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Track;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -77,6 +78,12 @@ class RclMessageRequest extends FormRequest
                 if (preg_match("/\b[0][1-9][0-9]\b/", $this->mach) == 0) {
                     $validator->errors()->add('mach.regex', 'Mach must be in format 0xx (e.g. .74 = 074)');
                 }
+                /** Entry fix time requirement */
+                if (config('app.rcl_time_constraints_enabled')) {
+                    if (!$this->entryTimeWithinRange($this->entry_time)) {
+                        $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than 45 minutes from now, come back when within 45 minutes. If your entry is within 15 minutes, or you have already entered, request clearance via voice.');
+                    }
+                }
             }
         });
     }
@@ -84,5 +91,35 @@ class RclMessageRequest extends FormRequest
     public function authorize(): bool
     {
         return Auth::user()->can('activePilot');
+    }
+
+    private function entryTimeWithinRange($input): bool
+    {
+        $currentDateTime = now();
+        $entryTime = Carbon::createFromFormat('Hi', $input);
+
+        // If the entry time is earlier than the current time, it must be on the next day
+        if ($entryTime < $currentDateTime) {
+            $entryTime->addDay();
+        }
+
+        // Calculate the difference in minutes between the current time and entry time
+        $minutesDifference = $currentDateTime->diffInMinutes($entryTime);
+
+        // Check if the difference is within the range [15, 45] minutes and not negative (entry time is in the future)
+        if ($minutesDifference >= 15 && $minutesDifference <= 45) {
+            return true;
+        }
+
+        // Check if the estimated entry time is after midnight and the difference is within the range [15, 45] minutes
+        $midnight = Carbon::today()->addDay(); // Get the midnight time for the next day
+        $minutesToMidnight = $currentDateTime->diffInMinutes($midnight);
+        $minutesFromMidnight = $entryTime->diffInMinutes($midnight);
+
+        if ($minutesToMidnight >= 15 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 45) {
+            return true;
+        }
+
+        return false;
     }
 }
