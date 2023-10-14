@@ -10,7 +10,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Form</li>
             </ol>
         </nav>
-        <div class="d-flex flex-row justify-content-between my-4">
+        <div class="d-flex flex-row justify-content-between mt-4 mb-2">
             <h1 class="fs-2 text-primary-emphasis font-display" id="start">Request oceanic clearance</h1>
             <button onclick="startTour()" class="btn btn-outline-primary">Help</button>
         </div>
@@ -24,6 +24,14 @@
                 </ul>
                 <p>Need help? Press the <span class="uk-text-bold uk-text-small">HELP</span> button on the top right.</p>
             </div>
+        @endif
+        <div class="bg-body-secondary py-3 px-3 mb-4 rounded">
+            <p>You should request oceanic clearance <span class="fw-bold">30 minutes prior to oceanic entry.</span><br><a href="#" data-bs-toggle="modal" data-bs-target="#airportInfo" class="fst-italic text-muted">At some airports, you must request prior to departure.</a></p>
+            <p>Requests will be rejected if your ETA has past, is under 10 minutes from now, or is over 45 minutes away.</p>
+            <p class="mb-0">Need help? Check out the <i>Help</i> button in the navigation bar.</p>
+        </div>
+        @if (config('app.ctp_info_enabled'))
+            <p><b>Please note that if you are flying across the oceanic without a CTP slot, you will be delayed and likely asked to move outside of the vertical limits of oceanic airspace.</b></p>
         @endif
         @if ($isConcorde)
             <div class="alert alert-info" role="alert">
@@ -159,6 +167,64 @@
                 <input type="hidden" id="is_concorde" name="is_concorde" value="0">
             @endif
         </form>
+    </div>
+    <div class="modal fade" id="airportInfo" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Airports requiring clearance prior to departure</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <th>Departure Point</th>
+                        <th>Jet Departures</th>
+                        <th>Non-Jet Departures</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th>EIDW, EIWT, EIME</th>
+                            <td>For all Oceanic entry points request when airborne.</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>EICK</th>
+                            <td>
+                                If flight planned to enter Shanwick airspace via OMOKO, TAMEL or LASNO,
+                                Oceanic clearance required prior to departure.
+                                All other Oceanic entry points, if the elapsed time to Shanwick Entry Point
+                                is 40 minutes or less, Oceanic clearance required prior to departure.
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>EGAA, EGAC, EGAE, EGPF, EGPK</th>
+                            <td>
+                                If flight planned to enter Shanwick
+                                at GOMUP, oceanic clearance is
+                                required prior to departure.
+                                For all other Oceanic entry points,
+                                request when airborne.
+                            </td>
+                            <td>Request when airborne.</td>
+                        </tr>
+                        <tr>
+                            <th>All other
+                                aerodromes</th>
+                            <td>
+                                If the elapsed time to the Shanwick entry point is 40 minutes or less
+                                oceanic clearance is required prior to departure.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script type="module">
         $("#track_id").change(function () {

@@ -128,6 +128,11 @@ return [
     'cipher' => 'AES-256-CBC',
 
     /*
+     * Misc settings
+     */
+    'rcl_time_constraints_enabled' => env('RCL_TIME_CONSTRAINTS_ENABLED', true),
+
+    /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------

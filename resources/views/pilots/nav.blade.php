@@ -14,7 +14,7 @@
                         <a class="nav-link {{ Request::is('pilots/message-history') ? 'active' : '' }}" aria-current="page" href="{{ route('pilots.message-history') }}">Messages</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('pilots/rcl*') ? 'active' : '' }}" href="{{ route('pilots.rcl.index') }}">Request Clearance</a>
+                        <a class="nav-link {{ Request::is('pilots/rcl*') ? 'active' : '' }}" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('pilots/notify-new-eta') ? 'active' : '' }}" href="{{ route('pilots.notify-new-eta') }}">Notify New Entry Time</a>

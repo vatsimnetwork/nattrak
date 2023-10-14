@@ -19,17 +19,13 @@ class RclMessagesController extends Controller
 
     public function index()
     {
-        return view('pilots.rcl.index');
+        return view('pilots.rcl.index', [
+            'pendingRclExists' => RclMessage::whereVatsimAccountId(Auth::id())->whereClxMessageId(null)->exists()
+        ]);
     }
 
     public function create()
     {
-        if (RclMessage::whereVatsimAccountId(Auth::id())->whereClxMessageId(null)->exists()) {
-            flashAlert(type: 'warning', title: 'You can\'t submit another request yet.', message: 'You already have a pending oceanic clearance request. If it has been waiting for more than 10 minutes, let the controller know via vPilot/xPilot/Swift private message.', toast: false, timer: false);
-
-            return redirect()->route('pilots.rcl.index');
-        }
-
         $data = $this->dataService->getActivePilotData(Auth::user());
         $isConcorde = $data?->flight_plan?->aircraft_short == 'CONC';
 
@@ -45,16 +41,16 @@ class RclMessagesController extends Controller
 
     public function store(RclMessageRequest $request)
     {
-        if (RclMessage::whereVatsimAccountId($request->user()->id)->whereClxMessageId(null)->exists()) {
-            flashAlert(type: 'warning', title: 'You can\'t submit another request yet.', message: 'You already have a pending oceanic clearance request. If it has been waiting for more than 10 minutes, let the controller know via vPilot/xPilot/Swift private message.', toast: false, timer: false);
-
-            return redirect()->route('pilots.rcl.index');
-        }
-
         $rclMessage = new RclMessage($request->all());
         $rclMessage->vatsim_account_id = $request->user()->id;
         $rclMessage->request_time = now();
         $rclMessage->atc_rejected = false;
+        if ($previousRcl = RclMessage::whereVatsimAccountId($request->user()->id)->whereClxMessageId(null)->first()) {
+            if ($previousRcl->exists()) {
+                $rclMessage->re_request = true;
+                $previousRcl->delete();
+            }
+        }
         $rclMessage->save();
 
         return redirect()->route('pilots.message-history');

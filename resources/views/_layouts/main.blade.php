@@ -75,6 +75,11 @@
                                 TMI {{ current_tmi() }}
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <span class="nav-link" class="font-display">
+                                {{ now()->format('H:i') }} Z
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
