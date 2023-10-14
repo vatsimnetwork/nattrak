@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('clearance.{accountId}', function (App\Models\VatsimAccount $account, int $accountId) {
+    return $account->id === $accountId;
+});
+
+Broadcast::channel('cpdlc.{accountId}', function (App\Models\VatsimAccount $account, int $accountId) {
+    return $account->id === $accountId;
 });

@@ -9,7 +9,8 @@ export default defineConfig({
                 'resources/scss/bootstrap.scss',
                 'resources/scss/site.scss',
                 'resources/css/datatables.css',
-                'resources/js/app.js'
+                'resources/js/app.js',
+                'resources/js/alpine.js'
             ],
             refresh: true,
         }),
@@ -18,5 +19,10 @@ export default defineConfig({
         alias: {
             '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
         }
+    },
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
     },
 });

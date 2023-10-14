@@ -47,11 +47,16 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
     Route::post('/controllers/remove-access', [AdministrationController::class, 'removeControllerAccess'])->name('.controllers.remove-access');
 
     Route::get('/activity-log', [AdministrationController::class, 'activityLog'])->name('.activity-log');
+
+    Route::get('/utility', [AdministrationController::class, 'utility'])->name('.utility');
+    Route::post('/utility/clear', [AdministrationController::class, 'clearDb'])->name('.clear-db');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
     Route::prefix('rcl')->name('.rcl')->controller(RclMessagesController::class)->group(function () {
-        Route::get('/', 'index')->name('.index');
+        Route::get('/', function () {
+            return redirect(status: 301)->route('pilots.rcl.create');
+        })->name('.index');
         Route::get('/create', 'create')->name('.create');
         Route::post('/create', 'store')->name('.store');
     });
@@ -61,6 +66,12 @@ Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(fu
             '_pageTitle' => 'Message History',
         ]);
     })->name('.message-history');
+
+    Route::get('notify-new-eta', function () {
+        return view('pilots.notify-new-eta', [
+            '_pageTitle' => 'Notify New ETA',
+        ]);
+    })->name('.notify-new-eta');
 });
 
 Route::prefix('controllers')->name('controllers')->middleware('can:activeController')->group(function () {

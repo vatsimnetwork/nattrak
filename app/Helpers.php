@@ -28,3 +28,20 @@ function flashAlert(string $type, ?string $title, ?string $message, bool $toast,
         'timer' => $timer ? 3000 : null,
     ]);
 }
+
+/**
+ * @throws Exception
+ */
+function altitudeToFlightLevel(string|int $level): string
+{
+    $length = strlen((string)$level);
+    if ($length == 5) {
+        return substr($level, 0, 3);
+    }
+    elseif ($length == 4) {
+        return '0'.substr($level, 0, 2);
+    }
+    else {
+        throw new \Exception("Invalid flight level");
+    }
+}

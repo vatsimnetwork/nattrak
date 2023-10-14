@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="h-100" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
+    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/js/alpine.js', 'resources/css/datatables.css'])
     @livewireStyles
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
@@ -42,6 +42,9 @@
                                         <li>
                                             <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
+                                        </li>
                                     </ul>
                                 </li>
                             @endcan
@@ -71,6 +74,11 @@
                             <a href="{{ route('tracks.index') }}" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
                                 TMI {{ current_tmi() }}
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link" class="font-display">
+                                {{ now()->format('H:i') }} Z
+                            </span>
                         </li>
                     </ul>
                 </div>

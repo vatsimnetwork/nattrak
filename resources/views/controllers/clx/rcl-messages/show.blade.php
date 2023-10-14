@@ -22,6 +22,11 @@
                     <span>{{ $message->editLockVatsimAccount->full_name }} {{ $message->editLockVatsimAccount->id }} is editing this as of {{ $message->edit_lock_time->diffForHumans() }}.</span>
                 </div>
             @endif
+            @if ($message->re_request)
+                <div class="alert alert-warning">
+                    <span>This is a re-request.</span>
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
                     <p>Some input was incorrect.</p>
@@ -58,7 +63,13 @@
                             </tr>
                             <tr>
                                 <td>ETA</td>
-                                <td>{{ $message->entry_time }}</td>
+                                @if ($message->new_entry_time)
+                                    <td>
+                                        <span class="badge rounded-pill text-bg-primary" style="font-size: 13px">{{ $message->entry_time }}</span> - <span class="fst-italic">prev {{ $message->previous_entry_time }} - notified at {{ $message->new_entry_time_notified_at->format('Hi') }}</span>
+                                    </td>
+                                @else
+                                    <td>{{ $message->entry_time }}</td>
+                                @endif
                             </tr>
                             <tr>
                                 <td>FL</td>
@@ -93,6 +104,18 @@
                         <h5>
                             Clearances
                         </h5>
+                        @if ($message->previous_clx_message)
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="text-secondary">Prior to ETA Notify - Issued by {{ $message->previous_clx_message['vatsim_account_id'] }} - {{ $message->previous_clx_message['created_at'] }}</p>
+                                    <p>
+                                        @foreach($message->previous_clx_message['datalink_message'] as $line)
+                                            {{ $line }}<br>
+                                        @endforeach
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                         @foreach($message->clxMessages->sortbyDesc('created_at') as $clx)
                             <div class="card">
                                 <div class="card-body">
