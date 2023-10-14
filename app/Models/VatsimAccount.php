@@ -33,6 +33,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read int|null $activities_count
  * @property-read mixed $full_name
  * @property-read \App\Enums\DatalinkAuthorities|null $active_datalink_authority
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RclMessage> $rclMessages
+ * @property-read int|null $rcl_messages_count
  * @mixin \Eloquent
  */
 class VatsimAccount extends Authenticatable
@@ -74,5 +76,10 @@ class VatsimAccount extends Authenticatable
         } else {
             return null;
         }
+    }
+
+    public function rclMessages()
+    {
+        return $this->hasMany(RclMessage::class, 'vatsim_account_id');
     }
 }

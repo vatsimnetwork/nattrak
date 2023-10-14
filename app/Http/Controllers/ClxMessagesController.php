@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ClxCancellationReasons;
 use App\Enums\DatalinkAuthorities;
 use App\Enums\RclErrorsEnum;
 use App\Events\ClxIssuedEvent;
@@ -236,6 +237,8 @@ class ClxMessagesController extends Controller
             $rclMessage->latestClxMessage->update([
                 'overwritten' => true,
                 'overwritten_by_clx_message_id' => $rclMessage->latestClxMessage->id,
+                'cancelled' => true,
+                'cancellation_reason' => ClxCancellationReasons::Superseded
             ]);
         }
 

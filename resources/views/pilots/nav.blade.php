@@ -16,9 +16,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('pilots/rcl*') ? 'active' : '' }}" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>
                     </li>
-{{--                    <li class="nav-item">--}}
-{{--                        <a class="nav-link {{ Request::is('pilots/message-history') ? 'active' : '' }}" href="#">Notify New ETA</a>--}}
-{{--                    </li>--}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('pilots/notify-new-eta') ? 'active' : '' }}" href="{{ route('pilots.notify-new-eta') }}">Notify New Entry Time</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="https://knowledgebase.ganderoceanic.ca/1.0.3/pilots/nattrak/requesting-oceanic-clearance/">Help</a>
                     </li>

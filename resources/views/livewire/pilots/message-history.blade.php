@@ -18,6 +18,11 @@
                                 </p>
                             </div>
                         </div>
+                        @if ($message['cancelled'])
+                            <p class="fw-bold text-danger">
+                                Clearance cancelled - {{ $message['cancellation_reason'] }}
+                            </p>
+                        @endif
                         <p style="font-family: monospace">
                             @foreach($message['datalink_message'] as $line)
                                 {{ $line }}<br>
