@@ -1,12 +1,17 @@
 FROM node:18-bullseye AS nodejs
 
 WORKDIR /var/www/app
+
+ARG VITE_PUSHER_APP_KEY
+ARG VITE_PUSHER_HOST
+ARG VITE_PUSHER_PORT
+
 COPY package.json package-lock.json vite.config.js /var/www/app/
 COPY resources /var/www/app/resources
 
 RUN set -ex \
     && npm ci \
-    && npm run build
+    && VITE_PUSHER_APP_KEY=${VITE_PUSHER_APP_KEY} VITE_PUSHER_HOST=${VITE_PUSHER_HOST} VITE_PUSHER_PORT=${VITE_PUSHER_PORT} npm run build
 
 FROM composer:2.4.2 as vendor
 

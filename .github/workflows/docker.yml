@@ -50,3 +50,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           provenance: false
+          build-args: |
+            VITE_PUSHER_APP_KEY=${{ secrets.VITE_PUSHER_APP_KEY }}
+            VITE_PUSHER_HOST=${{ secrets.VITE_PUSHER_HOST }}
+            VITE_PUSHER_PORT=${{ secrets.VITE_PUSHER_PORT }}
