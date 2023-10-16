@@ -9,67 +9,33 @@ use App\Models\Track;
 use App\Services\VatsimDataService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class PluginDataController extends Controller
 {
-    public VatsimDataService $dataService;
-
-    public function __construct(VatsimDataService $dataService)
-    {
-        $this->dataService = $dataService;
-    }
-
-    private function formatTime($time)
-    {
-        return substr($time, 0, 2).':'.substr($time, 2, 2);
-    }
-
-    private function formatClxData(Collection $data): Collection
-    {
-        return $data->map(function (ClxMessage $msg) {
-            return [
-                'callsign' => $msg->rclMessage->callsign,
-                'status' => 'CLEARED',
-                'nat' => $msg->track ? $msg->track->identifier : 'RR',
-                'fix' => $msg->entry_fix,
-                'level' => $msg->flight_level,
-                'mach' => '0.'.substr($msg->mach, 1),
-                'estimating_time' => $this->formatTime($msg->rclMessage->entry_time),
-                'clearance_issued' => $msg->created_at,
-                'extra_info' => $msg->free_text,
-            ];
-        });
-    }
-
-    private function formatRclData(Collection $data): Collection
-    {
-        return $data->map(function (RclMessage $msg) {
-            return [
-                'callsign' => $msg->callsign,
-                'status' => $msg->clxMessages->count() > 0 ? 'CLEARED' : 'PENDING',
-                'nat' => $msg->track ? $msg->track->identifier : 'RR',
-                'fix' => $msg->entry_fix,
-                'level' => $msg->flight_level,
-                'mach' => '0.'.substr($msg->mach, 1),
-                'estimating_time' => $this->formatTime($msg->entry_time),
-                'clearance_issued' => $msg->clxMessages->count() > 0 ? $msg->clxMessages->first()->created_at : null,
-                'extra_info' => $msg->free_text,
-            ];
-        });
+    public function __construct(
+        public VatsimDataService $dataService
+    ) {
     }
 
     public function allRclMessages(Request $request)
     {
-        $rclMessages = RclMessage::when($request->has('track'), function (Builder $query) use ($request) {
-            $track = Track::active()->whereIdentifier($request->get('track'))->first();
+        $track = null;
+        if ($trackIdent = $request->get('track')) {
+            $track = Track::active()->whereIdentifier($trackIdent)->first();
             if (! $track) {
-                abort(400, "Track with identifier {$request->get('track')} not active at present time.");
+                abort(400, "Track with identifier $trackIdent not active at present time.");
             }
-            $query->where('track_id', $track->id);
-        })->with('clxMessages')->get();
+        }
 
-        return response($this->formatRclData($rclMessages));
+        return Cache::remember(
+            'rcl-messages:'.($track->id ?? 'all'),
+            60,
+            fn () => RclMessage::with('clxMessages')
+                ->when($track, fn (Builder $q) => $q->whereBelongsTo($track))
+                ->get()
+                ->map(self::serializeRclMessage(...))
+        );
     }
 
     public function detailedClxMessages(Request $request)
@@ -113,7 +79,7 @@ class PluginDataController extends Controller
                 ],
                 'entry' => [
                     'fix' => $msg->entry_fix,
-                    'estimate' => $this->formatTime($msg->rclMessage->entry_time),
+                    'estimate' => self::formatTime($msg->rclMessage->entry_time),
                     'restriction' => $msg->entry_time_restriction,
                 ],
                 'extra_info' => $msg->free_text,
@@ -130,5 +96,25 @@ class PluginDataController extends Controller
         })->get()->makeHidden(['created_at', 'updated_at', 'id']);
 
         return response($tracks);
+    }
+
+    private static function serializeRclMessage(RclMessage $msg): array
+    {
+        return [
+            'callsign' => $msg->callsign,
+            'status' => $msg->clxMessages->count() ? 'CLEARED' : 'PENDING',
+            'nat' => $msg->track->identifier ?? 'RR',
+            'fix' => $msg->entry_fix,
+            'level' => $msg->flight_level,
+            'mach' => '0.'.substr($msg->mach, 1),
+            'estimating_time' => self::formatTime($msg->entry_time),
+            'clearance_issued' => $msg->clxMessages->first()?->created_at,
+            'extra_info' => $msg->free_text,
+        ];
+    }
+
+    private static function formatTime($time)
+    {
+        return substr($time, 0, 2).':'.substr($time, 2, 2);
     }
 }
