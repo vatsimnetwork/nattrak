@@ -79,7 +79,7 @@ class RclMessageRequest extends FormRequest
                     $validator->errors()->add('mach.regex', 'Mach must be in format 0xx (e.g. .74 = 074)');
                 }
                 /** Entry fix time requirement */
-                if (config('app.rcl_time_constraints_enabled')) {
+                if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
                         $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than 45 minutes from now, come back when within 45 minutes. If your entry is within 15 minutes, or you have already entered, request clearance via voice.');
                     }
