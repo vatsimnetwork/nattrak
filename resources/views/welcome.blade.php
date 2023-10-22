@@ -7,6 +7,16 @@
                 <p class="lead text-light mt-5">Available for pilots in the Shanwick EGGX, Gander CZQX, Reykjavik BIRD, and Santa Maria LPPO OCAs.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-5">
                     @auth
+                        @cannot('activePilot')
+                            <div class="alert alert-danger">
+                                <h5 class="font-display mb-0">
+                                    Connect to VATSIM as a pilot to request oceanic clearance
+                                </h5>
+                            </div>
+                        @endcan
+                        @can('activePilot')
+                                <a href="{{ route('pilots.rcl.create') }}" role="button" class="btn btn-secondary btn-lg px-4 me-md-2 fw-bold">Start</a>
+                            @endcan
                     @else
                         <a href="{{ route('auth.redirect') }}" role="button" class="btn btn-secondary btn-lg px-4 me-md-2 fw-bold">Sign in with VATSIM</a>
                     @endauth
