@@ -79,7 +79,7 @@ class RclMessageRequest extends FormRequest
                     $validator->errors()->add('mach.regex', 'Mach must be in format 0xx (e.g. .74 = 074)');
                 }
                 /** Entry fix time requirement */
-                if (config('app.rcl_time_constraints_enabled')) {
+                if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
                         $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than 45 minutes from now, come back when within 45 minutes. If your entry is within 15 minutes, or you have already entered, request clearance via voice.');
                     }
@@ -107,7 +107,7 @@ class RclMessageRequest extends FormRequest
         $minutesDifference = $currentDateTime->diffInMinutes($entryTime);
 
         // Check if the difference is within the range [15, 45] minutes and not negative (entry time is in the future)
-        if ($minutesDifference >= 15 && $minutesDifference <= 45) {
+        if ($minutesDifference >= 14 && $minutesDifference <= 61) {
             return true;
         }
 
@@ -116,7 +116,7 @@ class RclMessageRequest extends FormRequest
         $minutesToMidnight = $currentDateTime->diffInMinutes($midnight);
         $minutesFromMidnight = $entryTime->diffInMinutes($midnight);
 
-        if ($minutesToMidnight >= 15 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 45) {
+        if ($minutesToMidnight >= 14 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 61) {
             return true;
         }
 
