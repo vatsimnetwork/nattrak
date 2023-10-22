@@ -13,55 +13,42 @@ RUN set -ex \
     && npm ci \
     && VITE_PUSHER_APP_KEY=${VITE_PUSHER_APP_KEY} VITE_PUSHER_HOST=${VITE_PUSHER_HOST} VITE_PUSHER_PORT=${VITE_PUSHER_PORT} npm run build
 
-FROM composer:2.4.2 as vendor
+FROM unit:1.31.1-php8.2
 
-WORKDIR /app
+ARG NEW_RELIC_AGENT_VERSION=10.13.0.2
 
-COPY database/ database/
-COPY app/ app/
-COPY composer.json composer.lock ./
-
-RUN composer install \
-    --prefer-dist \
-    --no-dev \
-    --no-scripts \
-    --no-plugins \
-    --no-interaction \
-    --ignore-platform-reqs
-
-FROM php:8.1-fpm-alpine
-
-RUN apk update && apk add --no-cache \
-    supervisor \
-    curl \
-    openssl \
-    nginx \
-    libxml2-dev \
-    oniguruma-dev \
-    libzip-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    freetype-dev \
-    pcre-dev $PHPIZE_DEPS \
-    && rm -rf /var/cache/apk/*
-
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl dom bcmath gd
-RUN pecl install redis && docker-php-ext-enable redis.so
-
-WORKDIR /var/www/app
-COPY --chown=www-data:www-data . /var/www/app
-COPY --chown=www-data:www-data --from=vendor /app/vendor /var/www/app/vendor
-COPY --chown=www-data:www-data --from=nodejs /var/www/app/public/build /var/www/app/public/build
+# Install PHP extensions
 RUN set -ex \
-    && php artisan vendor:publish --tag=livewire:assets --force \
-    && chown -R www-data:www-data public/vendor/livewire
+    && apt-get update \
+    && apt-get install --no-install-recommends -y git unzip \
+    && docker-php-ext-install bcmath opcache pcntl pdo_mysql \
+    && pecl install redis-5.3.7 \
+    && apt-get purge -y --auto-remove git \
+    && curl -L https://download.newrelic.com/php_agent/archive/${NEW_RELIC_AGENT_VERSION}/newrelic-php5-${NEW_RELIC_AGENT_VERSION}-linux.tar.gz | tar -C /tmp -zx \
+    && cp /tmp/newrelic-php5-${NEW_RELIC_AGENT_VERSION}-linux/agent/x64/newrelic-20220829.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/newrelic.so \
+    && rm -rf /tmp/newrelic-php5-* /tmp/pear /var/lib/apt/lists/* \
+    && docker-php-ext-enable newrelic redis
 
-RUN rm /usr/local/etc/php-fpm.d/zz-docker.conf
-COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/php.ini /etc/php8/conf.d/50-setting.ini
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-EXPOSE 80
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Configure PHP & Unit
+COPY docker/php.ini /usr/local/etc/php/php.ini
+COPY docker/bootstrap-laravel.sh /docker-entrypoint.d/
+COPY docker/unit.json /docker-entrypoint.d/
+
+# Copy application files
+WORKDIR /var/www/app
+COPY --chown=unit:unit . /var/www/app
+
+# Install Composer dependencies
+RUN set -ex \
+    && composer install --no-dev --optimize-autoloader \
+    && php artisan vendor:publish --tag=livewire:assets \
+    && rm -rf /root/.composer \
+    && chown -R unit:unit bootstrap/cache public/vendor/livewire vendor
+
+# Copy built frontend files
+COPY --from=nodejs --chown=unit:unit /var/www/app/public/build /var/www/app/public/build
+
+# CMD and ENTRYPOINT are inherited from the Unit image
