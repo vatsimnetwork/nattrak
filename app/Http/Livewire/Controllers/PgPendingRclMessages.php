@@ -49,7 +49,7 @@ final class PgPendingRclMessages extends PowerGridComponent
                 } elseif ($track == 'CONC') {
                     $query->where('is_concorde', true);
                 }
-            })->get();
+            })->with('track')->get();
             foreach ($trackMsgs as $msg) {
                 $pendingRclMsgs->add($msg);
             }
