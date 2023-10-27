@@ -38,6 +38,26 @@ class PluginDataController extends Controller
         );
     }
 
+    public function allClxMessages(Request $request)
+    {
+        $track = null;
+        if ($trackIdent = $request->get('track')) {
+            $track = Track::active()->whereIdentifier($trackIdent)->first();
+            if (! $track) {
+                abort(400, "Track with identifier $trackIdent not active at present time.");
+            }
+        }
+
+        return Cache::remember(
+            'clx-messages:'.($track->id ?? 'all'),
+            60,
+            fn () => ClxMessage::with('rclMessage')
+                ->when($track, fn (Builder $q) => $q->whereBelongsTo($track))
+                ->get()
+                ->map(self::serializeClxMessage(...))
+        );
+    }
+
     public function detailedClxMessages(Request $request)
     {
         $trackToSortBy = null;
@@ -110,6 +130,21 @@ class PluginDataController extends Controller
             'estimating_time' => self::formatTime($msg->entry_time),
             'clearance_issued' => $msg->clxMessages->first()?->created_at,
             'extra_info' => $msg->free_text,
+        ];
+    }
+
+    private static function serializeClxMessage(ClxMessage $msg): array
+    {
+        return [
+            'callsign' => $msg->callsign,
+            'status' => 'CLEARED',
+            'nat' => $msg->track->identifier ?? 'RR',
+            'fix' => $msg->entry_fix,
+            'level' => $msg->flight_level,
+            'mach' => '0.'.substr($msg->mach, 1),
+            'estimating_time' => self::formatTime($msg->rclMessage?->entry_time ?? '00:00'),
+            'clearance_issued' => $msg->created_at,
+            'extra_info' => $msg->rclMessage?->free_text,
         ];
     }
 
