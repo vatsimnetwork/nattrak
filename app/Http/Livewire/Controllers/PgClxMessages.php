@@ -51,7 +51,7 @@ final class PgClxMessages extends PowerGridComponent
                         $query->where('is_concorde', true);
                     }
                 })
-                ->with('rclMessage')
+                ->with(['rclMessage', 'track'])
                 ->orderByDesc('created_at')
                 ->get();
 
