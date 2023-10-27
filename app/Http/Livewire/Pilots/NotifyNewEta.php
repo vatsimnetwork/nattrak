@@ -12,7 +12,7 @@ use Livewire\Component;
 class NotifyNewEta extends Component
 {
     public RclMessage $rclMessage;
-    public ClxMessage|null $latestClxMessage;
+    public ?ClxMessage $latestClxMessage = null;
     public $entryTime;
     public bool $reject = false;
 
@@ -42,7 +42,7 @@ class NotifyNewEta extends Component
 
         DB::transaction(function(): void {
             $this->rclMessage->update([
-                'previous_clx_message' => $this->latestClxMessage->toArray(),
+                'previous_clx_message' => $this->latestClxMessage?->toArray(),
                 'new_entry_time' => true,
                 'new_entry_time_notified_at' => now(),
                 'previous_entry_time' => $this->rclMessage->entry_time,
@@ -51,11 +51,13 @@ class NotifyNewEta extends Component
             $this->rclMessage->clx_message_id = null;
             $this->rclMessage->save();
 
-            $this->latestClxMessage->update([
-                'cancelled' => true,
-                'cancellation_reason' => ClxCancellationReasons::NewEta
-            ]);
-            $this->latestClxMessage->save();
+            if ($this->latestClxMessage) {
+                $this->latestClxMessage->update([
+                    'cancelled' => true,
+                    'cancellation_reason' => ClxCancellationReasons::NewEta
+                ]);
+                $this->latestClxMessage->save();
+            }
         });
 
         flashAlert(type: 'success', title: 'Success!', message: 'New ETA submitted. Keep an eye on your message history page!', toast: false, timer: false);
