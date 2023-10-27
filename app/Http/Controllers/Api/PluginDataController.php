@@ -31,7 +31,7 @@ class PluginDataController extends Controller
         return Cache::remember(
             'rcl-messages:'.($track->id ?? 'all'),
             60,
-            fn () => RclMessage::with('clxMessages')
+            fn () => RclMessage::with(['clxMessages', 'track'])
                 ->when($track, fn (Builder $q) => $q->whereBelongsTo($track))
                 ->get()
                 ->map(self::serializeRclMessage(...))
@@ -51,7 +51,7 @@ class PluginDataController extends Controller
         return Cache::remember(
             'clx-messages:'.($track->id ?? 'all'),
             60,
-            fn () => ClxMessage::with('rclMessage')
+            fn () => ClxMessage::with(['rclMessage', 'track'])
                 ->when($track, fn (Builder $q) => $q->whereBelongsTo($track))
                 ->get()
                 ->map(self::serializeClxMessage(...))
