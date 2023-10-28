@@ -15,9 +15,15 @@ class VatsimDataService
 
     public const TRACK_API_ENDPOINT = 'https://tracks.ganderoceanic.ca/data';
 
+    private object $networkData;
+
     private function getNetworkData()
     {
-        $networkResponse = Cache::remember('vatsim-data', 30, function () {
+        if ($this->networkData) {
+            return $this->networkData;
+        }
+
+        $this->networkData = Cache::remember('vatsim-data', 30, function () {
             $request = Http::timeout(10)->get(self::NETWORK_DATA_URL);
             if (! $request->successful()) {
                 Log::warning('Failed to download network data, response was '.$request->status());
@@ -28,7 +34,7 @@ class VatsimDataService
             return json_decode($request);
         });
 
-        return $networkResponse;
+        return $this->networkData;
     }
 
     public function getTmi(): ?string
