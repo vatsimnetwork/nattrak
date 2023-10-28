@@ -15,7 +15,7 @@ class VatsimDataService
 
     public const TRACK_API_ENDPOINT = 'https://tracks.ganderoceanic.ca/data';
 
-    private object $networkData;
+    private ?object $networkData = null;
 
     private function getNetworkData()
     {
