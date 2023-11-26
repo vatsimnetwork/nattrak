@@ -1,14 +1,21 @@
 <?php
 
 use App\Enums\DatalinkAuthorities;
+use App\Services\TracksService;
 use App\Services\VatsimDataService;
 use Illuminate\Support\Facades\Auth;
 
-function current_tmi(): string
+function current_tmi(): int|string
 {
-    $dataService = new VatsimDataService();
+    if ($tmi = config('services.tracks.override_tmi')) {
+        return (int) $tmi;
+    }
 
-    return $dataService->getTmi() ?? 'N/A';
+    return cache()->remember('tmi', now()->addHours(1), function () {
+        $tracksService = app(TracksService::class);
+
+        return $tracksService->getTmi() ?? 'N/A';
+    });
 }
 
 function current_dl_authority(): ?DatalinkAuthorities
