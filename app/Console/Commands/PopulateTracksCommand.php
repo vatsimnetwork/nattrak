@@ -3,58 +3,43 @@
 namespace App\Console\Commands;
 
 use App\Models\Track;
+use App\Services\TracksService;
+use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 
 class PopulateTracksCommand extends Command
 {
-    protected $signature = 'tracks:populate {--url= : Specify a custom API endpoint to pull from}';
+    protected $signature = 'tracks:populate';
 
     protected $description = 'Populate active NAT tracks';
 
-    public const TRACK_API_ENDPOINT = 'https://tracks.ganderoceanic.ca/data';
-
-    public function handle()
+    public function handle(TracksService $tracksService): void
     {
-        $endpoint = self::TRACK_API_ENDPOINT;
-        if ($this->option('url')) {
-            $endpoint = $this->option('url');
-        }
+        $this->line('Downloading tracks...');
 
-        $this->info('Downloading tracks from API ('.$endpoint.')');
-        $trackData = Http::get($endpoint, [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
-
-        if ($trackData) {
-            $tracks = json_decode(($trackData));
-            $this->line('Tracks decoded.');
-        } else {
-            $this->error('Could not decode tracks');
+        try {
+            $tracks = $tracksService->getTracks();
+            $this->line('Downloaded tracks.');
+        } catch (Exception $e) {
+            $this->error('Could not download tracks.');
 
             return;
         }
 
+        $this->line('Deactivating old tracks...');
         foreach (Track::whereActive(true)->get() as $track) {
             $track->deactivate();
         }
 
         foreach ($tracks as $track) {
-            $this->line("Processing track identifier {$track->id} ...");
-            $routeingString = '';
-            foreach ($track->route as $fix) {
-                $routeingString .= "$fix->name ";
-            }
-            Track::updateOrCreate(['identifier' => $track->id], [
-                'last_routeing' => trim($routeingString),
-                'valid_from' => Carbon::createFromTimestamp($track->validFrom),
-                'valid_to' => Carbon::createFromTimestamp($track->validTo),
+            $this->line("Processing track identifier $track[ident]...");
+            Track::updateOrCreate(['identifier' => $track['ident']], [
                 'active' => true,
+                'last_routeing' => $track['route'],
+                'valid_from' => $track['valid_from'],
+                'valid_to' => $track['valid_to'],
                 'last_active' => now(),
-                'flight_levels' => $track->flightLevels,
+                'flight_levels' => $track['flight_levels'],
             ]);
         }
 
