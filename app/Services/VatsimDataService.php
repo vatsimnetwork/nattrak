@@ -13,8 +13,6 @@ class VatsimDataService
 {
     public const NETWORK_DATA_URL = 'https://data.vatsim.net/v3/vatsim-data.json';
 
-    public const TRACK_API_ENDPOINT = 'https://tracks.ganderoceanic.ca/data';
-
     private ?object $networkData = null;
 
     private function getNetworkData()
@@ -35,33 +33,6 @@ class VatsimDataService
         });
 
         return $this->networkData;
-    }
-
-    public function getTmi(): ?string
-    {
-        if (config('services.tracks.override_tmi')) {
-            return (string) config('services.tracks.override_tmi');
-        }
-
-        return Cache::remember('tmi', now()->addHours(1), function () {
-            $trackData = Http::get(self::TRACK_API_ENDPOINT, [
-                'headers' => [
-                    'Accept' => 'application/json',
-                ],
-            ]);
-
-            if ($trackData) {
-                $tracks = json_decode(($trackData));
-            } else {
-                return null;
-            }
-
-            if (! $tracks[0]) {
-                return null;
-            }
-
-            return $tracks[0]->tmi;
-        });
     }
 
     public function isActivePilot(VatsimAccount $vatsimAccount): bool
