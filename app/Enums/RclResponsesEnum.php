@@ -23,7 +23,7 @@ enum RclResponsesEnum: string
             self::Cancelled => 'Clearance cancelled by the controller. Revert to voice or check private messages in pilot client.',
             self::Invalid => 'Check the identified error, amend and re-submit. For help contact the controller.',
             self::Contact => 'Revert to voice.',
-            self::Acknowledge => 'Request acknowledged. Continue as planned. Monitor natTrak for ATC amendments'
+            self::Acknowledge => 'Request acknowledged. Continue as planned. Monitor natTrak for ATC amendments.'
         };
     }
 }
