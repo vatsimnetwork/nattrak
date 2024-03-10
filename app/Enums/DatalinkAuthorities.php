@@ -13,7 +13,7 @@ enum DatalinkAuthorities: string
     case TTZO = 'TTZO';
     case CZQXD = 'CZQX';
     case CZQMD = 'CZQM';
-    case SYS = 'SYSTEM';
+    case SYS = 'SYST';
 
     public function description(): string
     {
