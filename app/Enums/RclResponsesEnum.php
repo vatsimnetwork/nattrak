@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum RclErrorsEnum: string
+enum RclResponsesEnum: string
 {
     case TooEarly = "RCL REJECTED\nRCL SENT TOO EARLY";
     case TooLate = "RCL REJECTED\nRCL RECEIVED TOO LATE REVERT TO VOICE PROCEDURES";
@@ -11,6 +11,7 @@ enum RclErrorsEnum: string
     case Cancelled = "RCL/CLA REJECTED\nCLEARANCE CALLED REVERT TO VOICE PROCEDURES";
     case Invalid = "RCL REJECTED\nINVAILD %s\nRESUBMIT YOUR REQUEST";
     case Contact = "RCL/CLA RECEIVED\nCONTACT %s BY VOICE";
+    case Acknowledge = "RCL/CLA RECEIVED\nFLY CURRENT FLIGHT PLAN OR AS AMENDED BY ATC\nCONTINUE TO MONITOR NATTRAK UNTIL ENTERING OCA";
 
     public function text(): string
     {
@@ -21,7 +22,8 @@ enum RclErrorsEnum: string
             self::Negotiation => 'Negotiation of your clearance with the controller is required. Contact the controller specified via voice.',
             self::Cancelled => 'Clearance cancelled by the controller. Revert to voice or check private messages in pilot client.',
             self::Invalid => 'Check the identified error, amend and re-submit. For help contact the controller.',
-            self::Contact => 'Revert to voice.'
+            self::Contact => 'Revert to voice.',
+            self::Acknowledge => 'Request acknowledged. Continue as planned. Monitor natTrak for ATC amendments.'
         };
     }
 }
