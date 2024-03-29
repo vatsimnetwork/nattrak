@@ -106,8 +106,8 @@ class RclMessageRequest extends FormRequest
         // Calculate the difference in minutes between the current time and entry time
         $minutesDifference = $currentDateTime->diffInMinutes($entryTime);
 
-        // Check if the difference is within the range [15, 45] minutes and not negative (entry time is in the future)
-        if ($minutesDifference >= 14 && $minutesDifference <= 61) {
+        // Check if the difference is within the range [15, 90] minutes and not negative (entry time is in the future)
+        if ($minutesDifference >= 14 && $minutesDifference <= 91) {
             return true;
         }
 
@@ -116,7 +116,7 @@ class RclMessageRequest extends FormRequest
         $minutesToMidnight = $currentDateTime->diffInMinutes($midnight);
         $minutesFromMidnight = $entryTime->diffInMinutes($midnight);
 
-        if ($minutesToMidnight >= 14 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 61) {
+        if ($minutesToMidnight >= 14 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 91) {
             return true;
         }
 
