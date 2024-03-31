@@ -14,7 +14,7 @@ enum DatalinkAuthorities: string
     case CZQXD = 'CZQX';
     case CZQMD = 'CZQM';
     case SYS = 'SYST';
-    case OCEN = "OCEN";
+    case OCEN = 'OCEN';
 
     public function description(): string
     {
