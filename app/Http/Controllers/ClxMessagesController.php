@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ClxCancellationReasons;
 use App\Enums\DatalinkAuthorities;
-use App\Enums\RclErrorsEnum;
+use App\Enums\RclResponsesEnum;
 use App\Events\ClxIssuedEvent;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
@@ -280,8 +280,8 @@ class ClxMessagesController extends Controller
             author: $datalinkAuthority,
             recipient: $rclMessage->callsign,
             recipientAccount: $rclMessage->vatsimAccount,
-            message: sprintf(RclErrorsEnum::Contact->value, strtoupper($datalinkAuthority->description())),
-            caption: RclErrorsEnum::Contact->text()
+            message: sprintf(RclResponsesEnum::Contact->value, strtoupper($datalinkAuthority->description())),
+            caption: RclResponsesEnum::Contact->text()
         );
 
         flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);

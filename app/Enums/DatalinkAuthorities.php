@@ -13,6 +13,8 @@ enum DatalinkAuthorities: string
     case TTZO = 'TTZO';
     case CZQXD = 'CZQX';
     case CZQMD = 'CZQM';
+    case SYS = 'SYST';
+    case OCEN = 'OCEN';
 
     public function description(): string
     {
@@ -26,6 +28,8 @@ enum DatalinkAuthorities: string
             DatalinkAuthorities::KZNY => 'New York',
             DatalinkAuthorities::CZQMD => 'Moncton (Domestic)',
             DatalinkAuthorities::CZQXD => 'Gander (Domestic)',
+            DatalinkAuthorities::SYS => 'natTrak System',
+            DatalinkAuthorities::OCEN => 'Oceanic Controller',
             default => 'N/A'
         };
     }
