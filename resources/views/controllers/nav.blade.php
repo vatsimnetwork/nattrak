@@ -16,6 +16,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('controllers/clx/processed') ? 'active' : '' }}" href="{{ route('controllers.clx.processed') }}">Processed Messages</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('controllers.clx.create') }}" class="nav-link {{ Request::is('controllers/clx/create' ? 'active' : '') }}">Create Manual Clearance</a>
+                    </li>
                     <div class="vr text-dark mx-2 d-none d-lg-block"></div>
                 </ul>
             </div>

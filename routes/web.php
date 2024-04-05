@@ -79,6 +79,7 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
         Route::get('/pending', 'getPending')->name('.pending');
         Route::get('/processed-dt', 'getProcessedViaClxModels')->name('.processed-dt');
         Route::get('/processed', 'getProcessed')->name('.processed');
+        Route::get('/create', 'create')->name('.create');
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
