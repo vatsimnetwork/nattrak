@@ -57,13 +57,17 @@ class RclMessagesController extends Controller
             }
         }
         $rclMessage->save();
-        $this->cpdlcService->sendMessage(
-            author: DatalinkAuthorities::SYS,
-            recipient: $rclMessage->callsign,
-            recipientAccount: $rclMessage->vatsimAccount,
-            message: sprintf(RclResponsesEnum::Acknowledge->value, strtoupper(DatalinkAuthorities::SYS->description())),
-            caption: RclResponsesEnum::Acknowledge->text()
-        );
+
+        // If RCL auto acknowledgement enabled, send CPDLC acknowledgement
+        if (config('app.rcl_auto_acknowledgement_enabled')) {
+            $this->cpdlcService->sendMessage(
+                author: DatalinkAuthorities::SYS,
+                recipient: $rclMessage->callsign,
+                recipientAccount: $rclMessage->vatsimAccount,
+                message: sprintf(RclResponsesEnum::Acknowledge->value, strtoupper(DatalinkAuthorities::SYS->description())),
+                caption: RclResponsesEnum::Acknowledge->text()
+            );
+        }
 
         return redirect()->route('pilots.message-history');
     }
