@@ -91,7 +91,9 @@ class RclMessageRequest extends FormRequest
                 /** Entry fix time requirement */
                 if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
-                        $this->cpdlcService->sendMessage(author: DatalinkAuthorities::SYS, recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
+                        if (config('app.rcl_auto_acknowledgement_enabled')) {
+                            $this->cpdlcService->sendMessage(author: DatalinkAuthorities::SYS, recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
+                        }
                         $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than 90 minutes from now, come back when within 90 minutes. If your entry is within 15 minutes, or you have already entered, request clearance via voice.');
                     }
                 }
@@ -118,7 +120,7 @@ class RclMessageRequest extends FormRequest
         $minutesDifference = $currentDateTime->diffInMinutes($entryTime);
 
         // Check if the difference is within the range [15, 90] minutes and not negative (entry time is in the future)
-        if ($minutesDifference >= 14 && $minutesDifference <= 91) {
+        if ($minutesDifference >= config('app.rcl_lower_limit') && $minutesDifference <= config('app.rcl_upper_limit')) {
             return true;
         }
 
@@ -127,7 +129,7 @@ class RclMessageRequest extends FormRequest
         $minutesToMidnight = $currentDateTime->diffInMinutes($midnight);
         $minutesFromMidnight = $entryTime->diffInMinutes($midnight);
 
-        if ($minutesToMidnight >= 14 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 91) {
+        if ($minutesToMidnight >= config('app.rcl_lower_limit') && $minutesFromMidnight >= 0 && $minutesFromMidnight <= config('app.rcl_upper_limit')) {
             return true;
         }
 
