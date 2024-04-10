@@ -35,6 +35,9 @@ class Kernel extends ConsoleKernel
         if (config('services.pruning.prune_msgs')) {
             $schedule->command('model:prune')->hourly();
         }
+
+        // Clean activity log
+        $schedule->command('activitylog:clean')->daily();
     }
 
     /**
