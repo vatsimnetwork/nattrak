@@ -124,4 +124,20 @@ class VatsimDataService
             return null;
         }
     }
+
+    public function getVatsimAccountByCallsign($callsign)
+    {
+        $networkData = $this->getNetworkData();
+        if (! $networkData) {
+            return null;
+        }
+        if (in_array(strtoupper($callsign), array_column($networkData->pilots, 'callsign'))) {
+            $key = (array_search(strtoupper($callsign), array_column($networkData->pilots, 'callsign')));
+            $data = $networkData->pilots[$key];
+
+            return $data;
+        } else {
+            return null;
+        }
+    }
 }

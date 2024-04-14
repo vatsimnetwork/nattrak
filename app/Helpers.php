@@ -5,6 +5,11 @@ use App\Services\TracksService;
 use App\Services\VatsimDataService;
 use Illuminate\Support\Facades\Auth;
 
+function system_user_id(): int
+{
+    return 9999999;
+}
+
 function current_tmi(): int|string
 {
     if ($tmi = config('services.tracks.override_tmi')) {

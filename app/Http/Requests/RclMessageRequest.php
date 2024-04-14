@@ -37,15 +37,12 @@ class RclMessageRequest extends FormRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
-            'flight_level.max' => 'You must file a valid flight level.',
-            'max_flight_level.max' => 'You must file a valid maximum flight level.',
-            'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
-        ];
-    }
+    protected $messages = [
+        'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
+        'flight_level.max' => 'You must file a valid flight level.',
+        'max_flight_level.max' => 'You must file a valid maximum flight level.',
+        'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
+    ];
 
     public function prepareForValidation()
     {
