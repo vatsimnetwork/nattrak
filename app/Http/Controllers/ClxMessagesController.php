@@ -288,4 +288,14 @@ class ClxMessagesController extends Controller
 
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }
+
+    public function create()
+    {
+        return view('controllers.clx.rcl-messages.create', [
+            'dlAuthorities' => DatalinkAuthorities::cases(),
+            'tracks' => Track::where('active', true)->orWhere('concorde', true)->get(),
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
+            '_pageTitle' => 'Create Manual Clearance',
+        ]);
+    }
 }

@@ -60,6 +60,7 @@ class ConflictChecker extends Component
 
     public function timeChanged(string $newTime)
     {
+        if (strlen($newTime) != 4) return;
         if (empty($newTime)) {
             $this->time = $this->originalTime;
         } else {
@@ -189,6 +190,9 @@ class ConflictChecker extends Component
 
     public function check()
     {
+        if (strlen($this->time) != 4) {
+            return;
+        }
         /**
          * Set cleared conflicts (CLX messages) to null, fetch them from DB, map them to array, determine conflict level, then set public variable.
          */
