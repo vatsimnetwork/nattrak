@@ -10,7 +10,6 @@ enum DomesticAuthorities: string
     case EGTT = 'EGTT';
     case CZQMD = 'CZQM';
     case CZQXD = 'CZQX';
-    case ATL = 'ATL';
     case UNKN = 'UNKN';
 
     public function description(): string
@@ -22,7 +21,6 @@ enum DomesticAuthorities: string
             DomesticAuthorities::EGTT => 'London',
             DomesticAuthorities::CZQMD => 'Moncton',
             DomesticAuthorities::CZQXD => 'Moncton/Gander',
-            DomesticAuthorities::ATL => 'ATL',
             DomesticAuthorities::UNKN => 'Unknown',
             default => 'Unknown',
         };
