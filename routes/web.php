@@ -87,7 +87,7 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
     });
 });
 
-Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->group(function () {
+Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->middleware('can:administrate')->group(function () {
     Route::get('/', 'index')->name('.index');
     Route::get('/create', 'create')->name('.create');
     Route::post('/', 'store')->name('.store');
