@@ -14,11 +14,22 @@ class TracksService
         'JUL' => 7, 'AUG' => 8, 'SEP' => 9, 'OCT' => 10, 'NOV' => 11, 'DEC' => 12,
     ];
 
-    public function getTmi(): ?int
+    public function getTmi(): int|string|null
     {
         $messages = $this->getMessages();
 
-        return $messages[0]['tmi'] ?? null;
+        return $messages[0]['tmi'] ?? ($this->getEstimatedTmi() ?? null);
+    }
+
+    /**
+     * @return int|string|null
+     *
+     * Returns an estimate of the real world TMI based off the day of the year. * added to denote such.
+     */
+    private function getEstimatedTmi(): int|string|null
+    {
+        $now = Carbon::now();
+        return $now->dayOfYear . '*';
     }
 
     public function getTracks(): ?array
