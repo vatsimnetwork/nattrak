@@ -87,6 +87,14 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
     });
 });
 
+Route::prefix('domestic')->name('domestic')->middleware('can:activeBoundaryController')->group(function () {
+   Route::get('notify-new-eta-for-pilot', function (){
+       return view ('controllers.notify-new-eta-for-pilot', [
+           '_pageTitle' => 'Notify New ETA for Pilot',
+       ]);
+   })->name('.notify-new-eta-for-pilot');
+});
+
 Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->middleware('can:administrate')->group(function () {
     Route::get('/', 'index')->name('.index');
     Route::get('/create', 'create')->name('.create');

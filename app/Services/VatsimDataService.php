@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
+use App\Enums\DomesticAuthorities;
 use App\Models\VatsimAccount;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -92,6 +93,33 @@ class VatsimDataService
         return false;
     }
 
+    public function isActiveBoundaryDomesticController(VatsimAccount $vatsimAccount)
+    {
+        if (! auth()->check()) {
+            return false;
+        }
+        $networkData = $this->getNetworkData();
+        if (! $networkData) {
+            return false;
+        }
+        $online = in_array($vatsimAccount->id, array_column($networkData->controllers, 'cid'));
+
+        if ($online) {
+            $authorities = [];
+            foreach (DomesticAuthorities::cases() as $authority) {
+                $authorities[] = $authority->value;
+            }
+            $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
+            if ((in_array(strtok($callsign, '_'), $authorities)) || (in_array(strtok($callsign, '-'), $authorities))) {
+                return true;
+            } else {
+                return $vatsimAccount->access_level == AccessLevelEnum::Controller;
+            }
+        }
+
+        return false;
+    }
+
     public function getActiveControllerAuthority(VatsimAccount $vatsimAccount)
     {
         if (! $this->isActiveOceanicController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) {
@@ -102,6 +130,24 @@ class VatsimDataService
 
         foreach (DatalinkAuthorities::cases() as $authority) {
             if ($callsignPrefix == $authority->value) {
+                return $authority;
+            }
+        }
+
+        return null;
+    }
+
+    public function getActiveDomesticControllerAuthorirty(VatsimAccount $vatsimAccount)
+    {
+        if (! $this->isActiveBoundaryDomesticController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) {
+            return null;
+        }
+
+        $callsignPrefixUnderscore = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
+        $callsignPrefixDash = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '-');
+
+        foreach (DomesticAuthorities::cases() as $authority) {
+            if ($callsignPrefixUnderscore == $authority->value || $callsignPrefixDash == $authority->value) {
                 return $authority;
             }
         }
