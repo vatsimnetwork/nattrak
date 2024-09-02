@@ -79,6 +79,7 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
         Route::get('/pending', 'getPending')->name('.pending');
         Route::get('/processed-dt', 'getProcessedViaClxModels')->name('.processed-dt');
         Route::get('/processed', 'getProcessed')->name('.processed');
+        Route::get('/create', 'create')->name('.create');
         Route::post('/transmit/{rclMessage:id}', 'transmit')->name('.transmit');
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
@@ -86,7 +87,15 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
     });
 });
 
-Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->group(function () {
+Route::prefix('domestic')->name('domestic')->middleware('can:activeBoundaryController')->group(function () {
+   Route::get('notify-new-eta-for-pilot', function (){
+       return view ('controllers.notify-new-eta-for-pilot', [
+           '_pageTitle' => 'Notify New ETA for Pilot',
+       ]);
+   })->name('.notify-new-eta-for-pilot');
+});
+
+Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->middleware('can:administrate')->group(function () {
     Route::get('/', 'index')->name('.index');
     Route::get('/create', 'create')->name('.create');
     Route::post('/', 'store')->name('.store');

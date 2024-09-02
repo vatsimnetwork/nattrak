@@ -131,6 +131,9 @@ return [
      * Misc settings
      */
     'rcl_time_constraints_enabled' => env('RCL_TIME_CONSTRAINTS_ENABLED', true),
+    'rcl_auto_acknowledgement_enabled' => env('RCL_AUTO_ACKNOWLEDGEMENT_ENABLED', false),
+    'rcl_lower_limit' => env('rcl_lower_limit', 14),
+    'rcl_upper_limit' => env('rcl_upper_limit', 91),
 
     /*
     |--------------------------------------------------------------------------

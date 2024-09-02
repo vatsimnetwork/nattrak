@@ -49,5 +49,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('activeController', function (VatsimAccount $account) use ($dataService) {
             return $account->access_level == AccessLevelEnum::Controller || $dataService->isActiveOceanicController($account);
         });
+
+        Gate::define('activeBoundaryController', function (VatsimAccount $account) use ($dataService) {
+            return $account->access_level == AccessLevelEnum::Controller || $dataService->isActiveBoundaryDomesticController($account);
+        });
     }
 }

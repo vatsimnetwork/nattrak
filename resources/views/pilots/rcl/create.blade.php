@@ -27,7 +27,7 @@
         @endif
         <div class="bg-body-secondary py-3 px-3 mb-4 rounded">
             <p>You should request oceanic clearance <span class="fw-bold">30 minutes prior to oceanic entry.</span><br><a href="#" data-bs-toggle="modal" data-bs-target="#airportInfo" class="fst-italic text-muted">At some airports, you must request prior to departure.</a></p>
-            <p>Requests will be rejected if your ETA has past, is under 10 minutes from now, or is over 45 minutes away.</p>
+            <p>Requests will be rejected if your ETA has past, is under {{ (int)config('app.rcl_lower_limit') + 1 }} minutes from now, or is over {{ (int)config('app.rcl_upper_limit') - 1 }} minutes away.</p>
             <p class="mb-0">Need help? Check out the <i>Help</i> button in the navigation bar.</p>
         </div>
         @if (config('app.ctp_info_enabled'))

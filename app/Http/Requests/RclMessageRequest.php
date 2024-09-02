@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DatalinkAuthorities;
+use App\Enums\RclResponsesEnum;
 use App\Models\Track;
+use App\Services\CpdlcService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +13,13 @@ use Illuminate\Validation\Rule;
 
 class RclMessageRequest extends FormRequest
 {
+    public CpdlcService $cpdlcService;
+
+    public function __construct(CpdlcService $cpdlcService)
+    {
+        $this->cpdlcService = $cpdlcService;
+    }
+
     public function rules(): array
     {
         return [
@@ -27,15 +37,12 @@ class RclMessageRequest extends FormRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
-            'flight_level.max' => 'You must file a valid flight level.',
-            'max_flight_level.max' => 'You must file a valid maximum flight level.',
-            'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
-        ];
-    }
+    protected $messages = [
+        'mach.regex' => 'Mach must be in format 0xx (e.g. .74 = 074)',
+        'flight_level.max' => 'You must file a valid flight level.',
+        'max_flight_level.max' => 'You must file a valid maximum flight level.',
+        'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
+    ];
 
     public function prepareForValidation()
     {
@@ -81,7 +88,10 @@ class RclMessageRequest extends FormRequest
                 /** Entry fix time requirement */
                 if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
-                        $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than 45 minutes from now, come back when within 45 minutes. If your entry is within 15 minutes, or you have already entered, request clearance via voice.');
+//                        if (config('app.rcl_auto_acknowledgement_enabled')) {
+//                            $this->cpdlcService->sendMessage(author: DatalinkAuthorities::SYS, recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
+//                        }
+                        $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than ' . str(config('app.rcl_upper_limit') - 1) . ' minutes from now, come back when within ' . str(config('app.rcl_upper_limit') - 1) . ' minutes. If your entry is within ' . str(config('app.rcl_lower_limit' + 1)) . ' minutes, or you have already entered, request clearance via voice.');
                     }
                 }
             }
@@ -106,8 +116,8 @@ class RclMessageRequest extends FormRequest
         // Calculate the difference in minutes between the current time and entry time
         $minutesDifference = $currentDateTime->diffInMinutes($entryTime);
 
-        // Check if the difference is within the range [15, 45] minutes and not negative (entry time is in the future)
-        if ($minutesDifference >= 14 && $minutesDifference <= 61) {
+        // Check if the difference is within the range [15, 90] minutes and not negative (entry time is in the future)
+        if ($minutesDifference >= config('app.rcl_lower_limit') && $minutesDifference <= config('app.rcl_upper_limit')) {
             return true;
         }
 
@@ -116,7 +126,7 @@ class RclMessageRequest extends FormRequest
         $minutesToMidnight = $currentDateTime->diffInMinutes($midnight);
         $minutesFromMidnight = $entryTime->diffInMinutes($midnight);
 
-        if ($minutesToMidnight >= 14 && $minutesFromMidnight >= 0 && $minutesFromMidnight <= 61) {
+        if ($minutesToMidnight >= config('app.rcl_lower_limit') && $minutesFromMidnight >= 0 && $minutesFromMidnight <= config('app.rcl_upper_limit')) {
             return true;
         }
 

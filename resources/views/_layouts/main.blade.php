@@ -88,9 +88,9 @@
     @can('activePilot')
         @include('pilots.nav')
     @endcan
-    @can('activeController')
+    @canany(['activeBoundaryController', 'activeController'])
         @include('controllers.nav')
-    @endcan
+    @endcanany
 </header>
 <main class="mt-4 mb-4">
     @yield('page')

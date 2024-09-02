@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DatalinkAuthorities;
+use App\Enums\RclResponsesEnum;
 use App\Http\Requests\RclMessageRequest;
 use App\Models\RclMessage;
 use App\Models\Track;
+use App\Services\CpdlcService;
 use App\Services\VatsimDataService;
 use Illuminate\Support\Facades\Auth;
 
 class RclMessagesController extends Controller
 {
     private $dataService;
+    public CpdlcService $cpdlcService;
 
-    public function __construct(VatsimDataService $vatsimDataService)
+    public function __construct(VatsimDataService $vatsimDataService, CpdlcService $cpdlcService)
     {
         $this->dataService = $vatsimDataService;
+        $this->cpdlcService = $cpdlcService;
     }
 
     public function index()
@@ -52,6 +57,17 @@ class RclMessagesController extends Controller
             }
         }
         $rclMessage->save();
+
+        // If RCL auto acknowledgement enabled, send CPDLC acknowledgement
+        if (config('app.rcl_auto_acknowledgement_enabled')) {
+            $this->cpdlcService->sendMessage(
+                author: DatalinkAuthorities::SYS,
+                recipient: $rclMessage->callsign,
+                recipientAccount: $rclMessage->vatsimAccount,
+                message: sprintf(RclResponsesEnum::Acknowledge->value, strtoupper(DatalinkAuthorities::SYS->description())),
+                caption: RclResponsesEnum::Acknowledge->text()
+            );
+        }
 
         return redirect()->route('pilots.message-history');
     }

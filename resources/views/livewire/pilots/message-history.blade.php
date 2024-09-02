@@ -1,8 +1,8 @@
 <div>
     <div class="mb-4">
-            <h5>Clearance Messages</h5>
+            <h5>Controller Messages</h5>
             @if (count($clxMessages) == 0)
-                <div class="fst-italic">No messages. If you haven't received clearance within 10 minutes of requesting, contact the controller.</div>
+                <div class="fst-italic">No messages. @if(! config('app.rcl_auto_acknowledgement_enabled'))If you haven't received clearance within 10 minutes of requesting, contact the controller.@endif</div>
             @endif
             @foreach($clxMessages as $message)
                 <div class="card" wire:key="clx-{{ $message['created_at'] }}">
@@ -39,7 +39,7 @@
             @endforeach
     </div>
     <div class="mb-4">
-        <h5>CPDLC Messages</h5>
+        <h5>Automatic Messages</h5>
         @if (count($cpdlcMessages) == 0)
             <div class="fst-italic">No messages.</div>
         @endif
@@ -65,7 +65,7 @@
         @endforeach
     </div>
     <div class="mb-4">
-        <h5>Request Messages</h5>
+        <h5>Oceanic Clearance Request Messages</h5>
         @if (count($rclMessages) == 0)
             <div class="fst-italic">No messages. Request clearance via the Request Clearance button on the pilots toolbar.</div>
         @endif
