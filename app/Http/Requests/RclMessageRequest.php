@@ -91,7 +91,9 @@ class RclMessageRequest extends FormRequest
 //                        if (config('app.rcl_auto_acknowledgement_enabled')) {
 //                            $this->cpdlcService->sendMessage(author: DatalinkAuthorities::SYS, recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
 //                        }
-                        $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than ' . str(config('app.rcl_upper_limit') - 1) . ' minutes from now, come back when within ' . str(config('app.rcl_upper_limit') - 1) . ' minutes. If your entry is within ' . str(config('app.rcl_lower_limit' + 1)) . ' minutes, or you have already entered, request clearance via voice.');
+                        $lower = config('app.rcl_lower_limit') + 1;
+                        $upper = config('app.rcl_upper_limit') - 1;
+                        $validator->errors()->add('entry_time.range', 'You are either too early or too late to submit oceanic clearance. If you are entering the oceanic more than ' . $upper . ' minutes from now, come back when within ' . $upper . ' minutes. If your entry is within ' . $lower . ' minutes, or you have already entered, request clearance via voice.');
                     }
                 }
             }
