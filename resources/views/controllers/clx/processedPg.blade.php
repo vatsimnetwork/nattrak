@@ -2,9 +2,9 @@
 @section('page')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <div class="container">
-        <h4 class="font-display text-primary-emphasis">Pending RCL messages</h4>
+        <h4 class="font-display text-primary-emphasis">Processed messages</h4>
         <h5 class="uk-margin-remove-top">{{ $displayed ? 'Tracks ' . implode(", ", $displayed) : 'No tracks selected' }}</h5>
-        <form method="GET" action="{{ route('controllers.clx.pending') }}" class="border p-2 rounded" id="selectTracksForm">
+        <form method="GET" action="{{ route('controllers.clx.processed') }}" class="border p-2 rounded" id="selectTracksForm">
             <div class="mb-2" for="">Select tracks</div>
             <div class="d-flex flex-row justify-content-between align-items-center">
                 <div>
@@ -31,7 +31,7 @@
         </form>
         @if ($displayed)
             <div class="my-3">
-                <livewire:controllers.pg-pending-rcl-messages :tracks="$displayed"/>
+                <livewire:controllers.pg-clx-messages :tracks="$displayed"/>
             </div>
         @endif
     </div>

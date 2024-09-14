@@ -44,7 +44,7 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        return view('controllers.clx.processed', [
+        return view('controllers.clx.processedPg', [
             'displayed' => $request->get('display'),
             'tracks' => Track::active()->get(),
             '_pageTitle' => $request->get('display') ? 'Tracks '.implode(', ', $request->get('display')) : 'None selected',

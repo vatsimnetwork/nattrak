@@ -64,7 +64,7 @@ class MessageHistory extends Component
     {
         $this->clxMessages->add($data);
         $this->clxMessages = $this->clxMessages->sortByDesc('created_at');
-        $this->dispatch('clx-received', dl: 'Clearance received: '.$data['datalink_message'][0]);
+        $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: '.$data['datalink_message'][0]]);
     }
 
     public function addNewCpdlc($data)
@@ -72,7 +72,7 @@ class MessageHistory extends Component
         $this->cpdlcMessages->add($data);
         $this->cpdlcMessages = $this->cpdlcMessages->sortBy('created_at');
 
-        $this->dispatch('cpdlc-received', dl:  'Message received from '.$data['datalink_authority']['description']);
+        $this->dispatchBrowserEvent('cpdlc-received', ['dl' => 'Message received from '.$data['datalink_authority']['description']]);
     }
 
     /*public function pollForMessages()
@@ -84,7 +84,7 @@ class MessageHistory extends Component
                         if (! $this->clxMessages->contains('id', $clxMessage->id)) {
                             $this->clxMessages->add($clxMessage);
                             $this->clxMessages->sortByDesc('created_at');
-                            $this->dispatch('clx-received', ['dl' => 'Clearance received: '.$clxMessage->datalink_message[0]]);
+                            $this->dispatchBrowserEvent('clx-received', ['dl' => 'Clearance received: '.$clxMessage->datalink_message[0]]);
                         }
                     }
                 }
@@ -94,7 +94,7 @@ class MessageHistory extends Component
         $newCpdlcMessages = CpdlcMessage::where('created_at', '>', $this->lastPollTime)->where('pilot_id', Auth::id())->get();
         foreach ($newCpdlcMessages as $message) {
             $this->cpdlcMessages->add($message);
-            $this->dispatch('cpdlc-received', ['dl' => 'CPDLC message received: '.$message->free_text]);
+            $this->dispatchBrowserEvent('cpdlc-received', ['dl' => 'CPDLC message received: '.$message->free_text]);
         }
 
         $this->lastPollTime = now();
