@@ -4,7 +4,7 @@
             <div class="navbar-brand font-display" href="#">
                 @can('activeBoundaryController')
                     <span class="ml-2">Domestic</span>
-                @elsecan
+                @else
                     <span class="ml-2">{{ current_dl_authority() ?? 'Offline' }}</span>
                 @endcan
             </div>
