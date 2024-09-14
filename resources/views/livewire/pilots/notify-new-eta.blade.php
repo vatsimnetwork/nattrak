@@ -1,6 +1,6 @@
 <div>
     @if (!$reject)
-    <form wire:submit.prevent="submit">
+    <form wire:submit="submit">
         <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="form-floating">
@@ -24,7 +24,7 @@
         <div class="row gap-4 mb-4">
             <div class="col-md-6">
                 <div class="form-floating">
-                    <input value="{{ old('entry_time') }}" required type="number" class="form-control" name="entry_time" wire:model="entryTime" id="entry_time" placeholder="e.g. 1350">
+                    <input value="{{ old('entry_time') }}" required type="number" class="form-control" name="entry_time" wire:model.live="entryTime" id="entry_time" placeholder="e.g. 1350">
                     <label for="entry_time" class="uk-form-label">New estimated time of arrival for entry fix</label>
                 </div>
                 <div class="form-text">You can find this in your FMC, providing your simulator is set to real time.</div>

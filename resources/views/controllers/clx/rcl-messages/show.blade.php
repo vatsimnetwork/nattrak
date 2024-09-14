@@ -260,19 +260,19 @@
     </div>
     <script type="module">
         $("#atc_fl").change(function () {
-            Livewire.emit('levelChanged', this.value);
+            $wire.dispatch('levelChanged', { newLevel: this.value });
         });
 
         $('#entry_time_requirement').blur(function () {
-            Livewire.emit('timeChanged', this.value);
+            $wire.dispatch('timeChanged', { newTime: this.value });
         });
 
         $('#new_track_id').change(function () {
-            Livewire.emit('trackChanged', this.value);
+            $wire.dispatch('trackChanged', { newTrackId: this.track });
         });
 
         $('#new_random_routeing').blur(function () {
-            Livewire.emit('rrChanged', this.value);
-        })
+            $wire.dispatch('rrChanged', {newRouteing: this.value });
+        });
     </script>
 @endsection
