@@ -98,16 +98,12 @@
 <footer class="mt-5">
     <div class="container">
         <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="col-md-4 mb-0 text-body-secondary">A service of <a href="https://vatsim.net">VATSIM</a></p>
-
-            {{--                <p class="col-md-4 mb-0 text-center text-body-secondary">Version x</p>--}}
-
+            <p class="col-md-4 mb-0 text-body-secondary">A service of <a href="https://vatsim.net">VATSIM</a>. Copyright © 2024 VATSIM Inc.</p>
             <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="{{ route('tracks.index') }}"
-                                        class="nav-link px-2 text-body-secondary">Tracks</a></li>
+                <li class="nav-item"><a href="{{ route('tracks.index') }}" class="nav-link px-2 text-body-secondary">Tracks</a></li>
                 <li class="nav-item"><a href="{{ route('about') }}" class="nav-link px-2 text-body-secondary">About</a></li>
                 <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak" class="nav-link px-2 text-body-secondary">GitHub</a></li>
-                {{--                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Report Issue</a></li>--}}
+                <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak/issues/new" class="nav-link px-2 text-body-secondary">Report Issue</a></li>
             </ul>
         </div>
     </div>
