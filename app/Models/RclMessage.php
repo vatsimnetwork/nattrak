@@ -95,6 +95,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $re_request
  * @property-read string $route_identifier
  * @method static Builder|RclMessage whereReRequest($value)
+ * @property int $is_acknowledged
+ * @property string|null $acknowledged_at
+ * @method static Builder|RclMessage whereAcknowledgedAt($value)
+ * @method static Builder|RclMessage whereIsAcknowledged($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -131,7 +135,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at', 'is_acknowledged', 'acknowledged_at'
     ];
 
     /**
@@ -169,6 +173,24 @@ class RclMessage extends Model
     public function scopeCleared(Builder $query): Builder
     {
         return $query->whereNotNull('clx_message_id');
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeNotAcknowledged(Builder $query): Builder
+    {
+        return $query->whereNot('is_acknowledged');
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAcknowledged(Builder $query): Builder
+    {
+        return $query->where('is_acknowledged');
     }
 
     /**
