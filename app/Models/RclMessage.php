@@ -190,7 +190,7 @@ class RclMessage extends Model
      */
     public function scopeAcknowledged(Builder $query): Builder
     {
-        return $query->where('is_acknowledged');
+        return $query->where('is_acknowledged', true);
     }
 
     /**
