@@ -181,7 +181,7 @@ class RclMessage extends Model
      */
     public function scopeNotAcknowledged(Builder $query): Builder
     {
-        return $query->whereNot('is_acknowledged');
+        return $query->where('is_acknowledged', false);
     }
 
     /**
