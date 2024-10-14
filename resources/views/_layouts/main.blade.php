@@ -9,9 +9,9 @@
 </head>
 <body>
 <header id="header">
-    <div class="container">
+    <div class="">
         <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
+            <div class="container">
                 <a class="navbar-brand" href="{{ route('welcome') }}">
                     <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" alt="natTrak" class="img-fluid" style="max-height: 2.5em;">
                 </a>
@@ -70,44 +70,50 @@
                                 </li>
                             @endif
                         @endauth
-                        <li class="nav-item">
-                            <a href="{{ route('tracks.index') }}" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
-                                TMI {{ current_tmi() }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link" class="font-display">
-                                {{ now()->format('H:i') }} Z
-                            </span>
+                        <li class="nav-item d-flex flex-column text-center text-body">
+                            <div>
+                                <span>
+                                    TMI {{ current_tmi() }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>
+                                    {{ now()->format('H:i') }} Z
+                                </span>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </div>
-    @can('activePilot')
-        @include('pilots.nav')
-    @endcan
-    @canany(['activeBoundaryController', 'activeController'])
-        @include('controllers.nav')
-    @endcanany
 </header>
+@can('activePilot')
+    @canany(['activeBoundaryController', 'activeController'])
+    @else
+    @include('pilots.nav')
+    @endcanany
+@endcan
+@canany(['activeBoundaryController', 'activeController'])
+    @include('controllers.nav')
+@endcanany
 <main class="mt-4 mb-4">
     @yield('page')
 </main>
-<footer class="mt-5">
-    <div class="container">
-        <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="col-md-4 mb-0 text-body-secondary">A service of <a href="https://vatsim.net">VATSIM</a>. Copyright © 2024 VATSIM Inc.</p>
-            <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="{{ route('tracks.index') }}" class="nav-link px-2 text-body-secondary">Tracks</a></li>
-                <li class="nav-item"><a href="{{ route('about') }}" class="nav-link px-2 text-body-secondary">About</a></li>
-                <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak" class="nav-link px-2 text-body-secondary">GitHub</a></li>
-                <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak/issues/new" class="nav-link px-2 text-body-secondary">Report Issue</a></li>
-            </ul>
-        </div>
-    </div>
-</footer>
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0 text-body-secondary">© {{ date('Y') }} VATSIM, Inc.</p>
+
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <img src="{{ asset('images/VATSIM_Logo_Official_500px.png') }}" style="height: 50px;" alt="">
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="{{ route('about') }}" class="nav-link px-2 text-body-secondary">About</a></li>
+            <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak/issues/new" class="nav-link px-2 text-body-secondary">Report Issue <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03 9.28 7.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.75-3.75-1.543-1.543A.25.25 0 0 1 10.604 1Z"></path></svg></a></li>
+        </ul>
+    </footer>
+</div>
 @livewireScripts
 @if (Session::has('alert'))
     <script>

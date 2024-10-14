@@ -1,5 +1,5 @@
     <div class="container">
-    <nav class="navbar navbar-expand-lg p-2 rounded-3 my-2 bg-primary-subtle navbar-light">
+    <nav class="navbar navbar-expand-lg p-1 rounded-3 mt-3 bg-vatsim-indigo navbar-dark">
         <div class="container-fluid">
             <div class="navbar-brand font-display" href="#">
                 @can('activeBoundaryController')
@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav gap-2">
+                <ul class="navbar-nav gap-2 navbar-light">
                     <div class="vr text-dark mx-2 d-none d-lg-block"></div>
                     @can('activeController')
                         <li class="nav-item">
@@ -24,12 +24,13 @@
                         <li class="nav-item">
                             <a href="{{ route('controllers.clx.create') }}" class="nav-link {{ Request::is('controllers/clx/create' ? 'active' : '') }}">Create Manual Clearance</a>
                         </li>
-                    @endcan
-                    @can('activeBoundaryController')
                         <li class="nav-item">
                             <a href="{{ route('domestic.notify-new-eta-for-pilot') }}" class="nav-link">Notify New ETA for Pilot</a>
                         </li>
                     @endcan
+                    <li class="nav-item">
+                        <a href="{{ route('tracks.index') }}" class="nav-link">Tracks</a>
+                    </li>
                     <div class="vr text-dark mx-2 d-none d-lg-block"></div>
                 </ul>
             </div>
