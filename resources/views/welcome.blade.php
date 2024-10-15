@@ -1,6 +1,7 @@
 @extends('_layouts.main')
 @section('page')
     <div class="container">
+        @if (auth()->user()->settings()->get('user-mode') == \App\Enums\AccessLevelEnum::Pilot)
         <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg bg-primary mb-5">
             <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
                 <h2 class="font-display text-light">Request and receive your VATSIM oceanic clearance here</h2>
@@ -23,6 +24,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <p class="text-body-emphasis font-display fs-2">NOTAMs</p>
         <div class="accordion" id="notamsAccordion">
             @foreach($notams as $notam)
@@ -48,6 +50,9 @@
                     </div>
                 </div>
             @endforeach
+            @if ($notams->count() == 0)
+                <p>No NOTAMs.</p>
+            @endif
         </div>
         <p class="my-3">
             <a class="icon-link icon-link-hover" href="{{ route('notams.index') }}">

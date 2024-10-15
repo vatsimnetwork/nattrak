@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en" class="h-100" data-bs-theme="light">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
-    @livewireStyles
-    <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
-</head>
+@extends('_layouts.base')
+@section('layout')
 <body>
 <header id="header">
     <nav class="navbar navbar-expand-lg">
@@ -52,6 +45,9 @@
                                 {{ auth()->user()->full_name }} {{ auth()->user()->id }}
                             </a>
                             <ul class="dropdown-menu shadow">
+                                <p class="px-3 mb-0">Mode: {{ auth()->user()->settings()->get('user-mode')->name }}</p>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('auth.mode.select') }}">Switch mode</a></li>
                                 <li><a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Sign out</a></li>
                             </ul>
                         </li>
@@ -80,10 +76,7 @@
     </nav>
 </header>
 @can('activePilot')
-    @canany(['activeBoundaryController', 'activeController'])
-    @else
     @include('pilots.nav')
-    @endcanany
 @endcan
 @canany(['activeBoundaryController', 'activeController'])
     @include('controllers.nav')
@@ -96,15 +89,5 @@
     <br>
     Copyright © {{ date('Y') }} VATSIM, Inc.
 </footer>
-@livewireScripts
-@if (Session::has('alert'))
-    <script>
-        window.onload = (event) => {
-            Swal.fire(
-                    <?php echo(json_encode(Session::get('alert'))) ?>
-            )
-        };
-    </script>
-@endif
 </body>
-</html>
+@endsection

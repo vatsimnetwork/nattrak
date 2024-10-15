@@ -70,6 +70,9 @@ class VatsimDataService
         if (! auth()->check()) {
             return false;
         }
+        if (auth()->user()->access_level == AccessLevelEnum::Controller) {
+            return true;
+        }
         $networkData = $this->getNetworkData();
         if (! $networkData) {
             return false;
@@ -97,6 +100,9 @@ class VatsimDataService
     {
         if (! auth()->check()) {
             return false;
+        }
+        if (auth()->user()->access_level == AccessLevelEnum::Controller) {
+            return true;
         }
         $networkData = $this->getNetworkData();
         if (! $networkData) {

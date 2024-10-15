@@ -6,6 +6,7 @@ use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
 use App\Services\VatsimDataService;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Rawilk\Settings\Models\HasSettings;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -40,6 +41,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class VatsimAccount extends Authenticatable
 {
     use LogsActivity;
+    use HasSettings;
 
     /**
      * @var string[]
