@@ -123,9 +123,9 @@ class RclMessage extends Model
     public function prunable(): Builder
     {
         if ($this->clxMessages()->exists()) {
-            return static::where('created_at', '<=', now()->subHours(8);
+            return static::where('created_at', '<=', now()->subHours(8));
         } else {
-            return static::where('created_at', '<=', now()->subMinutes(90);
+            return static::where('created_at', '<=', now()->subMinutes(90));
         }
     }
 
