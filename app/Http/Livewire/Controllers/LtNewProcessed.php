@@ -63,7 +63,7 @@ class LtNewProcessed     extends DataTableComponent
             LinkColumn::make('View') // make() has no effect in this case but needs to be set anyway
             ->title(fn($row) => 'View ' . $row->callsign)
                 ->location(function($row) {
-                    return route('controllers.clx.show-rcl-message', [$row->id]);
+                    return route('controllers.clx.show-clx-message', [$row->id]);
                 })
                 ->attributes(function($row) {
                     return [
