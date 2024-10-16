@@ -138,16 +138,29 @@ class LtNewPending extends DataTableComponent
         ];
     }
 
-    public function deleteRow($id)
+    public array $bulkActions = [
+        'deleteSelected' => 'Delete'
+    ];
+
+    public function deleteRow($id, $redirect = true)
     {
         $rclMessage = RclMessage::whereId($id)->firstOrFail();
         $redirectToProcessed = $rclMessage->clxMessages->count() > 0;
         $rclMessage->delete();
         flashAlert(type: 'success', title: null, message: 'Request deleted.', toast: true, timer: true);
-        if ($redirectToProcessed) {
-            return redirect()->route('controllers.clx.processed');
-        } else {
-            return redirect()->route('controllers.clx.pending');
+        if ($redirect) {
+            if ($redirectToProcessed) {
+                return redirect()->route('controllers.clx.processed');
+            } else {
+                return redirect()->route('controllers.clx.pending');
+            }
+        }
+    }
+
+    public function deleteSelected()
+    {
+        foreach ($this->getSelected() as $item) {
+            $this->deleteRow($item, false);
         }
     }
 }

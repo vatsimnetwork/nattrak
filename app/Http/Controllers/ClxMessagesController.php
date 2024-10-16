@@ -106,6 +106,11 @@ class ClxMessagesController extends Controller
         ]);
     }
 
+    public function showClxMessage(ClxMessage $clxMessage)
+    {
+        return redirect()->route('controllers.clx.show-rcl-message', $clxMessage->rcl_message_id);
+    }
+
     /**
      * Transmits the CLX message to the pilot
      * POST /controllers/clx/transmit/{rclMessage:id}
