@@ -5,14 +5,17 @@ namespace App\Http\Livewire\Controllers;
 use App\Http\Controllers\ClxMessagesController;
 use App\Models\Track;
 use Illuminate\Database\Eloquent\Builder;
+use phpDocumentor\Reflection\Types\Boolean;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\RclMessage;
+use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\WireLinkColumn;
 use Rappasoft\LaravelLivewireTables\Views\Filters\MultiSelectDropdownFilter;
 use Rappasoft\LaravelLivewireTables\Views\Filters\MultiSelectFilter;
+use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 
 class LtNewPending extends DataTableComponent
 {
@@ -72,6 +75,7 @@ class LtNewPending extends DataTableComponent
                 ->attributes(fn($row) => [
                     'class' => 'btn btn-outline-danger btn-sm',
                 ]),
+            BooleanColumn::make('Auto Ackw', 'is_acknowledged')->yesNo(),
         ];
     }
 
@@ -115,6 +119,20 @@ class LtNewPending extends DataTableComponent
                     }
                     else {
                         $builder->whereIn('track_id', array_values($value));
+                    }
+                }),
+            SelectFilter::make('Acknowledged')
+                ->options([
+                    '' => 'All',
+                    'true' => 'Yes',
+                    'false' => 'No'
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    if ($value === 'true') {
+                        $builder->where('is_acknowledged', true);
+                    }
+                    else if ($value === 'false') {
+                        $builder->where('is_acknowledged', false);
                     }
                 })
         ];

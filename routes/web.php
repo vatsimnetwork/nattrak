@@ -89,6 +89,7 @@ Route::prefix('controllers')->name('controllers')->middleware('can:activeControl
         Route::get('/rcl-msg/{rclMessage:id}', 'showRclMessage')->name('.show-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/del', 'deleteRclMessage')->name('.delete-rcl-message');
         Route::post('/rcl-msg/{rclMessage:id}/revert-to-voice', 'revertToVoice')->name('.revert-to-voice');
+        Route::post('/rcl-msg/{rclMessage:id}/move-to-processed', 'moveToProcessed')->name('.move-to-processed');
     });
 });
 

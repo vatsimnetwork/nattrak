@@ -60,6 +60,9 @@ class RclMessagesController extends Controller
 
         // If RCL auto acknowledgement enabled, send CPDLC acknowledgement
         if (config('app.rcl_auto_acknowledgement_enabled')) {
+            $rclMessage->acknowledged_at = now();
+            $rclMessage->is_acknowledged = true;
+            $rclMessage->save();
             $this->cpdlcService->sendMessage(
                 author: DatalinkAuthorities::SYS,
                 recipient: $rclMessage->callsign,
