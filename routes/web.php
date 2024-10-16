@@ -34,6 +34,11 @@ Route::prefix('auth')->name('auth')->group(function () {
             return redirect()->route('welcome');
         });
     }
+
+    Route::prefix('mode')->name('.mode')->group(function () {
+        Route::view('/select', 'welcome-mode', ['_pageTitle' => 'Select Mode'])->name('.select');
+        Route::get('/select/{mode}', [VatsimAuthController::class, 'storeMode'])->name('.store');
+    });
 });
 
 Route::prefix('administration')->name('administration')->middleware('can:administrate')->group(function () {
@@ -96,11 +101,13 @@ Route::prefix('domestic')->name('domestic')->middleware('can:activeBoundaryContr
    })->name('.notify-new-eta-for-pilot');
 });
 
-Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->middleware('can:administrate')->group(function () {
+Route::prefix('notams')->name('notams')->controller(BulletinsController::class)->group(function () {
     Route::get('/', 'index')->name('.index');
-    Route::get('/create', 'create')->name('.create');
-    Route::post('/', 'store')->name('.store');
-    Route::delete('/{bulletin:id}', 'destroy')->name('.destroy');
+    Route::middleware('can:administrate')->group(function () {
+        Route::get('/create', 'create')->name('.create');
+        Route::post('/', 'store')->name('.store');
+        Route::delete('/{bulletin:id}', 'destroy')->name('.destroy');
+    });
 });
 
 Route::prefix('tracks')->name('tracks')->controller(TracksController::class)->group(function () {

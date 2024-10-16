@@ -46,6 +46,9 @@
                     </div>
                 </div>
             @endforeach
+            @if ($bulletins->count() == 0)
+                <p>No NOTAMs.</p>
+            @endif
         </div>
         <div style="margin-top: 20px;">
             {{ $bulletins->links() }}

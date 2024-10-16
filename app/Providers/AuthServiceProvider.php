@@ -39,19 +39,19 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('administrate', function (VatsimAccount $account) {
-            return $account->access_level == AccessLevelEnum::Administrator || $account->access_level == AccessLevelEnum::Root;
+            return $account->settings()->get('user-mode') == AccessLevelEnum::Administrator;
         });
 
         Gate::define('activePilot', function (VatsimAccount $account) use ($dataService) {
-            return $dataService->isActivePilot($account);
+            return $account->settings()->get('user-mode') == AccessLevelEnum::Pilot && $dataService->isActivePilot($account);
         });
 
         Gate::define('activeController', function (VatsimAccount $account) use ($dataService) {
-            return $account->access_level == AccessLevelEnum::Controller || $dataService->isActiveOceanicController($account);
+            return $account->settings()->get('user-mode') == AccessLevelEnum::Controller && $dataService->isActiveOceanicController($account);
         });
 
         Gate::define('activeBoundaryController', function (VatsimAccount $account) use ($dataService) {
-            return $account->access_level == AccessLevelEnum::Controller || $dataService->isActiveBoundaryDomesticController($account);
+            return $account->settings()->get('user-mode') == AccessLevelEnum::Controller && $dataService->isActiveBoundaryDomesticController($account);
         });
     }
 }
