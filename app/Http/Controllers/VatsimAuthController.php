@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\AccessLevelEnum;
 use App\Models\VatsimAccount;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -105,13 +104,5 @@ class VatsimAuthController extends Controller
         } else {
             return redirect()->route('welcome');
         }
-    }
-
-    public function storeMode(int $mode)
-    {
-        $modeEnum = AccessLevelEnum::from($mode);
-        auth()->user()->settings()->set('user-mode', $modeEnum);
-        flashAlert(type: 'success', title: 'Mode changed to ' . ucfirst($modeEnum->name), message: null, toast: true, timer: true);
-        return redirect()->route('welcome');
     }
 }
