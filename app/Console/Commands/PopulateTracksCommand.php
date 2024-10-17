@@ -6,6 +6,7 @@ use App\Models\Track;
 use App\Services\TracksService;
 use Exception;
 use Illuminate\Console\Command;
+use function Sentry\captureException;
 
 class PopulateTracksCommand extends Command
 {
@@ -21,6 +22,7 @@ class PopulateTracksCommand extends Command
             $tracks = $tracksService->getTracks();
             $this->line('Downloaded tracks.');
         } catch (Exception $e) {
+            captureException($e);
             $this->error('Could not download tracks.');
 
             return;

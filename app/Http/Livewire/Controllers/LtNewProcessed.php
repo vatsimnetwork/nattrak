@@ -34,6 +34,7 @@ class LtNewProcessed     extends DataTableComponent
         // })
         $this->setDefaultSort('request_time', 'asc');
         $this->setTrimSearchStringEnabled();
+        $this->setRefreshTime(10000);
     }
 
     public function columns(): array
