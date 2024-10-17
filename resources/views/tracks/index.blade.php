@@ -3,7 +3,11 @@
     <div class="container">
         <h2 class="fs-2 font-display text-primary-emphasis mb-4">Tracks</h2>
         <div class="alert alert-info">
-            <span>This page shows the tracks in use on natTrak. These tracks are sourced from the VATSIM Gander Oceanic tracks API. Active tracks are in use and valid for requesting clearances. Inactive tracks are no longer valid and cannot be requested, but remain visible for clearances that were on that track. Concorde tracks are based off historical data and are request-able by aircraft detected as Concorde only.</span>
+            This page shows the tracks in use on natTrak.
+            Active tracks are in use and valid for requesting clearances.
+            Inactive tracks are no longer valid and cannot be requested,
+            but remain visible for clearances that were on that track.
+            Concorde tracks are based off historical data and are only available to aircraft detected as Concorde.
         </div>
         <div class="vstack gap-4">
             <div>
