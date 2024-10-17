@@ -151,4 +151,21 @@
             </div>
         </form>
     </div>
+    <script type="module">
+        $("#flight_level").change(function () {
+            Livewire.dispatch('levelChanged', { newLevel: this.value });
+        });
+
+        $('#entry_time').blur(function () {
+            Livewire.dispatch('timeChanged', { newTime: this.value });
+        });
+
+        $('#track_id').change(function () {
+            Livewire.dispatch('trackChanged', { newTrackId: this.track });
+        });
+
+        $('#random_routeing').blur(function () {
+            Livewire.dispatch('rrChanged', { newRouteing: this.value });
+        });
+    </script>
 </div>
