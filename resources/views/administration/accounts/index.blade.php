@@ -1,12 +1,11 @@
 @extends('_layouts.main')
 @section('page')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <div class="container">
         <h2 class="fs-2 font-display text-primary-emphasis">Manage admin permissions</h2>
         <p class="text-secondary">
             <span class="fw-bold">Showing users with privileged access.</span> Showing users with controller access. Temporary controller access is also assigned when a user is logged onto an oceanic position. To add a user, use the form at the bottom of the page.
         </p>
-        <livewire:administration.administrator-permissions-table/>
+        <livewire:administration.administrators-table/>
         <div class="mt-4">
             <h5>Add privileged user</h5>
             <form action="{{ route('administration.accounts.add-access') }}" method="POST">
