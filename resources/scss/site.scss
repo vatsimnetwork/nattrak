@@ -17,7 +17,8 @@ $primary: #2b3890;
 }
 
 h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6, .font-display{
+.h1, .h2, .h3, .h4, .h5, .h6,
+.font-display {
     font-family: "Nunito", sans-serif;
 }
 
@@ -33,19 +34,15 @@ h1, h2, h3, h4, h5, h6,
 
     .dropdown-menu {
         --bs-dropdown-border-width: 0;
-        //--bs-dropdown-link-color: var(--bs-nav-link-color);
+        --bs-dropdown-link-color: var(--bs-nav-link-color);
         --bs-dropdown-link-hover-bg: transparent;
-        //--bs-dropdown-link-hover-color: var(--bs-link-color);
+        --bs-dropdown-link-hover-color: var(--bs-link-color);
         --bs-dropdown-item-padding-y: .5rem;
     }
 
     .dropdown-item {
         font-weight: 600;
     }
-}
-
-.navbar-nav.navbar-light {
-    --bs-nav-link-color: var(--bs-light);
 }
 
 .navbar {
