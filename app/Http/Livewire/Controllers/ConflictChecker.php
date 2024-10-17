@@ -10,22 +10,27 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class ConflictChecker extends Component
 {
+    #[Reactive]
     public $callsign;
 
     public $originalLevel;
 
+    #[Reactive]
     public $level;
 
     public $originalEntry;
 
+    #[Reactive]
     public $entry;
 
     public $originalTime;
 
+    #[Reactive]
     public $time;
 
     public $conflicts = [];

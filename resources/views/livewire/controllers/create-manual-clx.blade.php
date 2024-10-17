@@ -151,21 +151,4 @@
             </div>
         </form>
     </div>
-    <script type="module">
-        $("#atc_fl").change(function () {
-            $wire.dispatch('levelChanged', { newLevel: this.value });
-        });
-
-        $('#entry_time_requirement').blur(function () {
-            $wire.dispatch('timeChanged', { newTime: this.value });
-        });
-
-        $('#new_track_id').change(function () {
-            $wire.dispatch('trackChanged', { newTrackId: this.track });
-        });
-
-        $('#new_random_routeing').blur(function () {
-            $wire.dispatch('rrChanged', {newRouteing: this.value });
-        });
-    </script>
 </div>
