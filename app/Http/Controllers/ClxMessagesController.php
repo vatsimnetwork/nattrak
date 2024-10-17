@@ -44,7 +44,7 @@ class ClxMessagesController extends Controller
 
     public function getProcessed(Request $request)
     {
-        return view('controllers.clx.processedPg', [
+        return view('controllers.clx.processed', [
             'displayed' => $request->get('display'),
             'tracks' => Track::active()->get(),
             '_pageTitle' => $request->get('display') ? 'Tracks '.implode(', ', $request->get('display')) : 'None selected',
@@ -104,6 +104,11 @@ class ClxMessagesController extends Controller
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
             '_pageTitle' => $rclMessage->callsign,
         ]);
+    }
+
+    public function showClxMessage(ClxMessage $clxMessage)
+    {
+        return redirect()->route('controllers.clx.show-rcl-message', $clxMessage->rcl_message_id);
     }
 
     /**
@@ -285,6 +290,68 @@ class ClxMessagesController extends Controller
         );
 
         flashAlert(type: 'success', title: null, message: 'Revert to voice message sent. You can delete the request now.', toast: true, timer: true);
+
+        return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
+    }
+
+    public function moveToProcessed(Request $request, RclMessage $rclMessage)
+    {
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthorities::NAT;
+        $this->cpdlcService->sendMessage(
+            author: $datalinkAuthority,
+            recipient: $rclMessage->callsign,
+            recipientAccount: $rclMessage->vatsimAccount,
+            message: sprintf(RclResponsesEnum::AcknowledgeMoved->value, strtoupper($datalinkAuthority->description())),
+            caption: RclResponsesEnum::Acknowledge->text()
+        );
+
+        $clxMessage = new ClxMessage([
+            'vatsim_account_id' => $request->user()->id,
+            'rcl_message_id' => $rclMessage->id,
+            'flight_level' => $rclMessage->flight_level,
+            'upper_flight_level' => $rclMessage->upper_flight_level ? $rclMessage->upper_flight_level : null,
+            'mach' => $rclMessage->mach,
+            'entry_fix' => $rclMessage->entry_fix,
+            'entry_time_restriction' => null,
+            'raw_entry_time_restriction' => $rclMessage->entry_time,
+            'free_text' => "** AUTO ACKNOWLEDGE **",
+            'datalink_authority' => $datalinkAuthority,
+            'is_concorde' => $rclMessage->is_concorde,
+            'simple_datalink_message' => '** AUTO ACKNOWLEDGED REFER RCL REQUEST **',
+            'datalink_message' => ['** AUTO ACKNOWLEDGED REFER RCL REQUEST **'],
+        ]);
+
+        /**
+         * Assign track or RR
+         */
+        if ($rclMessage->track) {
+            $clxMessage->track_id = $rclMessage->track->id;
+            $clxMessage->random_routeing = null;
+        } elseif ($rclMessage->random_routeing) {
+            $clxMessage->random_routeing = $rclMessage->random_routeing;
+            $clxMessage->track_id = null;
+        }
+
+        /**
+         * Save
+         */
+        $clxMessage->save();
+
+        /**
+         * Assign Clx message to Rcl
+         */
+        $rclMessage->clx_message_id = $clxMessage->id;
+        $rclMessage->save();
+
+        //ClxIssuedEvent::dispatch($rclMessage->vatsimAccount, $clxMessage);
+
+        activity('datalink')
+            ->causedBy($clxMessage->vatsimAccount)
+            ->performedOn($rclMessage)
+            ->withProperties(['datalink' => $clxMessage->data_link_message])
+            ->log('CLX Message Transmitted By '.$clxMessage->datalink_authority->name);
+
+        flashAlert(type: 'success', title: null, message: 'Clearance moved.', toast: true, timer: true);
 
         return redirect()->route('controllers.clx.show-rcl-message', $rclMessage);
     }

@@ -20,7 +20,7 @@
     </div>
     <script>
         function showEmail() {
-            $("#a").html(window.atob("ZXN0YXRlcy5tZWFkb3dzMHQgYXQgaWNsb3VkIGRvdCBjb20="));
+            $("#a").html(window.atob("bGllc2VsLmRvd25lc0B2YXRzaW0ubmV0"));
         }
     </script>
 @endsection

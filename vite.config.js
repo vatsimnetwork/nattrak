@@ -10,7 +10,7 @@ export default defineConfig({
                 'resources/scss/site.scss',
                 'resources/css/datatables.css',
                 'resources/js/app.js',
-                'resources/js/alpine.js'
+                //'resources/js/alpine.js'
             ],
             refresh: true,
         }),

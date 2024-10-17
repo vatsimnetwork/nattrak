@@ -1,17 +1,16 @@
 <div class="container">
-    <nav class="navbar navbar-expand-lg p-2 rounded-3 my-2 border border-primary shadow-sm bg-primary navbar-dark">
+    <nav class="navbar navbar-expand-lg p-1 rounded-3 mt-3 bg-vatsim-indigo" data-bs-theme="dark">
         <div class="container-fluid">
-            <div class="navbar-brand font-display" href="#">
-                <i class="fa-solid fa-plane"></i>
-                <span class="ml-2">Pilots</span>
-            </div>
-            <button class="navbar-toggler navbar-dark btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fa-solid fa-chevron-down"></i>
+            <span class="navbar-brand">
+                Pilots
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pilot-nav" aria-controls="pilot-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="pilot-nav">
                 <ul class="navbar-nav gap-2">
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('pilots/message-history') ? 'active' : '' }}" aria-current="page" href="{{ route('pilots.message-history') }}">Messages</a>
+                        <a class="nav-link {{ Request::is('pilots/message-history') ? 'active' : '' }}" href="{{ route('pilots.message-history') }}">Messages</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('pilots/rcl*') ? 'active' : '' }}" href="{{ route('pilots.rcl.create') }}">Request Clearance</a>

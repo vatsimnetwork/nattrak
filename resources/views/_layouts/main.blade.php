@@ -3,114 +3,98 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/js/alpine.js', 'resources/css/datatables.css'])
+    @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
     @livewireStyles
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
 </head>
 <body>
 <header id="header">
-    <div class="container">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('welcome') }}">
-                    <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" alt="natTrak" class="img-fluid" style="max-height: 2.5em;">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authNav" aria-controls="authNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="authNav">
-                    <ul class="navbar-nav gap-2">
-                        @auth
-                            @can('administrate')
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                                        Admin
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="{{ route('administration.controllers') }}" class="dropdown-item">Controller permissions</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('administration.accounts') }}" class="dropdown-item">Admin permissions</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('administration.activity-log') }}" class="dropdown-item">Activity log</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('tracks.index') }}" class="dropdown-item">Tracks</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endcan
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('welcome') }}">
+                <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" alt="natTrak" height="40">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authNav" aria-controls="authNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="authNav">
+                <ul class="navbar-nav gap-2 ms-auto">
+                    @auth
+                        @can('administrate')
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {{ auth()->user()->full_name }} {{ auth()->user()->id }}
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Sign out</a></li>
+                                <ul class="dropdown-menu shadow">
+                                    <li>
+                                        <a href="{{ route('administration.controllers') }}" class="dropdown-item">Controller permissions</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('administration.accounts') }}" class="dropdown-item">Admin permissions</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('administration.activity-log') }}" class="dropdown-item">Activity log</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('tracks.index') }}" class="dropdown-item">Tracks</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('notams.index') }}" class="dropdown-item">NOTAMs</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
+                                    </li>
                                 </ul>
                             </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="btn btn-primary font-display" href="{{ route('auth.redirect') }}" role="button">
-                                    Sign In With VATSIM
-                                </a>
-                            </li>
-                            @if (config('app.env') == 'local')
-                                <li class="nav-item">
-                                    <a href="/auth/1234567" role="button" class="btn btn-outline-primary font-display">
-                                        Dev Account
-                                    </a>
-                                </li>
-                            @endif
-                        @endauth
+                        @endcan
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ auth()->user()->full_name }} {{ auth()->user()->id }}
+                            </a>
+                            <ul class="dropdown-menu shadow">
+                                <li><a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Sign out</a></li>
+                            </ul>
+                        </li>
+                    @else
                         <li class="nav-item">
-                            <a href="{{ route('tracks.index') }}" class="btn btn-outline-secondary font-display" style="cursor: pointer;">
-                                TMI {{ current_tmi() }}
+                            <a class="nav-link" href="{{ route('auth.redirect') }}">
+                                Sign in
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <span class="nav-link" class="font-display">
-                                {{ now()->format('H:i') }} Z
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+                        @if (config('app.env') == 'local')
+                            <li class="nav-item">
+                                <a href="/auth/1234567" class="nav-link">
+                                    Dev Account
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
+                </ul>
+                <span class="navbar-text">
+                    TMI {{ current_tmi() }}
+                    &middot;
+                    {{ now()->format('H:i') }} Z
+                </span>
             </div>
-        </nav>
-    </div>
-    @can('activePilot')
-        @include('pilots.nav')
-    @endcan
-    @canany(['activeBoundaryController', 'activeController'])
-        @include('controllers.nav')
-    @endcanany
+        </div>
+    </nav>
 </header>
-<main class="mt-4 mb-4">
+@can('activePilot')
+    @canany(['activeBoundaryController', 'activeController'])
+    @else
+    @include('pilots.nav')
+    @endcanany
+@endcan
+@canany(['activeBoundaryController', 'activeController'])
+    @include('controllers.nav')
+@endcanany
+<main class="my-4" role="main">
     @yield('page')
 </main>
-<footer class="mt-5">
-    <div class="container">
-        <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="col-md-4 mb-0 text-body-secondary">A service of <a href="https://vatsim.net">VATSIM</a></p>
-
-            {{--                <p class="col-md-4 mb-0 text-center text-body-secondary">Version x</p>--}}
-
-            <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="{{ route('tracks.index') }}"
-                                        class="nav-link px-2 text-body-secondary">Tracks</a></li>
-                <li class="nav-item"><a href="{{ route('about') }}" class="nav-link px-2 text-body-secondary">About</a></li>
-                <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak" class="nav-link px-2 text-body-secondary">GitHub</a></li>
-                {{--                    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Report Issue</a></li>--}}
-            </ul>
-        </div>
-    </div>
+<footer class="container py-3 my-4 border-top text-center text-muted small">
+    <a href="{{ route('about') }}">About natTrak</a>
+    <br>
+    Copyright © {{ date('Y') }} VATSIM, Inc.
 </footer>
 @livewireScripts
 @if (Session::has('alert'))

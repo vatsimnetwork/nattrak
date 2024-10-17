@@ -27,6 +27,9 @@
                     <span>This is a re-request.</span>
                 </div>
             @endif
+            @if ($message->is_acknowledged)
+                RCL has been auto acknowledged.
+            @endif
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
                     <p>Some input was incorrect.</p>
@@ -76,12 +79,12 @@
                                 <td>{{ $message->flight_level }}</td>
                             </tr>
                             <tr>
-                            @if ($message->is_concorde)
-                                <td>UFL</td>
-                                <td>{{ $message->upper_flight_level }}</td>
-                            @else
-                                <td>MFL</td>
-                                <td>{{ $message->max_flight_level ?? 'N/A' }}</td>
+                                @if ($message->is_concorde)
+                                    <td>UFL</td>
+                                    <td>{{ $message->upper_flight_level }}</td>
+                                @else
+                                    <td>MFL</td>
+                                    <td>{{ $message->max_flight_level ?? 'N/A' }}</td>
                                 @endif
                             </tr>
                             <tr>
@@ -135,8 +138,8 @@
                 </div>
                 <div class="col-md">
                     <div>
-                        <h5>Send clearance</h5>
                         <div>
+                            <h5 class="mt-2">Send clearance</h5>
                             <div class="row">
                                 <div class="col">
                                     <label class="form-label" for="">Datalink authority</label>
@@ -242,12 +245,23 @@
                         </div>
                     </div>
                     <div class="mt-3 d-grid gap-2">
-                        <button class="btn btn-success" onclick="" type="submit">Transmit {{ $message->clxMessages->count() > 0 ? 'Reclearance' : 'Clearance' }}</button>
+                        <button class="btn btn-success" onclick="" type="submit">Transmit {{ $message->clxMessages->count() > 0 || $message->is_acknowledged ? 'Reclearance' : 'Clearance' }}</button>
                     </div>
                 </div>
             </div>
         </form>
         <div class="d-flex gap-2" uk-grid>
+
+            @if ($message->is_acknowledged)
+                <div class="row">
+                    <div class="col">
+                        <form action="{{ route('controllers.clx.move-to-processed', $message) }}" method="post">
+                            @csrf
+                            <button class="btn btn-primary w-100 my-2" onclick="" type="submit">Move to Processed List</button>
+                        </form>
+                    </div>
+                </div>
+            @endif
             <form action="{{ route('controllers.clx.revert-to-voice', $message) }}" method="post">
                 @csrf
                 <button class="btn btn-sm btn-outline-secondary">Revert To Voice</button>
@@ -260,19 +274,19 @@
     </div>
     <script type="module">
         $("#atc_fl").change(function () {
-            Livewire.emit('levelChanged', this.value);
+            $wire.dispatch('levelChanged', { newLevel: this.value });
         });
 
         $('#entry_time_requirement').blur(function () {
-            Livewire.emit('timeChanged', this.value);
+            $wire.dispatch('timeChanged', { newTime: this.value });
         });
 
         $('#new_track_id').change(function () {
-            Livewire.emit('trackChanged', this.value);
+            $wire.dispatch('trackChanged', { newTrackId: this.track });
         });
 
         $('#new_random_routeing').blur(function () {
-            Livewire.emit('rrChanged', this.value);
-        })
+            $wire.dispatch('rrChanged', {newRouteing: this.value });
+        });
     </script>
 @endsection

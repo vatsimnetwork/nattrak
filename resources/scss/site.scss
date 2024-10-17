@@ -1,16 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i');
 
 $primary: #2b3890;
-$font-size-base: 0.9rem;
 // set changes
 @import "bootstrap";
 
-body {
-    --bs-font-sans-serif: 'Inter', sans-serif;
-    --bs-body-font-family: var(--bs-font-sans-serif);
+:root {
+    --vatsim-indigo: #2b3990;
 }
 
+:root,
+[data-bs-theme="light"] {
+    --bs-font-sans-serif: "Open Sans", sans-serif;
+    --bs-body-color: #444444;
+    --bs-link-color: #4154f1;
+    --bs-link-hover-color: #717ff5;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
 .font-display {
-    font-family: 'Montserrat';
-    font-weight: 600;
+    font-family: "Nunito", sans-serif;
+}
+
+.navbar-nav {
+    --bs-nav-link-font-weight: 700;
+    --bs-nav-link-color: var(--bs-link-color);
+    --bs-nav-link-hover-color: var(--bs-link-color);
+    --bs-nav-link-active-color: var(--bs-link-color);
+
+    @media (max-width: 991.98px) {
+        margin-top: 1rem;
+    }
+
+    .dropdown-menu {
+        --bs-dropdown-border-width: 0;
+        --bs-dropdown-link-color: var(--bs-nav-link-color);
+        --bs-dropdown-link-hover-bg: transparent;
+        --bs-dropdown-link-hover-color: var(--bs-link-color);
+        --bs-dropdown-item-padding-y: .5rem;
+    }
+
+    .dropdown-item {
+        font-weight: 600;
+    }
+}
+
+.navbar {
+    --bs-navbar-padding-y: 1.5rem;
+    --bs-navbar-brand-padding-y: 0;
+    --bs-navbar-nav-link-padding-x: 1rem;
+
+    font-family: "Nunito", sans-serif;
+
+    box-shadow: 0 2px 20px rgba(1, 41, 112, 0.1);
+}
+
+.text-vatsim-indigo {
+    color: var(--vatsim-indigo) !important;
+}
+
+.bg-vatsim-indigo {
+    background-color: var(--vatsim-indigo) !important;
 }

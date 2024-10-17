@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
@@ -91,6 +92,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage wherePreviousEntryTime($value)
  * @property \Illuminate\Support\Carbon|null $new_entry_time_notified_at
  * @method static Builder|RclMessage whereNewEntryTimeNotifiedAt($value)
+ * @property int $re_request
+ * @property-read string $route_identifier
+ * @method static Builder|RclMessage whereReRequest($value)
+ * @property int $is_acknowledged
+ * @property string|null $acknowledged_at
+ * @method static Builder|RclMessage whereAcknowledgedAt($value)
+ * @method static Builder|RclMessage whereIsAcknowledged($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -118,7 +126,11 @@ class RclMessage extends Model
      */
     public function prunable(): Builder
     {
-        return static::where('created_at', '<=', now()->subHours(24));
+        if ($this->clxMessages()->exists()) {
+            return static::where('created_at', '<=', now()->subHours(8));
+        } else {
+            return static::where('created_at', '<=', now()->subMinutes(90));
+        }
     }
 
     /**
@@ -127,7 +139,14 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at', 'is_acknowledged', 'acknowledged_at'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = [
+        'route_identifier'
     ];
 
     /**
@@ -158,6 +177,24 @@ class RclMessage extends Model
     public function scopeCleared(Builder $query): Builder
     {
         return $query->whereNotNull('clx_message_id');
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeNotAcknowledged(Builder $query): Builder
+    {
+        return $query->where('is_acknowledged', false);
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAcknowledged(Builder $query): Builder
+    {
+        return $query->where('is_acknowledged', true);
     }
 
     /**
@@ -247,5 +284,12 @@ class RclMessage extends Model
     public function editLockVatsimAccount()
     {
         return $this->belongsTo(VatsimAccount::class, 'edit_lock_vatsim_account_id');
+    }
+
+    protected function routeIdentifier(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->track ? $this->track->id : 'RR'
+        );
     }
 }
