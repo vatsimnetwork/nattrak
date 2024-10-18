@@ -80,10 +80,7 @@
     </nav>
 </header>
 @can('activePilot')
-    @canany(['activeBoundaryController', 'activeController'])
-    @else
     @include('pilots.nav')
-    @endcanany
 @endcan
 @canany(['activeBoundaryController', 'activeController'])
     @include('controllers.nav')
