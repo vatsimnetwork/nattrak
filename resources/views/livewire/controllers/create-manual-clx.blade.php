@@ -161,7 +161,7 @@
         });
 
         $('#track_id').change(function () {
-            Livewire.dispatch('trackChanged', { newTrackId: this.track });
+            Livewire.dispatch('trackChanged', { newTrackId: this.value });
         });
 
         $('#random_routeing').blur(function () {

@@ -282,7 +282,7 @@
         });
 
         $('#new_track_id').change(function () {
-            Livewire.dispatch('trackChanged', { newTrackId: this.track });
+            Livewire.dispatch('trackChanged', { newTrackId: this.value });
         });
 
         $('#new_random_routeing').blur(function () {
