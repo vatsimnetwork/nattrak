@@ -50,6 +50,7 @@ class LtNewPending extends DataTableComponent
             Column::make("Track")
                 ->label(function ($row, Column $column) {
                     $msg = RclMessage::whereId($row->id)->first();
+                    if ($msg == null) return "N/A";
                     return $msg->track ? $msg->track->identifier : 'RR';
                 }),
             Column::make("Flight level", "flight_level"),
