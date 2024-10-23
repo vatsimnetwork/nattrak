@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Enums\AccessLevelEnum;
 use App\Models\ClxMessage;
+use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Models\VatsimAccount;
 use App\Policies\ClxMessagePolicy;
+use App\Policies\DatalinkAuthorityPolicy;
 use App\Policies\RclMessagePolicy;
 use App\Services\VatsimDataService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -23,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         RclMessage::class => RclMessagePolicy::class,
         ClxMessage::class => ClxMessagePolicy::class,
+        DatalinkAuthority::class => DatalinkAuthorityPolicy::class,
     ];
 
     /**

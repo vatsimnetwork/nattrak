@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdministrationController;
 use App\Http\Controllers\BulletinsController;
 use App\Http\Controllers\ClxMessagesController;
+use App\Http\Controllers\DatalinkAuthorityController;
 use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\TracksController;
 use App\Http\Controllers\VatsimAuthController;
@@ -50,6 +51,8 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
 
     Route::get('/utility', [AdministrationController::class, 'utility'])->name('.utility');
     Route::post('/utility/clear', [AdministrationController::class, 'clearDb'])->name('.clear-db');
+
+    Route::get('/datalink-authorities', [DatalinkAuthorityController::class, 'index'])->name('.datalink-authorities');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {
