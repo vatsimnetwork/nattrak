@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\DatalinkAuthorities;
 use App\Enums\RclResponsesEnum;
+use App\Models\DatalinkAuthority;
 use App\Models\Track;
 use App\Services\CpdlcService;
 use Carbon\Carbon;
@@ -34,6 +35,7 @@ class RclMessageRequest extends FormRequest
             'tmi' => 'required|numeric|min:001|max:366',
             'random_routeing' => 'nullable|regex:/^[A-Z\/0-9 _]*[A-Z\/0-9][A-Z\/0-9 _]*$/',
             'is_concorde' => 'nullable',
+            'target_datalink_authority_id' => 'required',
         ];
     }
 
@@ -42,6 +44,7 @@ class RclMessageRequest extends FormRequest
         'flight_level.max' => 'You must file a valid flight level.',
         'max_flight_level.max' => 'You must file a valid maximum flight level.',
         'callsign.alpha_num' => 'Your callsign must be valid with no spaces as you would enter it into your pilot client. E.g. BAW14LA, AAL134',
+        'target_datalink_authority_id.required' => 'You must select the first oceanic sector you will be flying through.'
     ];
 
     public function prepareForValidation()
@@ -88,8 +91,8 @@ class RclMessageRequest extends FormRequest
                 /** Entry fix time requirement */
                 if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
-                        if (config('app.rcl_auto_acknowledgement_enabled')) {
-                            $this->cpdlcService->sendMessage(author: DatalinkAuthorities::SYS, recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
+                        if (config('app.rcl_auto_acknowledgement_enabled') && DatalinkAuthority::whereId($this->target_datalink_authority_id)->first()->auto_acknowledge_participant) {
+                            $this->cpdlcService->sendMessage(author: DatalinkAuthority::whereId('SYST')->first(), recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
                         }
                         $lower = config('app.rcl_lower_limit') + 1;
                         $upper = config('app.rcl_upper_limit') - 1;

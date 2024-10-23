@@ -6,6 +6,7 @@ use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\CpdlcMessage
@@ -33,6 +34,9 @@ use Illuminate\Database\Eloquent\Prunable;
  * @property string|null $caption
  * @method static Builder|CpdlcMessage whereCaption($value)
  * @method static Builder|CpdlcMessage whereMessage($value)
+ * @property string $datalink_authority_id
+ * @property-read \App\Models\DatalinkAuthority $datalinkAuthority
+ * @method static Builder|CpdlcMessage whereDatalinkAuthorityId($value)
  * @mixin \Eloquent
  */
 class CpdlcMessage extends Model
@@ -50,16 +54,20 @@ class CpdlcMessage extends Model
     }
 
     protected $fillable = [
-        'pilot_id', 'pilot_callsign', 'datalink_authority', 'message', 'caption',
+        'pilot_id', 'pilot_callsign', 'datalink_authority_id', 'message', 'caption',
     ];
 
-    protected $casts = [
-        'datalink_authority' => DatalinkAuthorities::class,
-    ];
+//    protected $casts = [
+//    ];
 
     public function pilot()
     {
         return $this->belongsTo(VatsimAccount::class, 'pilot_id');
+    }
+
+    public function datalinkAuthority(): BelongsTo
+    {
+        return $this->belongsTo(DatalinkAuthority::class);
     }
 
     public function toMessageHistoryFormat(): array
@@ -67,8 +75,8 @@ class CpdlcMessage extends Model
         return [
             'id' => $this->id,
             'datalink_authority' => [
-                'id' => $this->datalink_authority->name,
-                'description' => $this->datalink_authority->description(),
+                'id' => $this->datalinkAuthority->id,
+                'description' => $this->datalinkAuthority->name,
             ],
             'message' => $this->message,
             'caption' => $this->caption,

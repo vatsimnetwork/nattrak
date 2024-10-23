@@ -64,7 +64,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
-                        <label for="flight_level">Requested {{ $isConcorde ? 'lower block' : '' }} flight level (digits only, e.g. 340)</label>
+                        <label for="flight_level">Requested {{ $isConcorde ? 'lower block' : 'oceanic' }} flight level (digits only, e.g. 340)</label>
                     </div>
                     @if (config('app.ctp_info_enabled'))
                         <div class="form-text"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></div>
@@ -84,7 +84,7 @@
                     <div class="col-md-6">
                         <div class="form-floating">
                             <input type="text" class="form-control" name="max_flight_level" id="max_flight_level" placeholder="e.g. 390" maxlength="3" value="{{ old('max_flight_level') }}">
-                            <label for="max_flight_level" class="uk-form-label">Maximum flight level</label>
+                            <label for="max_flight_level" class="uk-form-label">Maximum oceanic flight level</label>
                         </div>
                         @if (config('app.ctp_info_enabled'))
                             <div class="form-text"><b>Ensure you enter your max flight level as per your booking!</b></div>
@@ -126,6 +126,17 @@
             </div>
             <h5 class="font-display">Oceanic entry</h5>
             <div class="row gap-4 mb-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="target_datalink_authority_id" name="target_datalink_authority_id">
+                            <option value="" selected>Select one...</option>
+                            @foreach($datalinkAuthorities as $key => $value)
+                                <option data-authority="{{ $key }}" value="{{ $key }}">{{ $key }} ({{ $value }})</option>
+                            @endforeach
+                        </select>
+                        <label for="track_id">First oceanic sector</label>
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input value="{{ old('entry_fix') }}" required type="text" class="form-control" name="entry_fix" id="entry_fix" placeholder="e.g. MALOT" maxlength="7" onblur="this.value = this.value.toUpperCase()">

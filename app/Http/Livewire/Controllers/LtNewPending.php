@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Controllers;
 
+use App\Enums\DatalinkAuthorities;
 use App\Http\Controllers\ClxMessagesController;
+use App\Models\DatalinkAuthority;
 use App\Models\Track;
 use Illuminate\Database\Eloquent\Builder;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -60,6 +62,10 @@ class LtNewPending extends DataTableComponent
                 ->sortable(),
             Column::make("Request time", "request_time")
                 ->sortable(),
+            Column::make("Target")
+                ->label(function ($row, Column $column) {
+                   return Rclmessage::whereId($row->id)->first()->targetDatalinkAuthority->id ?? 'N/A';
+                }),
             LinkColumn::make('View') // make() has no effect in this case but needs to be set anyway
             ->title(fn($row) => 'View ' . $row->callsign)
                 ->location(function($row) {
@@ -93,23 +99,27 @@ class LtNewPending extends DataTableComponent
 
     public function filters(): array
     {
-        $options = Track::query()
+        $trackOptions = Track::query()
             ->orderBy('identifier')
             ->get()
             ->keyBy('id')
             ->map(fn($track) => $track->identifier)
             ->toArray();
-        $options[100] = 'RR';
+        $trackOptions[100] = 'RR';
+        $authorityOptions = DatalinkAuthority::query()
+            ->orderBy('id')
+            ->get()
+            ->keyBy('id')
+            ->map(fn($authority) => $authority->name)
+            ->toArray();
         return [
-            MultiSelectDropdownFilter::make('Track')
-                ->options(
-                    $options
-                )
+            MultiSelectFilter::make('Track')
+                ->options($trackOptions)
                 ->setFirstOption('All')
-                ->filter(function(Builder $builder, array $value) use ($options) {
+                ->filter(function(Builder $builder, array $value) use ($trackOptions) {
                     $selections = [];
                     foreach ($value as $selection) {
-                        $selections[] = $options[$selection];
+                        $selections[] = $trackOptions[$selection];
                     }
                     if (in_array('RR', $selections)) {
                         unset($value[array_search('100', $value)]);
@@ -122,6 +132,12 @@ class LtNewPending extends DataTableComponent
                     else {
                         $builder->whereIn('track_id', array_values($value));
                     }
+                }),
+            MultiSelectFilter::make('Target OCA')
+                ->options($authorityOptions)
+                ->setFirstOption('All')
+                ->filter(function(Builder $builder, array $value) {
+                    $builder->whereIn('target_datalink_authority_id', array_values($value));
                 }),
             SelectFilter::make('Acknowledged')
                 ->options([

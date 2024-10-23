@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\DatalinkAuthorities;
 use App\Models\CpdlcMessage;
+use App\Models\DatalinkAuthority;
 use App\Models\VatsimAccount;
 
 class CpdlcService
@@ -15,10 +16,10 @@ class CpdlcService
      * @param  string  $message
      * @return CpdlcMessage
      */
-    public function sendMessage(DatalinkAuthorities $author, string $recipient, VatsimAccount $recipientAccount, string $message, ?string $caption): CpdlcMessage
+    public function sendMessage(DatalinkAuthority $author, string $recipient, VatsimAccount $recipientAccount, string $message, ?string $caption): CpdlcMessage
     {
         return CpdlcMessage::create([
-            'datalink_authority' => $author,
+            'datalink_authority_id' => $author->id,
             'pilot_id' => $recipientAccount->id,
             'pilot_callsign' => $recipient,
             'message' => $message,
