@@ -146,7 +146,7 @@
                                     <div class="">
                                         <select name="datalink_authority" id="" autocomplete="off" class="form-select form-select-sm">
                                             @foreach($dlAuthorities as $authority)
-                                                <option value="{{ $authority->value }}" @if($authority->value == $activeDlAuthority->value) selected="selected" @endif>{{ $authority->name }}</option>
+                                                <option value="{{ $authority->id }}" @if($authority->id == $activeDlAuthority->id) selected="selected" @endif>{{ $authority->id }}</option>
                                             @endforeach
                                         </select>
                                     </div>
