@@ -69,6 +69,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $cancellation_reason
  * @method static Builder|ClxMessage whereCancellationReason($value)
  * @method static Builder|ClxMessage whereCancelled($value)
+ * @property string $datalink_authority_id
+ * @property string|null $entry_time_restriction_interval_callsign
+ * @property int|null $entry_time_restriction_interval_minutes
+ * @property-read \App\Models\DatalinkAuthority $datalinkAuthority
+ * @method static Builder|ClxMessage whereDatalinkAuthorityId($value)
+ * @method static Builder|ClxMessage whereEntryTimeRestrictionIntervalCallsign($value)
+ * @method static Builder|ClxMessage whereEntryTimeRestrictionIntervalMinutes($value)
  * @mixin \Eloquent
  */
 class ClxMessage extends Model
@@ -92,7 +99,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde', 'cancelled', 'cancellation_reason'
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority_id', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde', 'cancelled', 'cancellation_reason'
     ];
 
     /**
@@ -111,7 +118,6 @@ class ClxMessage extends Model
      * @var string[]
      */
     protected $casts = [
-        'datalink_authority' => DatalinkAuthorities::class,
         'datalink_message' => 'array',
         'cancellation_reason' => ClxCancellationReasons::class,
     ];
@@ -124,6 +130,16 @@ class ClxMessage extends Model
     public function rclMessage(): BelongsTo
     {
         return $this->belongsTo(RclMessage::class);
+    }
+
+    /**
+     * Returns the authority that issued the message.
+     *
+     * @return BelongsTo
+     */
+    public function datalinkAuthority(): BelongsTo
+    {
+        return $this->belongsTo(DatalinkAuthority::class);
     }
 
     /**
@@ -184,8 +200,8 @@ class ClxMessage extends Model
             'simple_datalink_message' => $this->simple_datalink_message,
             'datalink_message' => $this->datalink_message,
             'datalink_authority' => [
-                'id' => $this->datalink_authority->name,
-                'description' => $this->datalink_authority->description(),
+                'id' => $this->datalinkAuthority->id,
+                'description' => $this->datalinkAuthority->name,
             ],
             'cancelled' => $this->cancelled,
             'cancellation_reason' => $this->cancellation_reason?->text(),

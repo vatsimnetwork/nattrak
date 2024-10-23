@@ -8,6 +8,7 @@ use App\Enums\RclResponsesEnum;
 use App\Events\ClxIssuedEvent;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
+use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\CpdlcService;
@@ -99,9 +100,9 @@ class ClxMessagesController extends Controller
 
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
-            'dlAuthorities' => DatalinkAuthorities::cases(),
+            'dlAuthorities' => DatalinkAuthority::whereSystem(false)->get(),
             'tracks' => $rclMessage->is_concorde ? Track::concorde()->get() : Track::active()->get(),
-            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::whereId('NAT')->first(),
             '_pageTitle' => $rclMessage->callsign,
         ]);
     }
@@ -160,7 +161,7 @@ class ClxMessagesController extends Controller
             'entry_time_restriction' => $entryRequirement ?? null,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
-            'datalink_authority' => DatalinkAuthorities::from($request->get('datalink_authority')),
+            'datalink_authority_id' => DatalinkAuthority::whereId($request->get('datalink_authority'))->first()->id,
             'is_concorde' => $rclMessage->is_concorde,
         ]);
 
@@ -179,7 +180,7 @@ class ClxMessagesController extends Controller
          * Create datalink messages
          */
         $array = [
-            'CLX '.now()->format('Hi dmy').' '.$clxMessage->datalink_authority->name.' CLRNCE '.$clxMessage->id,
+            'CLX '.now()->format('Hi dmy').' '.$clxMessage->datalinkAuthority->id.' CLRNCE '.$clxMessage->id,
             $rclMessage->callsign.' CLRD TO '.$rclMessage->destination.' VIA '.$clxMessage->entry_fix,
             $clxMessage->track ? 'NAT '.$clxMessage->track->identifier : 'RANDOM ROUTE',
             $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
@@ -213,9 +214,9 @@ class ClxMessagesController extends Controller
         $clxMessage->datalink_message = $array;
         $msg = '';
         if ($clxMessage->track) {
-            $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         } else {
-            $msg = "{$clxMessage->datalink_authority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         }
         // Only show crossing restriction if entry time =/= the restriction due to the bodge
         if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
@@ -259,7 +260,7 @@ class ClxMessagesController extends Controller
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log('CLX Message Transmitted By '.$clxMessage->datalink_authority->name);
+            ->log('CLX Message Transmitted By '.$clxMessage->datalinkAuthority->id);
 
         flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
 
@@ -280,7 +281,7 @@ class ClxMessagesController extends Controller
 
     public function revertToVoice(Request $request, RclMessage $rclMessage)
     {
-        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthorities::NAT;
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::whereId('NAT')->first();
         $this->cpdlcService->sendMessage(
             author: $datalinkAuthority,
             recipient: $rclMessage->callsign,
@@ -296,7 +297,7 @@ class ClxMessagesController extends Controller
 
     public function moveToProcessed(Request $request, RclMessage $rclMessage)
     {
-        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthorities::NAT;
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::whereId('NAT')->first();
         $this->cpdlcService->sendMessage(
             author: $datalinkAuthority,
             recipient: $rclMessage->callsign,
@@ -349,7 +350,7 @@ class ClxMessagesController extends Controller
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log('CLX Message Transmitted By '.$clxMessage->datalink_authority->name);
+            ->log('CLX Message Transmitted By '.$clxMessage->datalinkAuthority->name);
 
         flashAlert(type: 'success', title: null, message: 'Clearance moved.', toast: true, timer: true);
 
@@ -361,7 +362,7 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.rcl-messages.create', [
             'dlAuthorities' => DatalinkAuthorities::cases(),
             'tracks' => Track::where('active', true)->orWhere('concorde', true)->get(),
-            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthorities::NAT,
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::whereId('NAT')->first(),
             '_pageTitle' => 'Create Manual Clearance',
         ]);
     }

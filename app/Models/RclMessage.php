@@ -99,6 +99,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $acknowledged_at
  * @method static Builder|RclMessage whereAcknowledgedAt($value)
  * @method static Builder|RclMessage whereIsAcknowledged($value)
+ * @property string $target_datalink_authority
+ * @method static Builder|RclMessage acknowledged()
+ * @method static Builder|RclMessage notAcknowledged()
+ * @method static Builder|RclMessage whereTargetDatalinkAuthority($value)
  * @mixin \Eloquent
  */
 class RclMessage extends Model
