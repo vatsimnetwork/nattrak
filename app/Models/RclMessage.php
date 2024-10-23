@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DatalinkAuthorities;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -103,6 +104,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|RclMessage acknowledged()
  * @method static Builder|RclMessage notAcknowledged()
  * @method static Builder|RclMessage whereTargetDatalinkAuthority($value)
+ * @property string|null $datalink_authority_id
+ * @property string|null $target_datalink_authority_id
+ * @method static Builder|RclMessage whereDatalinkAuthorityId($value)
+ * @method static Builder|RclMessage whereTargetDatalinkAuthorityId($value)
+ * @property-read \App\Models\DatalinkAuthority|null $targetDatalinkAuthority
  * @mixin \Eloquent
  */
 class RclMessage extends Model
@@ -143,7 +149,7 @@ class RclMessage extends Model
      * @var string[]
      */
     protected $fillable = [
-        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at', 'is_acknowledged', 'acknowledged_at'
+        'vatsim_account_id', 'callsign', 'destination', 'flight_level', 'max_flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time', 'tmi', 'request_time', 'free_text', 'atc_rejected', 'upper_flight_level', 'is_concorde', 'previous_entry_time', 'new_entry_time', 'previous_clx_message', 'new_entry_time_notified_at', 'is_acknowledged', 'acknowledged_at', 'target_datalink_authority_id'
     ];
 
     /**
@@ -267,15 +273,15 @@ class RclMessage extends Model
     {
         if ($this->is_concorde) {
             if ($this->track) {
-                return "{$this->callsign} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} CONC TRACK {$this->track->identifier} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} CONC TRACK {$this->track->identifier} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
             } else {
-                return "{$this->callsign} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
             }
         } else {
             if ($this->track) {
-                return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
             } else {
-                return "{$this->callsign} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
             }
         }
     }
@@ -295,5 +301,10 @@ class RclMessage extends Model
         return Attribute::make(
             get: fn () => $this->track ? $this->track->id : 'RR'
         );
+    }
+
+    public function targetDatalinkAuthority(): BelongsTo
+    {
+        return $this->belongsTo(DatalinkAuthority::class, 'target_datalink_authority_id');
     }
 }

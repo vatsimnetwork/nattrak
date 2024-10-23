@@ -1,4 +1,4 @@
-@extends('_layouts.main')
+    @extends('_layouts.main')
 @section('page')
     <div class="container">
         <form method="POST" action="{{ route('controllers.clx.transmit', $message) }}">
@@ -99,6 +99,10 @@
                             <tr>
                                 <td>CID</td>
                                 <td>{{ $message->vatsimAccount->full_name }} {{ $message->vatsimAccount->id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Target OCA</td>
+                                <td>{{ $message->targetDatalinkAuthority->id }}</td>
                             </tr>
                             </tbody>
                         </table>
