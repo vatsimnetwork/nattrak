@@ -298,13 +298,13 @@ class ClxMessagesController extends Controller
     public function moveToProcessed(Request $request, RclMessage $rclMessage)
     {
         $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::whereId('NAT')->first();
-        $this->cpdlcService->sendMessage(
-            author: $datalinkAuthority,
-            recipient: $rclMessage->callsign,
-            recipientAccount: $rclMessage->vatsimAccount,
-            message: sprintf(RclResponsesEnum::AcknowledgeMoved->value, strtoupper($datalinkAuthority->description())),
-            caption: RclResponsesEnum::Acknowledge->text()
-        );
+//        $this->cpdlcService->sendMessage(
+//            author: $datalinkAuthority,
+//            recipient: $rclMessage->callsign,
+//            recipientAccount: $rclMessage->vatsimAccount,
+//            message: sprintf(RclResponsesEnum::AcknowledgeMoved->value, strtoupper($datalinkAuthority->description())),
+//            caption: RclResponsesEnum::Acknowledge->text()
+//        );
 
         $clxMessage = new ClxMessage([
             'vatsim_account_id' => $request->user()->id,
