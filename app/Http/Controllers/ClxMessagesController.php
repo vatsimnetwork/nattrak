@@ -102,7 +102,7 @@ class ClxMessagesController extends Controller
             'message' => $rclMessage,
             'dlAuthorities' => DatalinkAuthority::whereSystem(false)->get(),
             'tracks' => $rclMessage->is_concorde ? Track::concorde()->get() : Track::active()->get(),
-            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::whereId('NAT')->first(),
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::find('NAT'),
             '_pageTitle' => $rclMessage->callsign,
         ]);
     }
@@ -281,7 +281,7 @@ class ClxMessagesController extends Controller
 
     public function revertToVoice(Request $request, RclMessage $rclMessage)
     {
-        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::whereId('NAT')->first();
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::find('NAT');
         $this->cpdlcService->sendMessage(
             author: $datalinkAuthority,
             recipient: $rclMessage->callsign,
@@ -297,7 +297,7 @@ class ClxMessagesController extends Controller
 
     public function moveToProcessed(Request $request, RclMessage $rclMessage)
     {
-        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::whereId('NAT')->first();
+        $datalinkAuthority = $this->dataService->getActiveControllerAuthority ?? DatalinkAuthority::find('NAT');
 //        $this->cpdlcService->sendMessage(
 //            author: $datalinkAuthority,
 //            recipient: $rclMessage->callsign,
@@ -362,7 +362,7 @@ class ClxMessagesController extends Controller
         return view('controllers.clx.rcl-messages.create', [
             'dlAuthorities' => DatalinkAuthorities::cases(),
             'tracks' => Track::where('active', true)->orWhere('concorde', true)->get(),
-            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::whereId('NAT')->first(),
+            'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::find('NAT'),
             '_pageTitle' => 'Create Manual Clearance',
         ]);
     }

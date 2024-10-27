@@ -92,7 +92,7 @@ class RclMessageRequest extends FormRequest
                 if (config('app.rcl_time_constraints_enabled') && strlen($this->entry_time) == 4) {
                     if (!$this->entryTimeWithinRange($this->entry_time)) {
                         if (config('app.rcl_auto_acknowledgement_enabled') && DatalinkAuthority::whereId($this->target_datalink_authority_id)->first()->auto_acknowledge_participant) {
-                            $this->cpdlcService->sendMessage(author: DatalinkAuthority::whereId('SYST')->first(), recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
+                            $this->cpdlcService->sendMessage(author: DatalinkAuthority::find('SYST'), recipient: $this->callsign, recipientAccount: Auth::user(), message: sprintf(RclResponsesEnum::Contact->value, strtoupper(DatalinkAuthorities::OCEN->description())), caption: RclResponsesEnum::Contact->text());
                         }
                         $lower = config('app.rcl_lower_limit') + 1;
                         $upper = config('app.rcl_upper_limit') - 1;

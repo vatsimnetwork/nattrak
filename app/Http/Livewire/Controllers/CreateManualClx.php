@@ -38,7 +38,7 @@ class CreateManualClx extends Component
     public function mount()
     {
         $dataService = new VatsimDataService();
-        $this->activeDlAuthority = $dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::whereId('NAT')->first();
+        $this->activeDlAuthority = $dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::find('NAT');
         $this->tmi = current_tmi();
     }
     public function render()
