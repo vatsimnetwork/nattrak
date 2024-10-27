@@ -1,4 +1,4 @@
-    @extends('_layouts.main')
+@extends('_layouts.main')
 @section('page')
     <div class="container">
         <form method="POST" action="{{ route('controllers.clx.transmit', $message) }}">
