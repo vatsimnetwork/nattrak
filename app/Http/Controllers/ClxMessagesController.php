@@ -100,7 +100,7 @@ class ClxMessagesController extends Controller
 
         return view('controllers.clx.rcl-messages.show', [
             'message' => $rclMessage,
-            'dlAuthorities' => DatalinkAuthority::whereSystem(false)->get(),
+            'dlAuthorities' => DatalinkAuthority::notSystem()->get(),
             'tracks' => $rclMessage->is_concorde ? Track::concorde()->get() : Track::active()->get(),
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::find('NAT'),
             '_pageTitle' => $rclMessage->callsign,

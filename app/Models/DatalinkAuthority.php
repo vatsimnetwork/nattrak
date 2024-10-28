@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|DatalinkAuthority whereSystem($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DatalinkAuthority whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DatalinkAuthority whereValidRclTarget($value)
+ * @method static Builder|DatalinkAuthority notSystem()
  * @mixin \Eloquent
  */
 class DatalinkAuthority extends Model
@@ -46,4 +48,9 @@ class DatalinkAuthority extends Model
     ];
 
     protected $keyType = 'string';
+
+    public function scopeNotSystem(Builder $query): Builder
+    {
+        return $query->where('system', false);
+    }
 }
