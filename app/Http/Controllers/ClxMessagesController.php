@@ -161,7 +161,7 @@ class ClxMessagesController extends Controller
             'entry_time_restriction' => $entryRequirement ?? null,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
-            'datalink_authority_id' => DatalinkAuthority::whereId($request->get('datalink_authority'))->first()->id,
+            'datalink_authority_id' => $request->get('datalink_authority_id'),
             'is_concorde' => $rclMessage->is_concorde,
         ]);
 

@@ -19,13 +19,11 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('clx_messages', function (Blueprint $table) {
-            Schema::table('clx_messages', function (Blueprint $table) {
-                $table->renameColumn('datalink_authority_id', 'datalink_authority');
-            });
+            $table->renameColumn('datalink_authority_id', 'datalink_authority');
+        });
 
-            Schema::table('cpdlc_messages', function (Blueprint $table) {
-                $table->renameColumn('datalink_authority_id', 'datalink_authority');
-            });
+        Schema::table('cpdlc_messages', function (Blueprint $table) {
+            $table->renameColumn('datalink_authority_id', 'datalink_authority');
         });
     }
 };

@@ -21,15 +21,13 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('clx_messages', function (Blueprint $table) {
-            Schema::table('clx_messages', function (Blueprint $table) {
-                $table->dropForeign('clx_messages_datalink_authority_id_foreign');
-                $table->string('datalink_authority', 4)->default('NATX')->change();
-            });
+            $table->dropForeign('clx_messages_datalink_authority_id_foreign');
+            $table->string('datalink_authority', 4)->default('NATX')->change();
+        });
 
-            Schema::table('cpdlc_messages', function (Blueprint $table) {
-                $table->dropForeign('cpdlc_messages_datalink_authority_id_foreign');
-                $table->string('datalink_authority', 4)->default(null)->change();
-            });
+        Schema::table('cpdlc_messages', function (Blueprint $table) {
+            $table->dropForeign('cpdlc_messages_datalink_authority_id_foreign');
+            $table->string('datalink_authority', 4)->default(null)->change();
         });
     }
 };
