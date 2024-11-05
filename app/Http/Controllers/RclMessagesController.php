@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\DatalinkAuthorities;
 use App\Enums\RclResponsesEnum;
 use App\Http\Requests\RclMessageRequest;
+use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Services\CpdlcService;
@@ -39,6 +40,7 @@ class RclMessagesController extends Controller
             'flight_level' => substr($data?->flight_plan?->altitude, 0, 3) ?? null,
             'arrival_icao' => $data?->flight_plan?->arrival ?? null,
             'tracks' => Track::whereActive(true)->when($isConcorde, fn ($query) => $query->orWhere('concorde', true))->get(),
+            'datalinkAuthorities' => DatalinkAuthority::whereValidRclTarget(true)->pluck('name', 'id'),
             'isConcorde' => $isConcorde,
             '_pageTitle' => 'Request Oceanic Clearance',
         ]);
@@ -59,12 +61,12 @@ class RclMessagesController extends Controller
         $rclMessage->save();
 
         // If RCL auto acknowledgement enabled, send CPDLC acknowledgement
-        if (config('app.rcl_auto_acknowledgement_enabled')) {
+        if (config('app.rcl_auto_acknowledgement_enabled') && $rclMessage->targetDatalinkAuthority->auto_acknowledge_participant) {
             $rclMessage->acknowledged_at = now();
             $rclMessage->is_acknowledged = true;
             $rclMessage->save();
             $this->cpdlcService->sendMessage(
-                author: DatalinkAuthorities::SYS,
+                author: $rclMessage->targetDatalinkAuthority,
                 recipient: $rclMessage->callsign,
                 recipientAccount: $rclMessage->vatsimAccount,
                 message: sprintf(RclResponsesEnum::Acknowledge->value, strtoupper(DatalinkAuthorities::SYS->description())),

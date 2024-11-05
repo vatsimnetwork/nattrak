@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
 use App\Enums\DomesticAuthorities;
+use App\Models\DatalinkAuthority;
 use App\Models\VatsimAccount;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -128,12 +129,10 @@ class VatsimDataService
 
         $callsignPrefix = strtok($this->getActiveControllerData($vatsimAccount)->callsign, '_');
 
-        foreach (DatalinkAuthorities::cases() as $authority) {
-            if ($callsignPrefix == $authority->value) {
-                return $authority;
-            }
+        $authority = DatalinkAuthority::wherePrefix($callsignPrefix)->first();
+        if ($authority) {
+            return $authority;
         }
-
         return null;
     }
 
