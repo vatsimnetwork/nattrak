@@ -148,7 +148,7 @@ class ClxMessagesController extends Controller
             $entryRequirement = "{$request->get('entry_time_type')}{$request->get('entry_time_requirement')}";
         }
 
-        $datalinkAuthority = DatalinkAuthority::find($request->get('datalink_authority_id'));
+        $datalinkAuthority = DatalinkAuthority::find($request->get('datalink_authority'));
 
         /**
          * Create the message
