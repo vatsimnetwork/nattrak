@@ -148,6 +148,8 @@ class ClxMessagesController extends Controller
             $entryRequirement = "{$request->get('entry_time_type')}{$request->get('entry_time_requirement')}";
         }
 
+        $datalinkAuthority = DatalinkAuthority::find($request->get('datalink_authority_id'));
+
         /**
          * Create the message
          */
@@ -161,7 +163,7 @@ class ClxMessagesController extends Controller
             'entry_time_restriction' => $entryRequirement ?? null,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
-            'datalink_authority_id' => $request->get('datalink_authority_id'),
+            'datalink_authority_id' => $datalinkAuthority->id,
             'is_concorde' => $rclMessage->is_concorde,
         ]);
 
@@ -180,7 +182,7 @@ class ClxMessagesController extends Controller
          * Create datalink messages
          */
         $array = [
-            'CLX '.now()->format('Hi dmy').' '.$clxMessage->datalinkAuthority->id.' CLRNCE '.$clxMessage->id,
+            'CLX '.now()->format('Hi dmy').' '.$datalinkAuthority->id.' CLRNCE '.$clxMessage->id,
             $rclMessage->callsign.' CLRD TO '.$rclMessage->destination.' VIA '.$clxMessage->entry_fix,
             $clxMessage->track ? 'NAT '.$clxMessage->track->identifier : 'RANDOM ROUTE',
             $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
@@ -214,9 +216,9 @@ class ClxMessagesController extends Controller
         $clxMessage->datalink_message = $array;
         $msg = '';
         if ($clxMessage->track) {
-            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         } else {
-            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         }
         // Only show crossing restriction if entry time =/= the restriction due to the bodge
         if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
@@ -260,7 +262,7 @@ class ClxMessagesController extends Controller
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log('CLX Message Transmitted By '.$clxMessage->datalinkAuthority->id);
+            ->log('CLX Message Transmitted By '.$datalinkAuthority->id);
 
         flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
 
@@ -316,7 +318,7 @@ class ClxMessagesController extends Controller
             'entry_time_restriction' => null,
             'raw_entry_time_restriction' => $rclMessage->entry_time,
             'free_text' => "** AUTO ACKNOWLEDGE **",
-            'datalink_authority' => $datalinkAuthority,
+            'datalink_authority_id' => $datalinkAuthority->id,
             'is_concorde' => $rclMessage->is_concorde,
             'simple_datalink_message' => '** AUTO ACKNOWLEDGED REFER RCL REQUEST **',
             'datalink_message' => ['** AUTO ACKNOWLEDGED REFER RCL REQUEST **'],
@@ -350,7 +352,7 @@ class ClxMessagesController extends Controller
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log('CLX Message Transmitted By '.$clxMessage->datalinkAuthority->name);
+            ->log('CLX Message Transmitted By '.$datalinkAuthority->name);
 
         flashAlert(type: 'success', title: null, message: 'Clearance moved.', toast: true, timer: true);
 
