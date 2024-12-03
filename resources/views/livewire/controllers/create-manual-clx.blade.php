@@ -8,7 +8,7 @@
                 </a>
             </p>
             <p class="mb-4">
-                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
+                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.processed') }}">
                     <i class="fa-solid fa-chevron-left"></i>
                     Processed
                 </a>
