@@ -112,8 +112,6 @@ class CreateManualClx extends Component
 
         $pilotCid = system_user_id();
 
-        $datalinkAuthority = $this->activeDlAuthority;
-
         $dataService = new VatsimDataService();
         $flightPlan = $dataService->getVatsimAccountByCallsign($this->callsign);
         if ($flightPlan) {
@@ -142,7 +140,6 @@ class CreateManualClx extends Component
             'tmi' => current_tmi(),
             'free_text' => $this->freeText,
             'vatsim_account_id' => $pilotCid,
-            'target_datalink_authority_id' => $datalinkAuthority->id,
             'request_time' => now(),
             'atc_rejected' => false,
             'is_concorde' => false,
@@ -170,7 +167,7 @@ class CreateManualClx extends Component
             'entry_time_restriction' => null, //TODO implement
             'raw_entry_time_restriction' => $rclMessage->entry_time,
             'free_text' => '** RCL/CLX MANUALLY ENTERED BY ATC **',
-            'datalink_authority_id' => $datalinkAuthority->id,
+            'datalink_authority_id' => $this->activeDlAuthority->id,
             'is_concorde' => $rclMessage->is_concorde,
         ]);
         if ($rclMessage->trac) {
@@ -182,7 +179,7 @@ class CreateManualClx extends Component
         }
 
         $array = [
-            'CLX '.now()->format('Hi dmy').' '.$datalinkAuthority->id.' CLRNCE '.$clxMessage->id,
+            'CLX '.now()->format('Hi dmy').' '.$clxMessage->datalinkAuthority->id.' CLRNCE '.$clxMessage->id,
             $rclMessage->callsign.' CLRD TO '.$rclMessage->destination.' VIA '.$clxMessage->entry_fix,
             $clxMessage->track ? 'NAT '.$clxMessage->track->identifier : 'RANDOM ROUTE',
             $clxMessage->track ? $clxMessage->track->last_routeing : $clxMessage->random_routeing,
@@ -216,9 +213,9 @@ class CreateManualClx extends Component
         $clxMessage->datalink_message = $array;
         $msg = '';
         if ($clxMessage->track) {
-            $msg = "{$datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, track {$clxMessage->track->identifier}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         } else {
-            $msg = "{$datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
+            $msg = "{$clxMessage->datalinkAuthority->name} clears {$rclMessage->callsign} to {$rclMessage->destination} via {$clxMessage->entry_fix}, random routeing {$clxMessage->random_routeing}. From {$clxMessage->entry_fix} maintain Flight Level {$clxMessage->flight_level}, Mach {$clxMessage->mach}.";
         }
         // Only show crossing restriction if entry time =/= the restriction due to the bodge
         if ($clxMessage->entry_time_restriction && ($clxMessage->raw_entry_time_restriction != $rclMessage->entry_time)) {
@@ -262,7 +259,7 @@ class CreateManualClx extends Component
             ->causedBy($clxMessage->vatsimAccount)
             ->performedOn($rclMessage)
             ->withProperties(['datalink' => $clxMessage->data_link_message])
-            ->log('CLX Message Transmitted By '.$datalinkAuthority->name);
+            ->log('CLX Message Transmitted By '.$clxMessage->datalinkAuthority->name);
 
         flashAlert(type: 'success', title: null, message: 'Clearance transmitted.', toast: true, timer: true);
 
