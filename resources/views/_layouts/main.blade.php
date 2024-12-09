@@ -45,6 +45,10 @@
                                     <li>
                                         <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
                                     </li>
+                                    <li>
+                                        <a href="{{ route('administration.datalink-authorities') }}"
+                                           class="dropdown-item">Datalink Authorities</a>
+                                    </li>
                                 </ul>
                             </li>
                         @endcan

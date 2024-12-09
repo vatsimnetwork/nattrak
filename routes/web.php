@@ -50,6 +50,8 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
 
     Route::get('/utility', [AdministrationController::class, 'utility'])->name('.utility');
     Route::post('/utility/clear', [AdministrationController::class, 'clearDb'])->name('.clear-db');
+
+    Route::view('/datalink-authorities', 'administration.datalink-authorities')->name('.datalink-authorities');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {

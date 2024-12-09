@@ -79,7 +79,7 @@ class PluginDataController extends Controller
                 'controller' => [
                     'cid' => $msg->vatsimAccount->id ?? null,
                     'callsign' => $this->dataService->getActiveControllerData($msg->vatsimAccount)->callsign ?? null,
-                    'datalink_authority' => $msg->datalinkAuthority->name,
+                    'datalink_authority' => $msg->datalink_authority->name,
                 ],
                 'pilot' => [
                     'cid' => $msg->rclMessage->vatsim_account_id ?? null,

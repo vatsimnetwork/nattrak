@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\DatalinkAuthority;
+use App\Enums\DatalinkAuthorities;
 use App\Services\TracksService;
 use App\Services\VatsimDataService;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +23,7 @@ function current_tmi(): int|string
     });
 }
 
-function current_dl_authority(): ?DatalinkAuthority
+function current_dl_authority(): ?DatalinkAuthorities
 {
     $dataService = new VatsimDataService();
 

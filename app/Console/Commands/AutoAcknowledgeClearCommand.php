@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Enums\DatalinkAuthorities;
 use App\Enums\RclResponsesEnum;
 use App\Models\ClxMessage;
-use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Services\CpdlcService;
 use Illuminate\Console\Command;
@@ -24,7 +23,7 @@ class AutoAcknowledgeClearCommand extends Command
             if ($rclMessage->isEditLocked()) {
                 continue;
             }
-            $datalinkAuthority = DatalinkAuthority::find('SYST');
+            $datalinkAuthority = DatalinkAuthorities::SYS;
             $cpdlcService = new CpdlcService();
             $cpdlcService->sendMessage(
                 author: $datalinkAuthority,
@@ -44,7 +43,7 @@ class AutoAcknowledgeClearCommand extends Command
                 'entry_time_restriction' => null,
                 'raw_entry_time_restriction' => $rclMessage->entry_time,
                 'free_text' => "** AUTO ACKNOWLEDGE **",
-                'datalink_authority_id' => $datalinkAuthority->id,
+                'datalink_authority' => $datalinkAuthority,
                 'is_concorde' => $rclMessage->is_concorde,
                 'simple_datalink_message' => '** AUTO ACKNOWLEDGED REFER RCL REQUEST **',
                 'datalink_message' => ['** AUTO ACKNOWLEDGED REFER RCL REQUEST **'],
