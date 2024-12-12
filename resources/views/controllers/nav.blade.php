@@ -13,7 +13,7 @@
             </button>
             <div class="collapse navbar-collapse" id="controller-nav">
                 <ul class="navbar-nav gap-2">
-                    @can('activeController')
+                    @canany('activeController')
                         <li class="nav-item">
                             <a class="nav-link {{ Request::is('controllers/clx/pending') ? 'active' : '' }}" href="{{ route('controllers.clx.pending') }}">Pending Messages</a>
                         </li>

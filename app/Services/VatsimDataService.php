@@ -108,7 +108,9 @@ class VatsimDataService
         if ($online) {
             $authorities = [];
             foreach (DatalinkAuthority::all() as $authority) {
-                $authorities[] = $authority->prefix;
+                if (! $authority->valid_rcl_target) {
+                    $authorities[] = $authority->prefix;
+                }
             }
             $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
             if ((in_array(strtok($callsign, '_'), $authorities)) || (in_array(strtok($callsign, '-'), $authorities))) {
