@@ -24,7 +24,7 @@ class NotifyNewEtaForPilot extends Component
     {
         $this->domesticAuthorities = DomesticAuthorities::cases();
         $dataService = new VatsimDataService();
-        $this->activeDomesticAuthority = $dataService->getActiveDomesticControllerAuthorirty(Auth::user())->value ?? DomesticAuthorities::UNKN->value;
+        $this->activeDomesticAuthority = $dataService->getActiveDomesticControllerAuthority(Auth::user())->value ?? DomesticAuthorities::UNKN->value;
     }
 
     public function render()

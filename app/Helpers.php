@@ -23,7 +23,7 @@ function current_tmi(): int|string
     });
 }
 
-function current_dl_authority(): ?DatalinkAuthorities
+function current_dl_authority(): ?\App\Models\DatalinkAuthority
 {
     $dataService = new VatsimDataService();
 

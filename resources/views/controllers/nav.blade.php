@@ -5,7 +5,7 @@
                 @can('activeBoundaryController')
                     Domestic
                 @else
-                    {{ current_dl_authority() ?? 'Offline' }}
+                    {{ current_dl_authority()->prefix ?? 'Offline' }}
                 @endcan
             </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#controller-nav" aria-controls="controller-nav" aria-expanded="false" aria-label="Toggle navigation">
