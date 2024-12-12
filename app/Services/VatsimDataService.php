@@ -109,7 +109,7 @@ class VatsimDataService
             $authorities = [];
             foreach (DatalinkAuthority::all() as $authority) {
                 $authorities[] = $authority->prefix;
-            }}
+            }
             $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
             if ((in_array(strtok($callsign, '_'), $authorities)) || (in_array(strtok($callsign, '-'), $authorities))) {
                 return true;
