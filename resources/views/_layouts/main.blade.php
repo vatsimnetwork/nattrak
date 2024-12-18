@@ -6,6 +6,7 @@
     @vite(['resources/scss/bootstrap.scss', 'resources/scss/site.scss', 'resources/js/app.js', 'resources/css/datatables.css'])
     @livewireStyles
     <title>@if(isset($_pageTitle)) {{ $_pageTitle }} :: @endif natTrak :: VATSIM</title>
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
 <header id="header">
@@ -43,6 +44,10 @@
                                     </li>
                                     <li>
                                         <a href="{{ route('administration.utility') }}" class="dropdown-item">Utility</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('administration.datalink-authorities') }}"
+                                           class="dropdown-item">Datalink Authorities</a>
                                     </li>
                                 </ul>
                             </li>

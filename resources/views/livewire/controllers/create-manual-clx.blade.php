@@ -8,7 +8,7 @@
                 </a>
             </p>
             <p class="mb-4">
-                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
+                <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.processed') }}">
                     <i class="fa-solid fa-chevron-left"></i>
                     Processed
                 </a>
@@ -93,7 +93,7 @@
                                 <div class="fst-italic">or...</div>
                             </div>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-lg">
                             <div class="form-floating">
                                 <input wire:model.blur="randomRouteing" value="{{ old('random_routeing') }}" type="text" class="form-control" name="random_routeing" id="random_routeing" placeholder="e.g. GOMUP 59/20 59/30 58/40 56/50 JANJO" onblur="this.value = this.value.toUpperCase()">
                                 <label for="random_routeing">Random routeing</label>

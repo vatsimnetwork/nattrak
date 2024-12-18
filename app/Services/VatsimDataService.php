@@ -79,8 +79,8 @@ class VatsimDataService
 
         if ($online) {
             $authorities = [];
-            foreach (DatalinkAuthorities::cases() as $authority) {
-                $authorities[] = $authority->value;
+            foreach (DatalinkAuthority::all() as $authority) {
+                $authorities[] = $authority->prefix;
             }
 
             $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
@@ -107,8 +107,10 @@ class VatsimDataService
 
         if ($online) {
             $authorities = [];
-            foreach (DomesticAuthorities::cases() as $authority) {
-                $authorities[] = $authority->value;
+            foreach (DatalinkAuthority::all() as $authority) {
+                if (! $authority->valid_rcl_target) {
+                    $authorities[] = $authority->prefix;
+                }
             }
             $callsign = $this->getActiveControllerData($vatsimAccount)->callsign;
             if ((in_array(strtok($callsign, '_'), $authorities)) || (in_array(strtok($callsign, '-'), $authorities))) {
@@ -136,7 +138,7 @@ class VatsimDataService
         return null;
     }
 
-    public function getActiveDomesticControllerAuthorirty(VatsimAccount $vatsimAccount)
+    public function getActiveDomesticControllerAuthority(VatsimAccount $vatsimAccount)
     {
         if (! $this->isActiveBoundaryDomesticController($vatsimAccount) || $this->getActiveControllerData($vatsimAccount) == null) {
             return null;

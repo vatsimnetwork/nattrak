@@ -5,7 +5,7 @@
                 @can('activeBoundaryController')
                     Domestic
                 @else
-                    {{ current_dl_authority() ?? 'Offline' }}
+                    {{ current_dl_authority()->prefix ?? 'Offline' }}
                 @endcan
             </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#controller-nav" aria-controls="controller-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,7 +13,7 @@
             </button>
             <div class="collapse navbar-collapse" id="controller-nav">
                 <ul class="navbar-nav gap-2">
-                    @can('activeController')
+                    @canany('activeController')
                         <li class="nav-item">
                             <a class="nav-link {{ Request::is('controllers/clx/pending') ? 'active' : '' }}" href="{{ route('controllers.clx.pending') }}">Pending Messages</a>
                         </li>
