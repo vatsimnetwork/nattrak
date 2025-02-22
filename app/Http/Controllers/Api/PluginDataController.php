@@ -58,7 +58,7 @@ class PluginDataController extends Controller
         );
     }
 
-    public function detailedClxMessages(Request $request)
+    public function     detailedClxMessages(Request $request)
     {
         $trackToSortBy = null;
         $requestAsksForTrack = false;
@@ -99,7 +99,8 @@ class PluginDataController extends Controller
                 ],
                 'entry' => [
                     'fix' => $msg->entry_fix,
-                    'estimate' => self::formatTime($msg->rclMessage->entry_time),
+                    'cto' => $msg->cto_time,
+                    'estimate' => $msg->rclMessage->entry_time,
                     'restriction' => $msg->entry_time_restriction,
                 ],
                 'extra_info' => $msg->free_text,

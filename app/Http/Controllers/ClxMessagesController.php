@@ -145,7 +145,9 @@ class ClxMessagesController extends Controller
          */
         $entryRequirement = null;
         if ($request->filled('entry_time_type') && $request->filled('entry_time_requirement')) {
-            $entryRequirement = "{$request->get('entry_time_type')}{$request->get('entry_time_requirement')}";
+            if ($request->get('entry_time_type') != 'none') {
+                $entryRequirement = "{$request->get('entry_time_type')}{$request->get('entry_time_requirement')}";
+            }
         }
 
         $datalinkAuthority = DatalinkAuthority::find($request->get('datalink_authority'));
@@ -161,6 +163,7 @@ class ClxMessagesController extends Controller
             'mach' => $request->filled('atc_mach') ? $request->get('atc_mach') : $rclMessage->mach,
             'entry_fix' => $newEntryFix ?? $rclMessage->entry_fix,
             'entry_time_restriction' => $entryRequirement ?? null,
+            'cto_time' => $request->filled('cto_time') ? $request->get('cto_time') : $rclMessage->entry_time,
             'raw_entry_time_restriction' => $request->get('entry_time_requirement'),
             'free_text' => $isReclearance ? '** RECLEARANCE '.now()->format('Hi').' ** '.$request->get('free_text') : $request->get('free_text'),
             'datalink_authority_id' => $datalinkAuthority->id,

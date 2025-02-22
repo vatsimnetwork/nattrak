@@ -9,7 +9,7 @@
                     Pending
                 </a>
             </p>
-            <p class="mb-4">
+            <p class="mb-4">x
                 <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
                     <i class="fa-solid fa-chevron-left"></i>
                     Processed
@@ -195,10 +195,18 @@
                                 @endif
                                 <hr class="my-3">
                                 <div class="col">
-                                    <label class="form-label" for="">Entry time requirement for {{ $message->entry_fix }}</label>
+                                    <label for="" class="form-label">Entry CTO for {{ $message->entry_fix }}</label>
+                                    <div class="input-group">
+                                        <input required type="number" class="form-control" value="{{ $message->entry_time }}" name="cto_time" id="cto_time" placeholder="e.g. 1350">
+                                    </div>
+                                </div>
+                                <hr class="my-3">
+                                <div class="col">
+                                    <label class="form-label" for="">Entry restriction for {{ $message->entry_fix }}</label>
                                     <div class="input-group">
                                         <select class="form-select form-select-sm" autocomplete="off" name="entry_time_type" id="entry_time_type">
-                                            <option value="=" selected>At</option>
+                                            <option value="none" selected>None</option>
+                                            <option value="=">At</option>
                                             <option value="<">Before</option>
                                             <option value=">">After</option>
                                         </select>
@@ -281,9 +289,9 @@
             Livewire.dispatch('levelChanged', { newLevel: this.value });
         });
 
-        $('#entry_time_requirement').blur(function () {
-            Livewire.dispatch('timeChanged', { newTime: this.value });
-        });
+        // $('#entry_time_requirement').blur(function () {
+        //     Livewire.dispatch('timeChanged', { newTime: this.value });
+        // });
 
         $('#new_track_id').change(function () {
             Livewire.dispatch('trackChanged', { newTrackId: this.value });
@@ -291,6 +299,10 @@
 
         $('#new_random_routeing').blur(function () {
             Livewire.dispatch('rrChanged', { newRouteing: this.value });
+        });
+
+        $('#cto_time').blur(function () {
+            Livewire.dispatch('timeChanged', { newTime: this.value });
         });
     </script>
 @endsection
