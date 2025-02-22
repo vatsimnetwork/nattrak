@@ -4,7 +4,7 @@
         <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg bg-primary mb-5">
             <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
                 <h2 class="font-display text-light">Request and receive your VATSIM oceanic clearance here</h2>
-                <p class="lead text-light mt-5">Available for pilots in the Shanwick EGGX, Gander CZQX, Reykjavik BIRD, and Santa Maria LPPO OCAs.</p>
+                <p class="lead text-light mt-5">Available for pilots in the Shanwick EGGX, Gander CZQX, Reykjavik BIRD, Bodø Oceanic ENOB, Santa Maria LPPO OCAs.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-5">
                     @auth
                         @cannot('activePilot')
