@@ -9,7 +9,7 @@
                     Pending
                 </a>
             </p>
-            <p class="mb-4">x
+            <p class="mb-4">
                 <a class="icon-link icon-link-hover" href="{{ route('controllers.clx.pending') }}">
                     <i class="fa-solid fa-chevron-left"></i>
                     Processed
