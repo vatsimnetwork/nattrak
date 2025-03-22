@@ -19,7 +19,7 @@
                         <a class="nav-link {{ Request::is('pilots/notify-new-eta') ? 'active' : '' }}" href="{{ route('pilots.notify-new-eta') }}">Notify New Entry Time</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://knowledgebase.ganderoceanic.ca/1.0.3/pilots/nattrak/requesting-oceanic-clearance/">Help</a>
+                        <a class="nav-link" href="https://knowledgebase.ganderoceanic.ca/pilots/nattrak/requesting-oceanic-clearance/">Help</a>
                     </li>
                 </ul>
             </div>
