@@ -195,7 +195,7 @@
                                 @endif
                                 <hr class="my-3">
                                 <div class="col">
-                                    <label for="" class="form-label">Entry CTO for {{ $message->entry_fix }}</label>
+                                    <label for="cto_time" class="form-label">Entry CTO for {{ $message->entry_fix }}</label>
                                     <div class="input-group">
                                         <input required type="number" class="form-control" value="{{ $message->entry_time }}" name="cto_time" id="cto_time" placeholder="e.g. 1350">
                                     </div>
