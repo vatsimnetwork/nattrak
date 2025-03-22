@@ -202,7 +202,7 @@
                                 </div>
                                 <hr class="my-3">
                                 <div class="col">
-                                    <label class="form-label" for="">Entry restriction for {{ $message->entry_fix }}</label>
+                                    <label class="form-label" for="entry_time_type">Entry restriction for {{ $message->entry_fix }}</label>
                                     <div class="input-group">
                                         <select class="form-select form-select-sm" autocomplete="off" name="entry_time_type" id="entry_time_type">
                                             <option value="none" selected>None</option>
