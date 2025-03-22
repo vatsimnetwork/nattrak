@@ -195,14 +195,14 @@
                                 @endif
                                 <hr class="my-3">
                                 <div class="col">
-                                    <label for="" class="form-label">Entry CTO for {{ $message->entry_fix }}</label>
+                                    <label for="cto_time" class="form-label">Entry CTO for {{ $message->entry_fix }}</label>
                                     <div class="input-group">
                                         <input required type="number" class="form-control" value="{{ $message->entry_time }}" name="cto_time" id="cto_time" placeholder="e.g. 1350">
                                     </div>
                                 </div>
                                 <hr class="my-3">
                                 <div class="col">
-                                    <label class="form-label" for="">Entry restriction for {{ $message->entry_fix }}</label>
+                                    <label class="form-label" for="entry_time_type">Entry restriction for {{ $message->entry_fix }}</label>
                                     <div class="input-group">
                                         <select class="form-select form-select-sm" autocomplete="off" name="entry_time_type" id="entry_time_type">
                                             <option value="none" selected>None</option>
