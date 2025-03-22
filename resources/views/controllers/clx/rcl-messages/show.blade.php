@@ -289,10 +289,6 @@
             Livewire.dispatch('levelChanged', { newLevel: this.value });
         });
 
-        // $('#entry_time_requirement').blur(function () {
-        //     Livewire.dispatch('timeChanged', { newTime: this.value });
-        // });
-
         $('#new_track_id').change(function () {
             Livewire.dispatch('trackChanged', { newTrackId: this.value });
         });
