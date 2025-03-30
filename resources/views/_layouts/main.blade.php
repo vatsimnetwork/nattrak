@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100" data-bs-theme="light">
+<html lang="en" class="h-100" data-bs-theme="{{ session('darkMode', false) ? 'dark' : 'light' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -97,7 +97,8 @@
 </main>
 <footer class="container py-3 my-4 border-top text-center text-muted small">
     <a href="{{ route('about') }}">About natTrak</a><br/>
-    <a href="{{ route('toggleNavBarOnSession') }}">Toggle Navigation</a>
+    <a href="{{ route('toggleNavBarOnSession') }}">Toggle Navigation</a><br/>
+    <a href="{{ route('toggleDarkMode') }}">Toggle Dark Mode</a>
     <br>
     Copyright © {{ date('Y') }} VATSIM, Inc.
 </footer>

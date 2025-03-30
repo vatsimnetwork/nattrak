@@ -24,4 +24,11 @@ class ViewsController extends Controller
         flashAlert(type: 'success', title: null, message: 'Toggled!', toast: true, timer: true);
         return redirect()->back();
     }
+
+    public function toggleDarkMode()
+    {
+        session(['darkMode' => !session('darkMode', false)]);
+        flashAlert(type: 'success', title: null, message: 'Toggled!', toast: true, timer: true);
+        return redirect()->back();
+    }
 }

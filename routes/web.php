@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ViewsController::class, 'welcome'])->name('welcome');
 Route::view('/about', 'about')->name('about');
 Route::get('/utility/toggleNavBarOnSession', [ViewsController::class, 'toggleHideNavBarOnSession'])->name('toggleNavBarOnSession');
+Route::get('/utility/toggleDarkMode', [ViewsController::class, 'toggleDarkMode'])->name('toggleDarkMode');
+
 
 Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');
