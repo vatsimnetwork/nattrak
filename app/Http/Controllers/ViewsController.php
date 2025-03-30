@@ -17,4 +17,11 @@ class ViewsController extends Controller
             'notams' => $notams,
         ]);
     }
+
+    public function toggleHideNavBarOnSession()
+    {
+        session(['hideNavBarOnSession' => !session('hideNavBarOnSession', false)]);
+        flashAlert(type: 'success', title: null, message: 'Toggled!', toast: true, timer: true);
+        return redirect()->back();
+    }
 }

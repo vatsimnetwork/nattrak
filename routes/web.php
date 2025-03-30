@@ -6,6 +6,7 @@ use App\Http\Controllers\ClxMessagesController;
 use App\Http\Controllers\RclMessagesController;
 use App\Http\Controllers\TracksController;
 use App\Http\Controllers\VatsimAuthController;
+use App\Http\Controllers\ViewsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\ViewsController::class, 'welcome'])->name('welcome');
+Route::get('/', [ViewsController::class, 'welcome'])->name('welcome');
 Route::view('/about', 'about')->name('about');
+Route::get('/utility/toggleNavBarOnSession', [ViewsController::class, 'toggleHideNavBarOnSession'])->name('toggleNavBarOnSession');
 
 Route::prefix('auth')->name('auth')->group(function () {
     Route::get('/redirect', [VatsimAuthController::class, 'redirect'])->name('.redirect');
