@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
+@if (!Session::get('hideNavBarOnSession', false))
 <header id="header">
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -84,6 +85,7 @@
         </div>
     </nav>
 </header>
+@endif
 @can('activePilot')
     @include('pilots.nav')
 @endcan
@@ -94,7 +96,8 @@
     @yield('page')
 </main>
 <footer class="container py-3 my-4 border-top text-center text-muted small">
-    <a href="{{ route('about') }}">About natTrak</a>
+    <a href="{{ route('about') }}">About natTrak</a><br/>
+    <a href="{{ route('toggleNavBarOnSession') }}">Toggle Navigation</a>
     <br>
     Copyright © {{ date('Y') }} VATSIM, Inc.
 </footer>

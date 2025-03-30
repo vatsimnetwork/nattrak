@@ -98,8 +98,8 @@ class ClxMessagesController extends Controller
             $rclMessage->save();
         }
 
-        return view('controllers.clx.rcl-messages.show', [
-            'message' => $rclMessage,
+        return view('controllers.clx.rcl-messages.show-lw', [
+            'message' => $rclMessage->load('vatsimAccount', 'targetDatalinkAuthority', 'track'),
             'dlAuthorities' => DatalinkAuthority::notSystem()->get(),
             'tracks' => $rclMessage->is_concorde ? Track::concorde()->get() : Track::active()->get(),
             'activeDlAuthority' => $this->dataService->getActiveControllerAuthority(Auth::user()) ?? DatalinkAuthority::find('NAT'),

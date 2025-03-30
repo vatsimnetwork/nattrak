@@ -273,15 +273,15 @@ class RclMessage extends Model
     {
         if ($this->is_concorde) {
             if ($this->track) {
-                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} CONC TRACK {$this->track->identifier} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->id} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} CONC TRACK {$this->track->identifier} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
             } else {
-                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->id} REQ CONC CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} BLOCK LOWER F{$this->flight_level} UPPER F{$this->upper_flight_level} M{$this->mach} TMI {$this->tmi}";
             }
         } else {
             if ($this->track) {
-                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->id} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} TRACK {$this->track->identifier} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
             } else {
-                return "{$this->callsign} TO {$this->targetDatalinkAuthority->name} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
+                return "{$this->callsign} TO {$this->targetDatalinkAuthority->id} REQ CLRNCE {$this->destination} VIA {$this->entry_fix}/{$this->entry_time} {$this->random_routeing} F{$this->flight_level} M{$this->mach} MAX F{$this->max_flight_level} TMI {$this->tmi}";
             }
         }
     }
