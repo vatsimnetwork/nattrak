@@ -8,6 +8,7 @@ use App\Events\ClxIssuedEvent;
 use App\Exceptions\InvalidTrackException;
 use App\Http\Requests\ClxMessageRequest;
 use App\Models\ClxMessage;
+use App\Models\CtpBooking;
 use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Services\ClxMessageService;
@@ -37,6 +38,8 @@ class ViewRclMessage extends Component
 
     public $declineDeleteReason;
 
+    public ?CtpBooking $ctpBooking;
+
     protected function rules()
     {
         return [
@@ -56,6 +59,17 @@ class ViewRclMessage extends Component
         $this->atcCtoTime = $this->rclMessage->entry_time;
         $this->atcDatalinkAuthority = (new VatsimDataService())->getActiveControllerAuthority(Auth::user())->id ?? DatalinkAuthority::find('NAT')->id;
         $this->atcEntryTimeRequirement = $this->rclMessage->entry_time;
+
+        $this->ctpBooking = CtpBooking::whereCid($this->rclMessage->vatsimAccount->id)->first() ?? null;
+    }
+
+    public function ctpBookingCompliant(): bool
+    {
+        if (!$this->ctpBooking) { return false; }
+        if ($this->rclMessage->destination != $this->ctpBooking->destination) { return false; }
+        if ($this->rclMessage->flight_level != $this->ctpBooking->flight_level) { return false; }
+
+        return true;
     }
 
     public function render()

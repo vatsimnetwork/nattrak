@@ -85,6 +85,53 @@
                 </div>
             </div>
         </div>
+        @if (config('app.ctp_info_enabled'))
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            <span>CTP Booking</span>
+                        </button>
+                    </h2>
+                </div>
+                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        @if ($this->ctpBooking)
+                            <div class="alert alert-{{ $this->ctpBookingCompliant() ? 'info' : 'warning' }}" role="alert">
+                                <h4 class="alert-heading">CTP Booking Found - {{ $this->ctpBookingCompliant() ? 'Compliant' : 'Non-compliant' }}</h4>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="col-form-label-sm">Destination</label>
+                                        <input type="text" value="{{ $ctpBooking->destination }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="col-form-label-sm">Flight Level</label>
+                                        <input type="text" value="{{ $ctpBooking->flight_level }}" class="form-control-plaintext form-control-plaintext-sm " readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-form-label-sm">Route</label>
+                                        <input type="text" value="{{ $ctpBooking->track ?? $ctpBooking->random_routeing }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="col-form-label-sm">SELCAL</label>
+                                        <input type="text" value="{{ $ctpBooking->selcal }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">No CTP Booking Found</h4>
+                                <hr>
+                                <p class="mb-0">
+                                    Issue clearance below FL280 and free text advising to monitor UNICOM for duration of crossing
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button {{ $rclMessage->clxMessages->isNotEmpty() ? 'collapsed' : ''}}" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
