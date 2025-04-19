@@ -54,8 +54,11 @@ Route::prefix('administration')->name('administration')->middleware('can:adminis
 
     Route::get('/utility', [AdministrationController::class, 'utility'])->name('.utility');
     Route::post('/utility/clear', [AdministrationController::class, 'clearDb'])->name('.clear-db');
+    Route::post('/utility/clear-ctp', [AdministrationController::class, 'clearCtpBookings'])->name('.clear-ctp');
+    Route::post('/utility/populate-ctp', [AdministrationController::class, 'populateCtpBookings'])->name('.populate-ctp');
 
     Route::view('/datalink-authorities', 'administration.datalink-authorities')->name('.datalink-authorities');
+    Route::view('/ctp-bookings', 'administration.ctp-bookings')->name('.ctp-bookings');
 });
 
 Route::prefix('pilots')->name('pilots')->middleware('can:activePilot')->group(function () {

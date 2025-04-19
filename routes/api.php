@@ -25,3 +25,9 @@ Route::get('/plugins-rcl', [PluginDataController::class, 'allRclMessages']);
 Route::get('/clx-messages', [PluginDataController::class, 'detailedClxMessages']);
 
 Route::get('/tracks', [PluginDataController::class, 'getTracks']);
+
+if (config('app.debug')) {
+    Route::get('/ctp-bookings', function () {
+       return \App\Models\CtpBooking::all();
+    });
+}
