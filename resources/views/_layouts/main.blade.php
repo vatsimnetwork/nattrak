@@ -50,6 +50,9 @@
                                         <a href="{{ route('administration.datalink-authorities') }}"
                                            class="dropdown-item">Datalink Authorities</a>
                                     </li>
+                                    <li>
+                                        <a href="{{ route('administration.ctp-bookings') }}" class="dropdown-item">CTP Bookings</a>
+                                    </li>
                                 </ul>
                             </li>
                         @endcan
