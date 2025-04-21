@@ -31,7 +31,7 @@ class PluginDataController extends Controller
         return Cache::remember(
             'rcl-messages:'.($track->id ?? 'all'),
             60,
-            fn () => RclMessage::with(['clxMessages', 'track'])
+            fn () => RclMessage::with(['clxMessages', 'track', 'latestClxMessage'])
                 ->when($track, fn (Builder $q) => $q->whereBelongsTo($track))
                 ->get()
                 ->map(self::serializeRclMessage(...))
@@ -78,8 +78,8 @@ class PluginDataController extends Controller
                 'time' => $msg->created_at,
                 'controller' => [
                     'cid' => $msg->vatsimAccount->id ?? null,
-                    'callsign' => $this->dataService->getActiveControllerData($msg->vatsimAccount)->callsign ?? null,
-                    'datalink_authority' => $msg->datalinkAuthority->name,
+                    'callsign' => $msg->datalinkAuthority->id,
+                    'datalink_authority' => $msg->datalinkAuthority->id,
                 ],
                 'pilot' => [
                     'cid' => $msg->rclMessage->vatsim_account_id ?? null,
@@ -124,12 +124,12 @@ class PluginDataController extends Controller
         return [
             'callsign' => $msg->callsign,
             'status' => $msg->clxMessages->count() ? 'CLEARED' : 'PENDING',
-            'nat' => $msg->track->identifier ?? 'RR',
-            'fix' => $msg->entry_fix,
-            'level' => $msg->flight_level,
+            'nat' => $msg->latestClxMessage ? ($msg->latestClxMessage->track->identifer ?? 'RR') : $msg->track->identifier ?? 'RR',
+            'fix' => $msg->latestClxMessage ? $msg->latestClxMessage->entry_fix : $msg->entry_fix,
+            'level' => $msg->latestClxMessage ? $msg->latestClxMessage->flight_level : $msg->flight_level,
             'mach' => '0.'.substr($msg->mach, 1),
-            'estimating_time' => self::formatTime($msg->entry_time),
-            'clearance_issued' => $msg->clxMessages->first()?->created_at,
+            'estimating_time' => $msg->latestClxMessage ? self::formatTime($msg->latestClxMessage->cto_time) : self::formatTime($msg->entry_time),
+            'clearance_issued' => $msg->latestClxMessage?->created_at,
             'extra_info' => $msg->free_text,
         ];
     }
