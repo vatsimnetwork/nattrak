@@ -97,14 +97,14 @@ class ViewRclMessage extends Component
         $service = new ClxMessageService();
 
         $isReclearance = $this->rclMessage->clxMessages->isNotEmpty();
-        $formattedEntryTimeAndFix = $service->formatEntryTimeRequirement(entryTimeType: $this->atcEntryTimeType, entryTimeRequirement: $this->atcEntryTimeRequirement);
+        $formattedEntryTimeAndFix = $this->atcEntryTimeType ? $service->formatEntryTimeRequirement(entryTimeType: $this->atcEntryTimeType, entryTimeRequirement: $this->atcEntryTimeRequirement) : null;
 
         $newTrackAndEntryFix = null;
         if ($this->atcNewTrack != null || $this->atcNewRandomRouteing != null) {
             $newTrackAndEntryFix = $service->getNewEntryTixAndOrTrack($this->atcNewTrack, $this->atcNewRandomRouteing);
         }
 
-        $clxToOverride = $this->rclMessage->latestClxMessage->id;
+        $clxToOverride = $this->rclMessage->latestClxMessage?->id;
 
         $clxMessage = new ClxMessage([
             'vatsim_account_id' => Auth::id(),
@@ -112,7 +112,7 @@ class ViewRclMessage extends Component
             'flight_level' => $this->atcFlightLevel ?? $this->rclMessage->flight_level,
             'upper_flight_level' => $this->rclMessage->upper_flight_level ? ($this->atcUpperFlightLevel ?? $this->rclMessage->upper_flight_level) : null,
             'mach' => $this->atcMach ?? $this->rclMessage->mach,
-            'entry_fix' => $newTrackAndEntryFix ? $newTrackAndEntryFix['newEntryFix'] : $this->rclMessage->entry_fix,
+            'entry_fix' => strtoupper($newTrackAndEntryFix ? $newTrackAndEntryFix['newEntryFix'] : $this->rclMessage->entry_fix),
             'entry_time_restriction' => $formattedEntryTimeAndFix ?? null,
             'cto_time' => $this->atcCtoTime ?? $this->rclMessage->entry_time,
             'raw_entry_time_restriction' => $this->atcEntryTimeRequirement,
@@ -121,12 +121,12 @@ class ViewRclMessage extends Component
             'is_concorde' => $this->rclMessage->is_concorde,
         ]);
 
-        if ($this->rclMessage->track || $this->atcNewTrack) {
-            $clxMessage->track_id = $this->atcNewTrack ?? $this->rclMessage->track_id;
+        if ($this->atcNewTrack) {
+            $clxMessage->track_id = $this->atcNewTrack;
             $clxMessage->random_routeing = null;
         }
-        elseif ($this->rclMessage->random_routeing || $this->atcNewRandomRouteing) {
-            $clxMessage->random_routeing = $this->atcNewRandomRouteing ?? $this->rclMessage->random_routeing;
+        elseif ($this->atcNewRandomRouteing) {
+            $clxMessage->random_routeing = strtoupper($this->atcNewRandomRouteing);
             $clxMessage->track_id = null;
         }
 

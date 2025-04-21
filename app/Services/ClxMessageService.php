@@ -11,11 +11,11 @@ use App\Models\Track;
 
 class ClxMessageService
 {
-    protected CpdlcService $cpdlcService;
+    private CpdlcService $cpdlcService;
 
-    public function __construct(CpdlcService $cpdlcService)
+    public function __construct()
     {
-        $this->cpdlcService = $cpdlcService;
+        $this->cpdlcService = new CpdlcService();
     }
 
     /**
