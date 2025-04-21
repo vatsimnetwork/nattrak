@@ -11,9 +11,11 @@ use App\Models\Track;
 
 class ClxMessageService
 {
-    public function test()
+    protected CpdlcService $cpdlcService;
+
+    public function __construct(CpdlcService $cpdlcService)
     {
-        return 'test';
+        $this->cpdlcService = $cpdlcService;
     }
 
     /**
@@ -125,12 +127,11 @@ class ClxMessageService
     public function moveAutoAcknowledgedRclToProcessedList(RclMessage $rclMessage)
     {
         // Don't interfere with clearances being edited
-//        if ($rclMessage->isEditLocked()) {
-//            return;
-//        }
+        if ($rclMessage->isEditLocked()) {
+            return;
+        }
         $datalinkAuthority = DatalinkAuthority::find('SYST');
-        $cpdlcService = new CpdlcService();
-        $cpdlcService->sendMessage(
+        $this->cpdlcService->sendMessage(
             author: $datalinkAuthority,
             recipient: $rclMessage->callsign,
             recipientAccount: $rclMessage->vatsimAccount,
