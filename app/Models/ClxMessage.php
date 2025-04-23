@@ -76,6 +76,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|ClxMessage whereDatalinkAuthorityId($value)
  * @method static Builder|ClxMessage whereEntryTimeRestrictionIntervalCallsign($value)
  * @method static Builder|ClxMessage whereEntryTimeRestrictionIntervalMinutes($value)
+ * @property string|null $cto_time
+ * @method static Builder|ClxMessage whereCtoTime($value)
  * @mixin \Eloquent
  */
 class ClxMessage extends Model
@@ -99,7 +101,7 @@ class ClxMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'entry_time_restriction', 'free_text', 'datalink_authority_id', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde', 'cancelled', 'cancellation_reason'
+        'vatsim_account_id', 'rcl_message_id', 'flight_level', 'mach', 'track_id', 'random_routeing', 'entry_fix', 'cto_time', 'entry_time_restriction', 'free_text', 'datalink_authority_id', 'simple_datalink_message', 'datalink_message', 'upper_flight_level', 'raw_entry_time_restriction', 'overwritten_by_clx_message_id', 'overwritten', 'is_concorde', 'cancelled', 'cancellation_reason'
     ];
 
     /**

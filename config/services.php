@@ -37,6 +37,9 @@ return [
             'secret' => env('VATSIM_SECRET'),
             'endpoint' => env('VATSIM_ENDPOINT'),
         ],
+        'ctp' => [
+            'bookings_endpoint' => env('CTP_BOOKINGS_ENDPOINT'),
+        ]
     ],
 
     'tracks' => [

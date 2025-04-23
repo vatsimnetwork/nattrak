@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100" data-bs-theme="light">
+<html lang="en" class="h-100" data-bs-theme="{{ session('darkMode', false) ? 'dark' : 'light' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
+@if (!Session::get('hideNavBarOnSession', false))
 <header id="header">
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -49,6 +50,9 @@
                                         <a href="{{ route('administration.datalink-authorities') }}"
                                            class="dropdown-item">Datalink Authorities</a>
                                     </li>
+                                    <li>
+                                        <a href="{{ route('administration.ctp-bookings') }}" class="dropdown-item">CTP Bookings</a>
+                                    </li>
                                 </ul>
                             </li>
                         @endcan
@@ -84,6 +88,7 @@
         </div>
     </nav>
 </header>
+@endif
 @can('activePilot')
     @include('pilots.nav')
 @endcan
@@ -94,7 +99,9 @@
     @yield('page')
 </main>
 <footer class="container py-3 my-4 border-top text-center text-muted small">
-    <a href="{{ route('about') }}">About natTrak</a>
+    <a href="{{ route('about') }}">About natTrak</a><br/>
+    <a href="{{ route('toggleNavBarOnSession') }}">Toggle Navigation</a><br/>
+    <a href="{{ route('toggleDarkMode') }}">Toggle Dark Mode</a>
     <br>
     Copyright © {{ date('Y') }} VATSIM, Inc.
 </footer>

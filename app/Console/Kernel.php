@@ -36,13 +36,6 @@ class Kernel extends ConsoleKernel
             $schedule->command('model:prune')->hourly();
         }
 
-        /**
-         * Move auto acknowledged RCL messages from pending to processed after 15 min
-         */
-        if (config('services.pruning.prune_messages') && config('app.rcl_auto_acknowledgement_enabled')) {
-            $schedule->command('rcl-messages:clear-auto-acknowledged')->hourly();
-        }
-
         // Clean activity log
         $schedule->command('activitylog:clean')->daily();
     }

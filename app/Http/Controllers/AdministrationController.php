@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\AccessLevelEnum;
 use App\Models\ClxMessage;
 use App\Models\CpdlcMessage;
+use App\Models\CtpBooking;
 use App\Models\RclMessage;
 use App\Models\VatsimAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -123,7 +125,8 @@ class AdministrationController extends Controller
         return view('administration.utility', [
             'countRcl' => RclMessage::count(),
             'countClx' => ClxMessage::count(),
-            'countCpdlc' => CpdlcMessage::count()
+            'countCpdlc' => CpdlcMessage::count(),
+            'countBookings' => CtpBooking::count(),
         ]);
     }
 
@@ -133,11 +136,40 @@ class AdministrationController extends Controller
             flashAlert(type: 'error', title: 'Insufficient permissions', message: null, toast: false, timer: false);
             return redirect()->route('administration.utility');
         }
-        
+
         try {
             CpdlcMessage::query()->delete();
             ClxMessage::query()->delete();
             RclMessage::query()->delete();
+        }
+        catch (\Exception $e) {
+            flashAlert(type: 'error', title: $e->getMessage(), message: null, toast: false, timer: false);
+            Log::error($e);
+            return redirect()->route('administration.utility');
+        }
+
+        flashAlert(type: 'success', title: 'Cleared', message: null, toast: true, timer: true);
+
+        return redirect()->route('administration.utility');
+    }
+
+    public function populateCtpBookings(Request $request)
+    {
+        Artisan::call('ctp-bookings:populate');
+        flashAlert(type: 'success', title: 'Action called', message: null, toast: true, timer: true);
+
+        return redirect()->route('administration.utility');
+    }
+
+    public function clearCtpBookings(Request $request)
+    {
+        if (!$request->user()->can('administrate')) {
+            flashAlert(type: 'error', title: 'Insufficient permissions', message: null, toast: false, timer: false);
+            return redirect()->route('administration.utility');
+        }
+
+        try {
+            CtpBooking::query()->delete();
         }
         catch (\Exception $e) {
             flashAlert(type: 'error', title: $e->getMessage(), message: null, toast: false, timer: false);

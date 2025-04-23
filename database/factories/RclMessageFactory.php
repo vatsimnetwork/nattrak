@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\DatalinkAuthority;
 use App\Models\RclMessage;
 use App\Models\Track;
 use App\Models\VatsimAccount;
@@ -31,6 +32,8 @@ class RclMessageFactory extends Factory
             'max_flight_level' => '410',
             'vatsim_account_id' => VatsimAccount::first()->id,
             'atc_rejected' => false,
+            'datalink_authority_id' => DatalinkAuthority::first()->id,
+            'target_datalink_authority_id' => DatalinkAuthority::first()->id,
         ];
     }
 

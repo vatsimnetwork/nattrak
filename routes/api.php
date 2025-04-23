@@ -25,3 +25,4 @@ Route::get('/plugins-rcl', [PluginDataController::class, 'allRclMessages']);
 Route::get('/clx-messages', [PluginDataController::class, 'detailedClxMessages']);
 
 Route::get('/tracks', [PluginDataController::class, 'getTracks']);
+
