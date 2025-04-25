@@ -124,10 +124,10 @@ class ClxMessageService
         return $msg;
     }
 
-    public function moveAutoAcknowledgedRclToProcessedList(RclMessage $rclMessage)
+    public function moveAutoAcknowledgedRclToProcessedList(RclMessage $rclMessage, bool $overrideEditLock = false)
     {
         // Don't interfere with clearances being edited
-        if ($rclMessage->isEditLocked()) {
+        if (!$overrideEditLock && $rclMessage->isEditLocked()) {
             return;
         }
         $datalinkAuthority = DatalinkAuthority::find('SYST');

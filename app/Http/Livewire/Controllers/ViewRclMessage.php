@@ -180,7 +180,7 @@ class ViewRclMessage extends Component
     public function moveToProcessedList()
     {
         $service = new ClxMessageService();
-        $service->moveAutoAcknowledgedRclToProcessedList($this->rclMessage);
+        $service->moveAutoAcknowledgedRclToProcessedList($this->rclMessage, true);
 
         flashAlert(type: 'success', title: null, message: 'Moved to processed list.', toast: true, timer: true);
 
