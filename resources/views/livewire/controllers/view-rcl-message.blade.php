@@ -26,19 +26,19 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Callsign</label>
-                            <input type="text" value="{{ $rclMessage->callsign }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->callsign }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Destination</label>
-                            <input type="text" value="{{ $rclMessage->destination }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->destination }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label-sm">Track/RR</label>
-                            <input type="text" value="{{ $rclMessage->track ? 'NAT '. $rclMessage->track->identifier . ' ' . $rclMessage->track->last_routeing : $rclMessage->random_routeing }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->track ? 'NAT '. $rclMessage->track->identifier . ' ' . $rclMessage->track->last_routeing : $rclMessage->random_routeing }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Entry Fix</label>
-                            <input type="text" value="{{ $rclMessage->entry_fix }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->entry_fix }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Entry ETA</label>
@@ -52,34 +52,34 @@
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Entry FL</label>
-                            <input type="text" value="{{ $rclMessage->flight_level }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->flight_level }}" class="form-control" readonly>
                         </div>
                         @if ($rclMessage->is_concorde)
                             <div class="col-md-3">
                                 <label class="col-form-label-sm">Upper FL</label>
-                                <input type="text" value="{{ $rclMessage->upper_flight_level }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                <input type="text" value="{{ $rclMessage->upper_flight_level }}" class="form-control" readonly>
                             </div>
                         @else
                             <div class="col-md-3">
                                 <label class="col-form-label-sm">Max FL</label>
-                                <input type="text" value="{{ $rclMessage->max_flight_level ?? 'N/A' }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                <input type="text" value="{{ $rclMessage->max_flight_level ?? 'N/A' }}" class="form-control" readonly>
                             </div>
                         @endif
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Entry Mach</label>
-                            <input type="text" value="{{ $rclMessage->mach }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->mach }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Requested At</label>
-                            <input type="text" value="{{ $rclMessage->request_time->format('Hi') }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->request_time->format('Hi') }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">CID</label>
-                            <input type="text" value="{{ $rclMessage->vatsimAccount->id }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->vatsimAccount->id }}" class="form-control" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="col-form-label-sm">Target OCA</label>
-                            <input type="text" value="{{ $rclMessage->targetDatalinkAuthority->id }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                            <input type="text" value="{{ $rclMessage->targetDatalinkAuthority->id }}" class="form-control" readonly>
                         </div>
                     </div>
                 </div>
@@ -103,19 +103,19 @@
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label class="col-form-label-sm">Destination</label>
-                                        <input type="text" value="{{ $ctpBooking->destination }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                        <input type="text" value="{{ $ctpBooking->destination }}" class="form-control" readonly>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="col-form-label-sm">Flight Level</label>
-                                        <input type="text" value="{{ $ctpBooking->flight_level }}" class="form-control-plaintext form-control-plaintext-sm " readonly>
+                                        <input type="text" value="{{ $ctpBooking->flight_level }}" class="form-control " readonly>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="col-form-label-sm">Route</label>
-                                        <input type="text" value="{{ $ctpBooking->track ?? $ctpBooking->random_routeing }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                        <input type="text" value="{{ $ctpBooking->track ?? $ctpBooking->random_routeing }}" class="form-control" readonly>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="col-form-label-sm">SELCAL</label>
-                                        <input type="text" value="{{ $ctpBooking->selcal }}" class="form-control-plaintext form-control-plaintext-sm" readonly>
+                                        <input type="text" value="{{ $ctpBooking->selcal }}" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -244,6 +244,9 @@
                             </div>
                             <div class="d-grid gap-2 mt-4">
                                 <button class="btn btn-success" wire:click.prevent="transmitClearance" onclick="" type="submit">Transmit {{ $rclMessage->clxMessages->count() > 0 || $rclMessage->is_acknowledged ? 'Reclearance' : 'Clearance' }}</button>
+                                @if ($rclMessage->is_acknowledged)
+                                    <button class="btn btn-primary" wire:click.prevent="moveToProcessedList" onclick="">Move to processed list </button>
+                                @endif
                                 <div class="dropdown">
                                     <button class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Other actions
@@ -251,9 +254,7 @@
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" wire:click.prevent="revertToVoice" wire:confirm="Are you sure you want to tell the pilot to revert to voice?" href="#">Revert to voice</a></li>
                                         <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#declineDeleteModal" href="#">Decline and delete</a></li>
-                                        @if ($rclMessage->is_acknowledged)
-                                        <li><a class="dropdown-item" wire:click.prevent="moveToProcessedList" wire:confirm="Are you sure? This will send an auto acknowledge clearance message to the pilot." href="#">Move to processed list</a></li>
-                                        @endif
+
                                     </ul>
                                 </div>
                             </div>
@@ -333,4 +334,21 @@
             </div>
         </div>
     </div>
+    <script type="module">
+        $("#atc_fl").change(function () {
+            Livewire.dispatch('levelChanged', { newLevel: this.value });
+        });
+
+        $('#new_track_id').change(function () {
+            Livewire.dispatch('trackChanged', { newTrackId: this.value });
+        });
+
+        $('#new_random_routeing').blur(function () {
+            Livewire.dispatch('rrChanged', { newRouteing: this.value });
+        });
+
+        $('#cto_time').blur(function () {
+            Livewire.dispatch('timeChanged', { newTime: this.value });
+        });
+    </script>
 </div>
