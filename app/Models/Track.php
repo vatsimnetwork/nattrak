@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\TrackDirectionEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,12 +38,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $flight_levels
  * @method static Builder|Track whereFlightLevels($value)
  * @property-read mixed $predominantly_odd_or_even
+ * @property TrackDirectionEnum|null $direction
+ * @method static Builder|Track whereDirection($value)
+ * @property-read mixed $odd_or_even
  * @mixin \Eloquent
  */
 class Track extends Model
 {
     protected $fillable = [
-        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde', 'flight_levels'
+        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde', 'flight_levels', 'direction'
     ];
 
     protected $casts = [
@@ -49,7 +54,12 @@ class Track extends Model
         'valid_to' => 'datetime',
         'valid_from' => 'datetime',
         'last_active' => 'datetime',
-        'flight_levels' => 'array'
+        'flight_levels' => 'array',
+        'direction' => TrackDirectionEnum::class,
+    ];
+
+    protected $appends = [
+        'odd_or_even',
     ];
 
     /**
@@ -78,26 +88,29 @@ class Track extends Model
         $this->save();
     }
 
-    public function getPredominantlyOddOrEvenAttribute(): string|null
+    protected function oddOrEven(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>  $this->flight_levels ? $this->getPrimaryLevelType($this->flight_levels) : 'mixed',
+        );
+    }
+
+    private function getPrimaryLevelType(array $flightLevels): string
     {
         $odd = 0;
         $even = 0;
-
-        foreach ($this->flight_levels as $fl) {
-            if (substr((string)$fl, 1, 1) % 2 == 0) {
+        foreach ($flightLevels as $level) {
+            if (($level / 100) % 2 === 0) {
                 $even++;
-            }
-            else {
+            } else {
                 $odd++;
             }
         }
-
-        if ($odd == $even) {
-            return null;
+        if ($odd > $even) {
+            return 'odd';
+        } elseif ($even > $odd) {
+            return 'even';
         }
-        elseif ($odd > $even) {
-            return "odd";
-        }
-        else return "even";
+        return 'mixed';
     }
 }
