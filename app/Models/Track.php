@@ -97,18 +97,20 @@ class Track extends Model
 
     private function getPrimaryLevelType(array $flightLevels): string
     {
-        $odd = 0;
-        $even = 0;
-        foreach ($flightLevels as $level) {
-            if (($level / 100) % 2 === 0) {
-                $even++;
+        $evenCount = 0;
+        $oddCount = 0;
+
+        foreach ($flightLevels as $number) {
+            $firstTwoDigits = (int) substr((string) abs($number), 0, 2);
+            if ($firstTwoDigits % 2 == 0) {
+                $evenCount++;
             } else {
-                $odd++;
+                $oddCount++;
             }
         }
-        if ($odd > $even) {
+        if ($oddCount > $evenCount) {
             return 'odd';
-        } elseif ($even > $odd) {
+        } elseif ($evenCount > $oddCount) {
             return 'even';
         }
         return 'mixed';
