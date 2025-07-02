@@ -42,6 +42,7 @@ class PopulateTracksCommand extends Command
                 'valid_to' => $track['valid_to'],
                 'last_active' => now(),
                 'flight_levels' => $track['flight_levels'],
+                'direction' => $track['direction'],
             ]);
         }
 

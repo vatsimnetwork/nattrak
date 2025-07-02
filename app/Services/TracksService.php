@@ -44,6 +44,7 @@ class TracksService
                     'valid_from' => $message['valid_from'],
                     'valid_to' => $message['valid_to'],
                     'flight_levels' => $track['flight_levels'],
+                    'direction' => $track['direction'],
                 ];
             }
         }

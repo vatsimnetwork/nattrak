@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\TrackDirectionEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,12 +38,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $flight_levels
  * @method static Builder|Track whereFlightLevels($value)
  * @property-read mixed $predominantly_odd_or_even
+ * @property TrackDirectionEnum|null $direction
+ * @method static Builder|Track whereDirection($value)
+ * @property-read mixed $odd_or_even
  * @mixin \Eloquent
  */
 class Track extends Model
 {
     protected $fillable = [
-        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde', 'flight_levels'
+        'identifier', 'active', 'last_routeing', 'valid_from', 'valid_to', 'last_active', 'concorde', 'flight_levels', 'direction'
     ];
 
     protected $casts = [
@@ -49,7 +54,12 @@ class Track extends Model
         'valid_to' => 'datetime',
         'valid_from' => 'datetime',
         'last_active' => 'datetime',
-        'flight_levels' => 'array'
+        'flight_levels' => 'array',
+        'direction' => TrackDirectionEnum::class,
+    ];
+
+    protected $appends = [
+        'odd_or_even',
     ];
 
     /**
@@ -78,26 +88,31 @@ class Track extends Model
         $this->save();
     }
 
-    public function getPredominantlyOddOrEvenAttribute(): string|null
+    protected function oddOrEven(): Attribute
     {
-        $odd = 0;
-        $even = 0;
+        return Attribute::make(
+            get: fn () =>  $this->flight_levels ? $this->getPrimaryLevelType($this->flight_levels) : 'mixed',
+        );
+    }
 
-        foreach ($this->flight_levels as $fl) {
-            if (substr((string)$fl, 1, 1) % 2 == 0) {
-                $even++;
-            }
-            else {
-                $odd++;
-            }
-        }
+    private function getPrimaryLevelType(array $flightLevels): string
+    {
+        $evenCount = 0;
+        $oddCount = 0;
 
-        if ($odd == $even) {
-            return null;
+        foreach ($flightLevels as $number) {
+            $firstTwoDigits = (int) substr((string) abs($number), 0, 2);
+            if ($firstTwoDigits % 2 == 0) {
+                $evenCount++;
+            } else {
+                $oddCount++;
+            }
         }
-        elseif ($odd > $even) {
-            return "odd";
+        if ($oddCount > $evenCount) {
+            return 'odd';
+        } elseif ($evenCount > $oddCount) {
+            return 'even';
         }
-        else return "even";
+        return 'mixed';
     }
 }
