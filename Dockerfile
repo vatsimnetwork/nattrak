@@ -15,19 +15,14 @@ RUN set -ex \
 
 FROM unit:1.31.1-php8.2
 
-ARG NEW_RELIC_AGENT_VERSION=10.13.0.2
-
 # Install PHP extensions
 RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y git unzip \
     && docker-php-ext-install bcmath opcache pcntl pdo_mysql \
-    && pecl install redis-5.3.7 \
+    && pecl install excimer-1.2.5 redis-5.3.7 \
     && apt-get purge -y --auto-remove git \
-    && curl -L https://download.newrelic.com/php_agent/archive/${NEW_RELIC_AGENT_VERSION}/newrelic-php5-${NEW_RELIC_AGENT_VERSION}-linux.tar.gz | tar -C /tmp -zx \
-    && cp /tmp/newrelic-php5-${NEW_RELIC_AGENT_VERSION}-linux/agent/x64/newrelic-20220829.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/newrelic.so \
-    && rm -rf /tmp/newrelic-php5-* /tmp/pear /var/lib/apt/lists/* \
-    && docker-php-ext-enable newrelic redis
+    && docker-php-ext-enable excimer redis
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
