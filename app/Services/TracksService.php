@@ -52,7 +52,10 @@ class TracksService
 
     private function getMessages(): array
     {
-        $html = Http::get(config('services.tracks.nat_notams_url'))->body();
+        $html = Http::withHeaders([
+            'User-Agent' => 'Mozilla/5.0',
+        ])->get(config('services.tracks.nat_notams_url'))->body();
+
         $html = strip_tags($html);
 
         // Each NOTAM is enclosed in \x02, parentheses, and \n\v\x03... thanks FAA?
