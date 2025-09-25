@@ -45,6 +45,7 @@ return [
     'tracks' => [
         'auto_update' => env('UPDATE_TRACKS', true),
         'override_tmi' => env('OVERRIDE_TMI', null),
+        'nat_notams_url' => env('NAT_NOTAMS_URL', 'https://notams.aim.faa.gov/nat.html'),
     ],
 
     'pruning' => [

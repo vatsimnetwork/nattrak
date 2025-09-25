@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Http;
 
 class TracksService
 {
-    public const NAT_NOTAMS_URL = 'https://www.notams.faa.gov/common/nat.html';
-
     public const MONTHS = [
         'JAN' => 1, 'FEB' => 2, 'MAR' => 3, 'APR' => 4, 'MAY' => 5, 'JUN' => 6,
         'JUL' => 7, 'AUG' => 8, 'SEP' => 9, 'OCT' => 10, 'NOV' => 11, 'DEC' => 12,
@@ -54,7 +52,7 @@ class TracksService
 
     private function getMessages(): array
     {
-        $html = Http::get(self::NAT_NOTAMS_URL)->body();
+        $html = Http::get(config('services.tracks.nat_notams_url'))->body();
         $html = strip_tags($html);
 
         // Each NOTAM is enclosed in \x02, parentheses, and \n\v\x03... thanks FAA?
