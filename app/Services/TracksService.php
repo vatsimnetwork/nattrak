@@ -67,6 +67,9 @@ class TracksService
         foreach ($notams as $text) {
             $lines = explode("\n", $text);
 
+            // Remove empty lines
+            $lines = array_values(array_filter($lines));
+
             // Each message is split into lines by \n
             // Line 1 is the header, line 2 is the validity timespan, line 3 is the part header,
             // the following lines are the part content, and the last line is the part footer.
