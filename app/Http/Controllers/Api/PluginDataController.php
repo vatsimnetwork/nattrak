@@ -119,12 +119,28 @@ class PluginDataController extends Controller
         return response($tracks);
     }
 
+    private static function isOnTrackorRR(RclMessage $msg) {
+        if ($msg->latestClxMessage) {
+            if ($msg->latestClxMessage->track) {
+                return $msg->latestClxMessage->track->identifier;
+            } else {
+                return "RR";
+            }
+        } else {
+            if ($msg->track) {
+                return $msg->track->identifier;
+            } else {
+                return "RR";
+            }
+        }
+    }
+
     private static function serializeRclMessage(RclMessage $msg): array
     {
         return [
             'callsign' => $msg->callsign,
             'status' => $msg->clxMessages->count() ? 'CLEARED' : 'PENDING',
-            'nat' => $msg->latestClxMessage ? ($msg->latestClxMessage->track->identifer ?? 'RR') : $msg->track->identifier ?? 'RR',
+            'nat' => self::isOnTrackOrRr($msg),
             'fix' => $msg->latestClxMessage ? $msg->latestClxMessage->entry_fix : $msg->entry_fix,
             'level' => $msg->latestClxMessage ? $msg->latestClxMessage->flight_level : $msg->flight_level,
             'mach' => '0.'.substr($msg->mach, 1),

@@ -101,7 +101,7 @@ class ViewRclMessage extends Component
 
         $newTrackAndEntryFix = null;
         if ($this->atcNewTrack != null || $this->atcNewRandomRouteing != null) {
-            $newTrackAndEntryFix = $service->getNewEntryTixAndOrTrack($this->atcNewTrack, $this->atcNewRandomRouteing);
+            $newTrackAndEntryFix = $service->getNewEntryFixOrTrack($this->atcNewTrack, $this->atcNewRandomRouteing);
         }
 
         $clxToOverride = $this->rclMessage->latestClxMessage?->id;
@@ -125,9 +125,16 @@ class ViewRclMessage extends Component
             $clxMessage->track_id = $this->atcNewTrack;
             $clxMessage->random_routeing = null;
         }
-        elseif ($this->atcNewRandomRouteing) {
+        else if ($this->atcNewRandomRouteing) {
             $clxMessage->random_routeing = strtoupper($this->atcNewRandomRouteing);
             $clxMessage->track_id = null;
+        }
+        else {
+            if ($this->rclMessage->random_routeing) {
+                $clxMessage->random_routeing = $this->rclMessage->random_routeing;
+            } else {
+                $clxMessage->track_id = $this->rclMessage->track_id;
+            }
         }
 
         $clxMessage->datalink_message = $service->createDatalinkMessage($clxMessage);

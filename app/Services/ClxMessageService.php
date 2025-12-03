@@ -24,7 +24,7 @@ class ClxMessageService
      * @return array
      * @throws InvalidTrackException
      */
-    public function getNewEntryTixAndOrTrack(?string $newTrackId, ?string $newRandomRouteing): array
+    public function getNewEntryFixOrTrack(?string $newTrackId, ?string $newRandomRouteing): array
     {
         $newTrack = null;
         $newEntryFix = null;
