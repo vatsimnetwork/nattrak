@@ -54,3 +54,12 @@ h1, h2, h3, h4, h5, h6,
 .bg-vatsim-indigo {
     background-color: var(--vatsim-indigo) !important;
 }
+
+/* Hide light-mode things when in dark mode */
+[data-bs-theme=dark] .display-light {
+    display: none;
+}
+/* Hide dark-mode things when in light mode */
+[data-bs-theme=light] .display-dark {
+    display: none;
+}

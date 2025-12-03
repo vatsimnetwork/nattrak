@@ -1,6 +1,6 @@
-<div class="container">
-    <nav class="navbar navbar-expand-lg p-1 rounded-3 mt-3 bg-vatsim-indigo" data-bs-theme="dark">
-        <div class="container-fluid">
+<div class="">
+    <nav class="navbar navbar-expand-lg p-1 bg-secondary-subtle">
+        <div class="container">
             <span class="navbar-brand">
                 @can('activeBoundaryController')
                     Domestic
@@ -12,7 +12,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="controller-nav">
-                <ul class="navbar-nav gap-2">
+                <ul class="nav nav-pills gap-2">
                     @canany('activeController')
                         <li class="nav-item">
                             <a class="nav-link {{ Request::is('controllers/clx/pending') ? 'active' : '' }}" href="{{ route('controllers.clx.pending') }}">Pending Messages</a>

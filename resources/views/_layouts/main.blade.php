@@ -14,7 +14,8 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="{{ route('welcome') }}">
-                <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" alt="natTrak" height="40">
+                <img src="{{ asset('images/natTrak_Logo_2000px.png') }}" class="display-light" alt="natTrak" height="40">
+                <img src="{{ asset('images/natTrak_White.png') }}" class="display-dark" alt="natTrak" height="40">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authNav" aria-controls="authNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -87,24 +88,29 @@
             </div>
         </div>
     </nav>
+    @can('activePilot')
+        @include('pilots.nav')
+    @endcan
+    @canany(['activeBoundaryController', 'activeController'])
+        @include('controllers.nav')
+    @endcanany
 </header>
 @endif
-@can('activePilot')
-    @include('pilots.nav')
-@endcan
-@canany(['activeBoundaryController', 'activeController'])
-    @include('controllers.nav')
-@endcanany
+
 <main class="my-4" role="main">
     @yield('page')
 </main>
-<footer class="container py-3 my-4 border-top text-center text-muted small">
-    <a href="{{ route('about') }}">About natTrak</a><br/>
-    <a href="{{ route('toggleNavBarOnSession') }}">Toggle Navigation</a><br/>
-    <a href="{{ route('toggleDarkMode') }}">Toggle Dark Mode</a>
-    <br>
-    Copyright © {{ date('Y') }} VATSIM, Inc.
-</footer>
+<div class="container mt-5">
+    <footer class="py-3 my-4">
+        <p class="text-center text-body-secondary">A VATSIM service for oceanic clearances in the Atlantic oceanic regions.<br/>Please report issues via Discord.</p>
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="{{route('toggleNavBarOnSession')}}" class="nav-link px-2 text-body-secondary">Toggle Navigation Bar</a></li>
+            <li class="nav-item"><a href="{{route('toggleDarkMode')}}" class="nav-link px-2 text-body-secondary">Toggle Dark Mode</a></li>
+            <li class="nav-item"><a href="https://github.com/vatsimnetwork/nattrak" target="_blank" class="nav-link px-2 text-body-secondary">GitHub</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">© {{ date('Y') }} VATSIM, Inc</p>
+    </footer>
+</div>
 @livewireScripts
 @if (Session::has('alert'))
     <script>
