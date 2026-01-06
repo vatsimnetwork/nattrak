@@ -1,6 +1,7 @@
 import './bootstrap';
 import * as bootstrap from 'bootstrap'
 import swal from 'sweetalert2';
+window.bootstrap = bootstrap;
 
 window.Swal = swal;
 import $ from 'jquery';
