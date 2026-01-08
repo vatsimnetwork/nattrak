@@ -63,6 +63,10 @@
                             </a>
                             <ul class="dropdown-menu shadow">
                                 <li><a class="dropdown-item" href="{{ route('auth.deauthenticate') }}">Sign out</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a href="{{ route('account.manage-api-token') }}" class="dropdown-item">Manage API Token</a>
+                                </li>
                             </ul>
                         </li>
                     @else

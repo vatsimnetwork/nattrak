@@ -6,6 +6,8 @@ use App\Enums\AccessLevelEnum;
 use App\Enums\DatalinkAuthorities;
 use App\Services\VatsimDataService;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -39,7 +41,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class VatsimAccount extends Authenticatable
 {
-    use LogsActivity;
+    use LogsActivity, HasApiTokens, Notifiable;
 
     /**
      * @var string[]

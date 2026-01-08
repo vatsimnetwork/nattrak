@@ -116,3 +116,8 @@ Route::prefix('notams')->name('notams')->controller(BulletinsController::class)-
 Route::prefix('tracks')->name('tracks')->controller(TracksController::class)->group(function () {
     Route::get('/', 'index')->name('.index');
 });
+
+
+Route::prefix('account')->name('account')->group(function () {
+    Route::view('manage-api-token', 'api-tokens.manage-account-token')->name('.manage-api-token');
+});
