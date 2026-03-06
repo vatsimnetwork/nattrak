@@ -49,6 +49,20 @@ class RclMessageRequest extends FormRequest
 
     public function prepareForValidation()
     {
+        if ($this->filled('random_routeing')) {
+            $this->merge([
+                'random_routeing' => $this->normaliseRouteing($this->get('random_routeing')),
+            ]);
+        }
+
+        if ($this->shouldConvertMatchingRandomRouteingToTrack() && ($matchingTrack = $this->matchingTrackForRandomRouteing())) {
+            $this->merge([
+                'track_id' => $matchingTrack->id,
+                'random_routeing' => null,
+                'entry_fix' => strtok($matchingTrack->last_routeing, ' '),
+            ]);
+        }
+
         if (! $this->has('entry_fix') && $this->has('track_id')) {
             $this->merge([
                 'entry_fix' => strtok(Track::whereId($this->get('track_id'))->firstOrFail()->last_routeing, ' '),
@@ -66,6 +80,11 @@ class RclMessageRequest extends FormRequest
                 $validator->errors()->add('select_one_routeing', 'You can only request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. (NAT Tracks are identified by a letter.)');
             } elseif ($this->track_id == null && $this->random_routeing == null) {
                 $validator->errors()->add('select_one_routeing', 'You need to request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. (NAT Tracks are identified by a letter.)');
+            } elseif ($this->shouldRejectMatchingRandomRouteing() && ($matchingTrack = $this->matchingTrackForRandomRouteing())) {
+                $validator->errors()->add(
+                    'random_routeing',
+                    "Your requested random routeing exactly matches NAT Track {$matchingTrack->identifier}. Please re-submit your request and select Track {$matchingTrack->identifier} instead of RR."
+                );
             }
             if (! $this->is_concorde) {
                 /**
@@ -136,5 +155,59 @@ class RclMessageRequest extends FormRequest
         }
 
         return false;
+    }
+
+    private function matchingTrackForRandomRouteing(): ?Track
+    {
+        if ($this->track_id != null || ! $this->filled('random_routeing')) {
+            return null;
+        }
+
+        $requestedRouteing = $this->normaliseRouteing($this->random_routeing);
+        if ($requestedRouteing === null) {
+            return null;
+        }
+
+        $tracks = Track::query()
+            ->when(
+                $this->boolean('is_concorde'),
+                fn ($query) => $query->where(function ($query) {
+                    $query->where('active', true)->orWhere('concorde', true);
+                }),
+                fn ($query) => $query->where('active', true),
+            )
+            ->get();
+
+        foreach ($tracks as $track) {
+            if ($this->normaliseRouteing($track->last_routeing) === $requestedRouteing) {
+                return $track;
+            }
+        }
+
+        return null;
+    }
+
+    private function normaliseRouteing(?string $routeing): ?string
+    {
+        if ($routeing === null) {
+            return null;
+        }
+
+        return preg_replace('/\s+/', ' ', strtoupper(trim($routeing)));
+    }
+
+    private function shouldRejectMatchingRandomRouteing(): bool
+    {
+        return $this->trackMatchingMode() === 'reject';
+    }
+
+    private function shouldConvertMatchingRandomRouteingToTrack(): bool
+    {
+        return $this->trackMatchingMode() === 'convert';
+    }
+
+    private function trackMatchingMode(): string
+    {
+        return strtolower((string) config('app.rcl_rr_matching_track_action', 'reject'));
     }
 }

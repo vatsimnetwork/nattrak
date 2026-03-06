@@ -134,6 +134,7 @@ return [
     'rcl_auto_acknowledgement_enabled' => env('RCL_AUTO_ACKNOWLEDGEMENT_ENABLED', false),
     'rcl_lower_limit' => env('rcl_lower_limit', 14),
     'rcl_upper_limit' => env('rcl_upper_limit', 91),
+    'rcl_rr_matching_track_action' => env('RCL_RR_MATCHING_TRACK_ACTION', 'reject'),
 
     /*
     |--------------------------------------------------------------------------
