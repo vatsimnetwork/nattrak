@@ -58,7 +58,7 @@ class PluginDataController extends Controller
         );
     }
 
-    public function     detailedClxMessages(Request $request)
+    public function detailedClxMessages(Request $request)
     {
         $trackToSortBy = null;
         $requestAsksForTrack = false;
@@ -119,20 +119,27 @@ class PluginDataController extends Controller
         return response($tracks);
     }
 
-    private static function isOnTrackorRR(RclMessage $msg) {
+    private static function isOnTrackorRR(RclMessage $msg)
+    {
         if ($msg->latestClxMessage) {
             if ($msg->latestClxMessage->track) {
                 return $msg->latestClxMessage->track->identifier;
-            } else {
-                return "RR";
             }
-        } else {
+
+            // Fallback to the original RCL track if the CLX has no track
             if ($msg->track) {
                 return $msg->track->identifier;
-            } else {
-                return "RR";
             }
+
+            return 'RR';
         }
+
+        // No CLX yet: use the RCL track if present, otherwise RR
+        if ($msg->track) {
+            return $msg->track->identifier;
+        }
+
+        return 'RR';
     }
 
     private static function serializeRclMessage(RclMessage $msg): array
