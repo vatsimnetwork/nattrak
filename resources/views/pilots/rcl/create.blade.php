@@ -31,7 +31,7 @@
             <p class="mb-0">Need help? Check out the <i>Help</i> button in the navigation bar.</p>
         </div>
         @if (config('app.ctp_info_enabled'))
-            <p><b>Please note that if you are flying across the oceanic without a CTP slot, you will be delayed and likely asked to move outside of the vertical limits of oceanic airspace.</b></p>
+            <p><b>Please note that if you are flying across the oceanic without a CTP slot, you <span style="font-weight: bold;">will</span> be significantly delayed and asked to move outside of the vertical limits of oceanic airspace.</b></p>
         @endif
         @if ($isConcorde)
             <div class="alert alert-info" role="alert">
