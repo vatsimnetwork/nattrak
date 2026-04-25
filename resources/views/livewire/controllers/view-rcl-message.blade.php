@@ -124,12 +124,27 @@
                                 <h4 class="alert-heading">No CTP Booking Found</h4>
                                 <hr>
                                 <p class="mb-0">
-                                    CLick "Other actions", "Decline and delete", and paste below text into reason field:
+                                    Click "Other actions", "Decline and delete", and paste below text into reason field:
                                 </p>
                                 <p style="font-style: italic">
                                     You do not have a slot for CTP. Oceanic clearance is unavailable. You must descend to FL290 and remain on that FL for the duration of your crossing. No climb request will be permitted.
                                 </p>
+                                <a href="#" class="btn btn-outline-danger" onclick="copyCtpText()">Copy text</a>
                             </div>
+                            <script>
+                                function copyCtpText() {
+                                    navigator.clipboard.writeText('You do not have a slot for CTP. Oceanic clearance is unavailable. You must descend to FL290 and remain on that FL for the duration of your crossing. No climb request will be permitted');
+                                    Swal.fire({
+                                        title: "Text copied",
+                                        icon: "success",
+                                        toast: true,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        showConfirmButton: false,
+                                        position: 'top'
+                                    });
+                                }
+                            </script>
                         @endif
                     </div>
                 </div>
@@ -353,5 +368,7 @@
         $('#cto_time').blur(function () {
             Livewire.dispatch('timeChanged', { newTime: this.value });
         });
+
+
     </script>
 </div>
