@@ -368,7 +368,5 @@
         $('#cto_time').blur(function () {
             Livewire.dispatch('timeChanged', { newTime: this.value });
         });
-
-
     </script>
 </div>
