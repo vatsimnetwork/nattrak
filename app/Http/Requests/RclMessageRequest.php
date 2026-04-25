@@ -62,10 +62,16 @@ class RclMessageRequest extends FormRequest
             /**
              * Track/RR check
              */
+            $trackRrMsg = "";
+            if (config('app.ctp_info_enabled')) {
+                $trackRrMsg = "You can only request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. NAT tracks are identified by a letter.";
+            } else {
+                $trackRrMsg = "You can only request either a NAT track or a random routeing. NAT Tracks are identified by a letter.";
+            }
             if ($this->track_id != null && $this->random_routeing != null) {
-                $validator->errors()->add('select_one_routeing', 'You can only request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. (NAT Tracks are identified by a letter.)');
+                $validator->errors()->add('select_one_routeing', $trackRrMsg);
             } elseif ($this->track_id == null && $this->random_routeing == null) {
-                $validator->errors()->add('select_one_routeing', 'You need to request either a NAT track or a random routeing. Check which one you are allocated in your CTP booking. (NAT Tracks are identified by a letter.)');
+                $validator->errors()->add('select_one_routeing', $trackRrMsg);
             }
             if (! $this->is_concorde) {
                 /**

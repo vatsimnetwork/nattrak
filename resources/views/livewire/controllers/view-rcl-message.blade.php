@@ -105,10 +105,10 @@
                                         <label class="col-form-label-sm">Destination</label>
                                         <input type="text" value="{{ $ctpBooking->destination }}" class="form-control" readonly>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label class="col-form-label-sm">Flight Level</label>
-                                        <input type="text" value="{{ $ctpBooking->flight_level }}" class="form-control " readonly>
-                                    </div>
+{{--                                    <div class="col-md-2">--}}
+{{--                                            <label class="col-form-label-sm">Flight Level</label>--}}
+{{--                                            <input type="text" value="{{ $ctpBooking->flight_level }}" class="form-control " readonly>--}}
+{{--                                    </div>--}}
                                     <div class="col-md-6">
                                         <label class="col-form-label-sm">Route</label>
                                         <input type="text" value="{{ $ctpBooking->track ?? $ctpBooking->random_routeing }}" class="form-control" readonly>
@@ -124,7 +124,10 @@
                                 <h4 class="alert-heading">No CTP Booking Found</h4>
                                 <hr>
                                 <p class="mb-0">
-                                    Issue clearance below FL280 and free text advising to monitor UNICOM for duration of crossing
+                                    CLick "Other actions", "Decline and delete", and paste below text into reason field:
+                                </p>
+                                <p style="font-style: italic">
+                                    You do not have a slot for CTP. Oceanic clearance is unavailable. You must descend to FL290 and remain on that FL for the duration of your crossing. No climb request will be permitted.
                                 </p>
                             </div>
                         @endif
