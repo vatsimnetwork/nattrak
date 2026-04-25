@@ -31,7 +31,7 @@
             <p class="mb-0">Need help? Check out the <i>Help</i> button in the navigation bar.</p>
         </div>
         @if (config('app.ctp_info_enabled'))
-            <p><b>Please note that if you are flying across the oceanic without a CTP slot, you <span style="font-weight: bold;">will</span> be significantly delayed and asked to move outside of the vertical limits of oceanic airspace.</b></p>
+            <p><b>If you do not have a slot during CTP, oceanic clearance is unavailable. You must descend to FL290 and remain on that FL for the duration of your crossing. Requests for a higher level will not be considered.</b></p>
         @endif
         @if ($isConcorde)
             <div class="alert alert-info" role="alert">
