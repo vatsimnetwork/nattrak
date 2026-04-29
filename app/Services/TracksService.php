@@ -3,15 +3,12 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class TracksService
 {
-    public const MONTHS = [
-        'JAN' => 1, 'FEB' => 2, 'MAR' => 3, 'APR' => 4, 'MAY' => 5, 'JUN' => 6,
-        'JUL' => 7, 'AUG' => 8, 'SEP' => 9, 'OCT' => 10, 'NOV' => 11, 'DEC' => 12,
-    ];
-
     public function getTmi(): int|string|null
     {
         $messages = $this->getMessages();
@@ -52,45 +49,30 @@ class TracksService
 
     private function getMessages(): array
     {
-        $html = Http::withHeaders([
+        $entries = Http::withHeaders([
             'User-Agent' => 'Mozilla/5.0',
-        ])->get(config('services.tracks.nat_notams_url'))->body();
+        ])->get(config('services.tracks.nat_notams_url'))->json();
 
-        $html = strip_tags($html);
-
-        // Each NOTAM is enclosed in \x02, parentheses, and \n\v\x03... thanks FAA?
-        preg_match_all('/\x02\((.*?)\)\n\v\x03/s', $html, $matches);
-        $notams = $matches[1];
+        // Group parts by NOTAM and order each group by part number
+        $groups = collect($entries)
+            ->groupBy('notam_number_formatted')
+            ->map(fn (Collection $parts) => $parts->sortBy('part_no')->values());
 
         $messages = [];
-        $message = [];
-        foreach ($notams as $text) {
-            $lines = explode("\n", $text);
-
-            // Remove empty lines
-            $lines = array_values(array_filter($lines));
-
-            // Each message is split into lines by \n
+        /** @var Collection $parts */
+        foreach ($groups as $parts) {
+            // Each message is split into lines by CRLF.
             // Line 1 is the header, line 2 is the validity timespan, line 3 is the part header,
             // the following lines are the part content, and the last line is the part footer.
+            // They aren't needed due to the new structured API data, so we slice them off.
+            $message = $parts->flatMap(fn ($part) => Str::of($part['condition_message'])
+                ->explode("\r\n")
+                ->filter()
+                ->slice(3, -1)
+            );
 
-            // Parse header
-            preg_match('/^NAT-([1-9])\/([1-9])/', $lines[0], $matches);
-            $currentPart = (int) $matches[1];
-            $totalParts = (int) $matches[2];
-
-            // Parse validity
-            preg_match('/^([A-Z]{3}) ([0-9]{2})\/([0-9]{2})([0-9]{2})Z TO ([A-Z]{3}) ([0-9]{2})\/([0-9]{2})([0-9]{2})Z$/', $lines[1], $matches);
-            $validFrom = Carbon::create(year: null, month: self::MONTHS[$matches[1]], day: $matches[2], hour: $matches[3], minute: $matches[4]);
-            $validTo = Carbon::create(year: null, month: self::MONTHS[$matches[5]], day: $matches[6], hour: $matches[7], minute: $matches[8]);
-
-            // Combine parts
-            $message = array_merge($message, array_slice($lines, 3, -1));
-
-            // Haven't received all parts yet
-            if ($currentPart !== $totalParts) {
-                continue;
-            }
+            $validFrom = Carbon::parse($parts[0]['start_datetime']);
+            $validTo = Carbon::parse($parts[0]['end_datetime']);
 
             // Split the full message into its sections
             $sections = [];
@@ -162,7 +144,6 @@ class TracksService
                 'tracks' => $tracks,
                 'remarks' => $remarks,
             ];
-            $message = [];
         }
 
         return $messages;
