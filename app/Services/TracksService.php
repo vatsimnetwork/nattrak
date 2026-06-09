@@ -128,7 +128,7 @@ class TracksService
                 }
             }
 
-            $tmi = 0;
+            $tmi = null;
             foreach ($remarks as $remark) {
                 if (preg_match('/^TMI IS ([0-9]{3})/', $remark, $matches)) {
                     $tmi = (int) $matches[1];
