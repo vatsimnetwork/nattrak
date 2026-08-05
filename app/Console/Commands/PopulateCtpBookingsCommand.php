@@ -33,7 +33,7 @@ class PopulateCtpBookingsCommand extends Command
             CtpBooking::updateOrCreate(['id' => $booking->id], [
                 'cid' => $booking->user_id,
                 'destination' => $booking->arr_id,
-                'flight_level' => $booking->level,
+                'flight_level' => '000',
                 'route' => $booking->route,
                 'track'  => $booking->track_id,
                 'selcal' =>  $booking->selcal

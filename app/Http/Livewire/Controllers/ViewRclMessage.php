@@ -67,7 +67,7 @@ class ViewRclMessage extends Component
     {
         if (!$this->ctpBooking) { return false; }
         if ($this->rclMessage->destination != $this->ctpBooking->destination) { return false; }
-        if ($this->rclMessage->flight_level != $this->ctpBooking->flight_level) { return false; }
+        // if ($this->rclMessage->flight_level != $this->ctpBooking->flight_level) { return false; }
 
         return true;
     }

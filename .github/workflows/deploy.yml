@@ -1,0 +1,20 @@
+name: deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    uses: vatsimnetwork/actions/.github/workflows/build-and-trigger.yml@v1
+    with:
+      app: nattrak
+      extra-tags: |
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+        type=raw,value=latest
+      build-args: |
+        VITE_PUSHER_APP_KEY=${{ vars.VITE_PUSHER_APP_KEY }}
+        VITE_PUSHER_HOST=${{ vars.VITE_PUSHER_HOST }}
+        VITE_PUSHER_PORT=${{ vars.VITE_PUSHER_PORT }}
+    secrets: inherit

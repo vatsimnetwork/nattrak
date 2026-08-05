@@ -31,7 +31,7 @@
             <p class="mb-0">Need help? Check out the <i>Help</i> button in the navigation bar.</p>
         </div>
         @if (config('app.ctp_info_enabled'))
-            <p><b>Please note that if you are flying across the oceanic without a CTP slot, you will be delayed and likely asked to move outside of the vertical limits of oceanic airspace.</b></p>
+            <p><b>If you do not have a slot during CTP, oceanic clearance is unavailable. You must descend to FL290 and remain on that FL for the duration of your crossing. Requests for a higher level will not be considered.</b></p>
         @endif
         @if ($isConcorde)
             <div class="alert alert-info" role="alert">
@@ -66,9 +66,9 @@
                         <input required type="text" class="form-control" name="flight_level" id="flight_level" placeholder="e.g. 310" maxlength="3" value="{{ $flight_level ?? old('flight_level') }}">
                         <label for="flight_level">Requested {{ $isConcorde ? 'lower block' : 'oceanic' }} flight level (digits only, e.g. 340)</label>
                     </div>
-                    @if (config('app.ctp_info_enabled'))
-                        <div class="form-text"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></div>
-                    @endif
+{{--                    @if (config('app.ctp_info_enabled'))--}}
+{{--                        <div class="form-text"><b>Ensure you enter your assigned oceanic flight level as per your booking!</b></div>--}}
+{{--                    @endif--}}
                     @if ($flight_level)
                         <div class="form-text">Your requested flight level (the altitude on your flight plan) was automatically collected. You may change the flight level if it is incorrect.</div>
                     @endif
