@@ -28,7 +28,7 @@
                         <label for="entry_time" class="uk-form-label">New estimated time of arrival for entry fix</label>
                     </div>
                     <div class="form-text">You can find this in your FMC, providing your simulator is set to real time.</div>
-                    <a class="form-text" target="_blank" href="https://knowledgebase.ganderoceanic.ca/nattrak/requesting-oceanic-clearance/#section-3-oceanic-entry">An example is available here.</a>
+                    <a class="form-text" target="_blank" href="https://knowledgebase.ganderoceanic.ca/pilots/nattrak/requesting-oceanic-clearance/#section-3-oceanic-entry">An example is available here.</a>
                 </div>
             </div>
             @if ($errors->any())
